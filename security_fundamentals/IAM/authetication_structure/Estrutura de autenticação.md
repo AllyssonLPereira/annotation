@@ -1,0 +1,13 @@
+
+- métodos
+	- PAP
+	- CHAP
+	- MS-CHAP
+	- 802.1x
+	- EAP e suas variantes
+- ferramentas
+- protocolos
+	- RADIUS (banco de dados RADIUS, servidores externos (SQL ou LDAP));
+	- LDAP;
+	- TACACS+
+- formulário

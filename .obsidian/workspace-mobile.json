@@ -1,0 +1,233 @@
+{
+  "main": {
+    "id": "6a80dcc64aa21a21",
+    "type": "split",
+    "children": [
+      {
+        "id": "5a768c436666f106",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "eb7dad9982139fe1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "network_architecture/network_communication_models/TCP_IP/internet_layer/IP/IPv4/2_headers.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2_headers"
+            }
+          },
+          {
+            "id": "05a004867ec27368",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "network_architecture/network_communication_models/TCP_IP/internet_layer/IP/Routing/Dynamic Routing.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Dynamic Routing"
+            }
+          },
+          {
+            "id": "431e481174bb9c8f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "network_architecture/network_components/dispositivos_intermidiarios/switches/EtherChannel.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "EtherChannel"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "22cde0d99c7ff064",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "0b12a98a189df813",
+        "type": "leaf",
+        "state": {
+          "type": "file-explorer",
+          "state": {
+            "sortOrder": "alphabetical",
+            "autoReveal": true,
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-folder-closed",
+          "title": "Explorador de arquivos"
+        }
+      },
+      {
+        "id": "4bc2995025a166d1",
+        "type": "leaf",
+        "state": {
+          "type": "search",
+          "state": {
+            "query": "",
+            "matchingCase": false,
+            "explainSearch": false,
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical"
+          },
+          "icon": "lucide-search",
+          "title": "Procurar"
+        }
+      },
+      {
+        "id": "2bbf22a2294b9ac0",
+        "type": "leaf",
+        "state": {
+          "type": "tag",
+          "state": {
+            "sortOrder": "frequency",
+            "useHierarchy": true,
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-tags",
+          "title": "Tags"
+        }
+      },
+      {
+        "id": "1943ad4d593aa765",
+        "type": "leaf",
+        "state": {
+          "type": "bookmarks",
+          "state": {},
+          "icon": "lucide-bookmark",
+          "title": "Marcadores"
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "right": {
+    "id": "e8ea454b8b0d07d4",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "5f126de3d5918932",
+        "type": "leaf",
+        "state": {
+          "type": "backlink",
+          "state": {
+            "file": "vlans/VLANs.md",
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical",
+            "showSearch": false,
+            "searchQuery": "",
+            "backlinkCollapsed": false,
+            "unlinkedCollapsed": true
+          },
+          "icon": "links-coming-in",
+          "title": "Links inversos"
+        }
+      },
+      {
+        "id": "6e32a85706372073",
+        "type": "leaf",
+        "state": {
+          "type": "outgoing-link",
+          "state": {
+            "linksCollapsed": false,
+            "unlinkedCollapsed": true
+          },
+          "icon": "links-going-out",
+          "title": "Links de saída"
+        }
+      },
+      {
+        "id": "255d6251d772e639",
+        "type": "leaf",
+        "state": {
+          "type": "outline",
+          "state": {
+            "followCursor": false,
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-list",
+          "title": "Sumário"
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir a troca rápida": false,
+      "graph:Abrir visualização em gráfico": false,
+      "canvas:Criar novo canvas": false,
+      "daily-notes:Abrir a nota de hoje": false,
+      "templates:Inserir modelo": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Criar nova base": false
+    }
+  },
+  "active": "eb7dad9982139fe1",
+  "lastOpenFiles": [
+    "network_architecture/network_communication_models/TCP_IP/internet_layer/IP/IPv4/1_Introdução.md",
+    "vlans/VLANs.md",
+    "tmp_9426789a-cd19-4584-b0ea-eeec04e408a6.png",
+    "tmp_71916597-c7fa-4af0-a9f8-710b0ccc0771.png",
+    "tmp_91d3b1dd-68ea-4536-9015-af06150a210e.png",
+    "tmp_0839d3eb-6d0e-4e67-be56-b531a33af323.png",
+    "tmp_8818af01-7ed7-4900-916a-c0e47c242df9.png",
+    "tmp_b0c24124-74ae-4375-a90c-2bd23a9fa315.png",
+    "tmp_e8404937-d0d5-4161-ab0f-619955791c5c.png",
+    "tmp_90a22e76-98fc-4204-a6b2-61fa971b24ca.png",
+    "tmp_033ed56c-6fb8-4d1e-a843-8ea0dd23bc49 1 1.png",
+    "tmp_033ed56c-6fb8-4d1e-a843-8ea0dd23bc49 1.png",
+    "network_architecture/network_communication_models/TCP_IP/internet_layer/IP/subnet/Subnetting.md",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/ETHERNET/ethernet.md",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/PPP/Point to Point Protocol.md",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/MAC/MAC.md",
+    "vlans/DTP e VTP.md",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/STP/RSTP.md",
+    "network_architecture/network_communication_models/TCP_IP/internet_layer/IP/Routing/Dynamic Routing.md",
+    "network_architecture/network_components/dispositivos_intermidiarios/switches/EtherChannel.md",
+    "vlans/Multilayer Switch.md",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/STP/ToolKits/RootGuard.md",
+    "Comandos Cisco.md",
+    "network_architecture/network_communication_models/TCP_IP/internet_layer/IP/Routing/Static route.md",
+    "network_architecture/network_communication_models/TCP_IP/internet_layer/IP/Routing/Local route and Connected route.md",
+    "network_architecture/network_communication_models/TCP_IP/internet_layer/IP/IPv4/2_headers.md",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/STP/ToolKits/LoopGuard.md",
+    "vlans/Trunk.md",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/STP/ToolKits/BPDU Guard e BPDU Filter.md",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/STP/Estados e temporizadores do Spanning Tree.md",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/STP/STP.md",
+    "network_architecture/network_communication_models/TCP_IP/0_link_tcp_ip.md",
+    "NSE 3.md",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/STP/ToolKits/PortFast.md",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/STP/ToolKits",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/STP",
+    "network_architecture/network_components/midias_de_rede/fibra/1_fibra_optica.md",
+    "vlans",
+    "network_architecture/network_communication_models/TCP_IP/internet_layer/IP/Routing",
+    "security_fundamentals/network_defense/6_cloud_defense",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/wireless/WIFI/802.11 patterns",
+    "security_fundamentals/IAM/security_access_control",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/wireless/5G",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/wireless/LTE",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/wireless"
+  ]
+}

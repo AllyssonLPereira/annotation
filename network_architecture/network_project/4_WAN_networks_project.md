@@ -1,0 +1,11 @@
+---
+tags:
+  - arquivo
+---
+- Leased line - T1 speed and T3 speed
+- Frame relay
+- ATM
+- MPLS
+- SD-WAN
+- Metro Ethernet (e-line ou EVC, e-lan, e-tree)
+- VPN site-to-site

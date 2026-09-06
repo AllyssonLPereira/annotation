@@ -1,0 +1,217 @@
+{
+  "main": {
+    "id": "c08507fdf400e854",
+    "type": "split",
+    "children": [
+      {
+        "id": "22e26b904c106394",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8d4dee9d877733ec",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "vlans/VLANs.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "VLANs"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5de9d028118ec400",
+    "type": "split",
+    "children": [
+      {
+        "id": "bbbccfb2116d88f0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5c4ab6f3cde77f01",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de arquivos"
+            }
+          },
+          {
+            "id": "86a8c1521dd40311",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:#status",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Procurar"
+            }
+          },
+          {
+            "id": "1fc24f307389e9be",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 298.5
+  },
+  "right": {
+    "id": "7e96ad59816604bf",
+    "type": "split",
+    "children": [
+      {
+        "id": "4be921c7d538a086",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ae77934d35f4a25a",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "modelos_de_comunicação_de_rede/tcp_ip.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Links inversos para tcp_ip"
+            }
+          },
+          {
+            "id": "327d24e4cd0cc12b",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "modelos_de_comunicação_de_rede/tcp_ip.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Links de saída para tcp_ip"
+            }
+          },
+          {
+            "id": "dcb78116f61607ac",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "10d881b16614f764",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "modelos_de_comunicação_de_rede/tcp_ip.md"
+              },
+              "icon": "lucide-list",
+              "title": "Sumário de tcp_ip"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir a troca rápida": false,
+      "graph:Abrir visualização em gráfico": false,
+      "canvas:Criar novo canvas": false,
+      "daily-notes:Abrir a nota de hoje": false,
+      "templates:Inserir modelo": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Criar nova base": false
+    }
+  },
+  "active": "8d4dee9d877733ec",
+  "lastOpenFiles": [
+    "z_imgs/vlans_broadcast_domains.png",
+    "vlans/VLANs.md",
+    "z_imgs/tmp_71916597-c7fa-4af0-a9f8-710b0ccc0771.png",
+    "z_imgs/tmp_9426789a-cd19-4584-b0ea-eeec04e408a6.png",
+    "z_imgs/tmp_c04f9325-a1fa-4009-9f49-5819fed23fef.png",
+    "z_imgs/tmp_cc21dcf9-9881-469b-8ce0-33613c8c1838.png",
+    "z_imgs/tmp_cf939f1a-31ec-4409-9d44-ffc6ea4b66cb.png",
+    "z_imgs/tmp_e8404937-d0d5-4161-ab0f-619955791c5c.png",
+    "z_imgs/image.jpg",
+    "z_imgs/tmp_fc0cb6ff-180b-43cd-8f2d-48dc520caae5.png",
+    "z_imgs/Multi Mode Fiber Optic_0.gif",
+    "Comandos Cisco.md",
+    "0_link_central.md",
+    "z_imgs",
+    "fundamentos_de_seguranca/1_o_cubo_de_ciberseguranca.md",
+    "protocolos/HTTP/7_get_method.md",
+    "protocolos/HTTP/6_methods_and_codes.md",
+    "protocolos/HTTP/5_headers.md",
+    "protocolos/HTTP/4_requests_and_responses.md",
+    "protocolos/HTTP/RFC.md",
+    "protocolos/HTTP/3_https.md",
+    "protocolos/ethernet.md",
+    "protocolos/HTTP/2_url.md",
+    "protocolos/HTTP/1_http.md",
+    "componentes_de_rede/dispositivos_intermidiarios/roteador/3_tabela_de_roteamento.md",
+    "componentes_de_rede/dispositivos_intermidiarios/roteador/2_como_um_host_roteia.md",
+    "componentes_de_rede/dispositivos_intermidiarios/roteador/1_roteador.md",
+    "tipos_de_rede/3_isp(internet_service_provider).md",
+    "tipos_de_rede/1_tipos_de_redes.md",
+    "modelos_de_comunicação_de_rede/tpc_ip/1_tcp_ip.md",
+    "interface_de_linha_de_comando/3_configuracao_estatica_do_gua_e_do_lla.md",
+    "interface_de_linha_de_comando/2_a_estrutura_de_comandos.md",
+    "interface_de_linha_de_comando/1_navegacao_IOS.md",
+    "solucao_de_problemas/3_politicas_de_seguranca.md",
+    "solucao_de_problemas/2_metodos_estruturados.md",
+    "solucao_de_problemas/1_reunir_informacoes.md",
+    "network_defense/5_protocols",
+    "network_defense/4_data",
+    "network_defense/2_wireless_defense",
+    "network_defense/3_mobile_defense",
+    "criptografia",
+    "img/defesa_do_sistema_e_da_rede-seguranca_de_aplicacoes1.png.crdownload",
+    "img/defesa_do_sistema_e_da_rede-seguranca_de_aplicacoes2.png.crdownload",
+    "network_defense 1/1_defesa_do_sistema_e_da_rede",
+    "network_defense 1/0_defesa_em_profundidade"
+  ]
+}
