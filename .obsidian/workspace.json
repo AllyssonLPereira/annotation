@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "vlans/VLANs.md",
+                "file": "network_architecture/network_communication_models/TCP_IP/network_acess_layer/ETHERNET/ethernet.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "VLANs"
+              "title": "ethernet"
             }
           }
         ]
@@ -168,8 +168,10 @@
   },
   "active": "8d4dee9d877733ec",
   "lastOpenFiles": [
-    "z_imgs/vlans_broadcast_domains.png",
+    "network_architecture/network_communication_models/TCP_IP/network_acess_layer/MAC/0_link_mac.md",
+    "vlans/DTP e VTP.md",
     "vlans/VLANs.md",
+    "z_imgs/vlans_broadcast_domains.png",
     "z_imgs/tmp_71916597-c7fa-4af0-a9f8-710b0ccc0771.png",
     "z_imgs/tmp_9426789a-cd19-4584-b0ea-eeec04e408a6.png",
     "z_imgs/tmp_c04f9325-a1fa-4009-9f49-5819fed23fef.png",
@@ -203,7 +205,6 @@
     "interface_de_linha_de_comando/1_navegacao_IOS.md",
     "solucao_de_problemas/3_politicas_de_seguranca.md",
     "solucao_de_problemas/2_metodos_estruturados.md",
-    "solucao_de_problemas/1_reunir_informacoes.md",
     "network_defense/5_protocols",
     "network_defense/4_data",
     "network_defense/2_wireless_defense",

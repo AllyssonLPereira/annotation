@@ -17,7 +17,7 @@ Vamos dar uma olhada em um diagrama.
 
 Observe esta rede aqui.  
 
-![[vlans_broadcast_domains.png]]
+![](../z_imgs/vlans_broadcast_domains.png)
 
 Quantos domínios de broadcast você acha que existem?  
 
@@ -43,13 +43,13 @@ Então, você entendeu o que é um domínio de broadcast agora? Um domínio de b
   
 Nesta rede aqui, existem quatro domínios de broadcast e, portanto, quatro LANs.  
 
-![[tmp_fc0cb6ff-180b-43cd-8f2d-48dc520caae5.png]]
+![](../z_imgs/tmp_fc0cb6ff-180b-43cd-8f2d-48dc520caae5.png)
 
 ## O que é uma VLAN?  
 
 Aqui está uma pequena LAN de uma empresa. 
 
-![[tmp_7924a499-53bd-488e-a83b-a554f97224ba.png]]
+![](../z_imgs/tmp_7924a499-53bd-488e-a83b-a554f97224ba.png)
 
 Digamos que existam três departamentos principais neste escritório: engenharia, vendas e recursos humanos.  
 
@@ -73,7 +73,7 @@ Então, vamos dividir esses departamentos em sub-redes separadas.
 
 No entanto, há um problema. O roteador precisará de um endereço IP em cada sub-rede; portanto, precisará de uma interface em cada sub-rede. Então, vamos substituir essa conexão única entre o switch e o roteador por três conexões separadas, uma em cada sub-rede.  
 
-![[tmp_8813d78c-f445-421e-ab16-796e177845a8.png]]
+![](../z_imgs/tmp_8813d78c-f445-421e-ab16-796e177845a8.png)
 
 
 Na verdade, existe uma maneira mais eficiente de fazer isso; você não precisa usar três interfaces separadas, mas não se preocupe com isso agora; abordarei esse assunto mais adiante.  
@@ -105,7 +105,7 @@ No entanto, isso não é muito flexível, e equipamentos de rede não são barat
  
 Embora todos esses PCs estejam na mesma LAN (Rede de Área Local), podemos usar VLANs, ou Redes Locais Virtuais, para separá-los na Camada 2. Vamos atribuir o departamento de ENGENHARIA à VLAN10, o departamento de RH à VLAN20 e o departamento de VENDAS à VLAN30.  
 
-![[tmp_7dca79ab-3352-416b-bab8-7e19f9e708d1.png]]
+![](../z_imgs/tmp_7dca79ab-3352-416b-bab8-7e19f9e708d1.png)
 
 Como exatamente atribuímos esses hosts às VLANs? Nós os configuramos no switch. Mais especificamente, nas interfaces do switch. Você configura a interface do switch para pertencer a uma VLAN específica e, então, o host final conectado a essa interface passa a fazer parte dessa VLAN.  
 
@@ -133,11 +133,11 @@ Por fim, vamos dar uma olhada na configuração básica de VLAN.
  
 Adicionei os números das interfaces ao diagrama; as interfaces na VLAN10 vão da G1/0 até a G1/3. As interfaces na VLAN20 vão da G2/0 até a G2/2. E as interfaces na VLAN30 vão da G3/0 até a G3/3.  
 
-![[tmp_041c1716-5ad8-4bce-a90d-d69d72264a3d.png]]
+![](../z_imgs/tmp_041c1716-5ad8-4bce-a90d-d69d72264a3d.png)
 
 Vamos acessar a CLI e colocar essas interfaces nas VLANs corretas. Antes da configuração, vamos ver quais VLANs existem por padrão em um switch.  
 
-![[tmp_352b14e3-bbaa-4f80-b712-aa9b9e8ceb8e.png]]
+![](../z_imgs/tmp_352b14e3-bbaa-4f80-b712-aa9b9e8ceb8e.png)
 
 Nesta saída, você pode ver que usei o comando `show vlan brief`. Ele exibe as VLANs existentes no switch e quais interfaces pertencem a cada VLAN.  
 
@@ -151,7 +151,7 @@ As VLANs 1 e 1002-1005 existem por padrão e não podem ser excluídas; lembre-s
 
 É assim que se atribui interfaces a uma VLAN.  
 
-![[tmp_377653ea-f9d1-4667-bf43-3587b642a8ab.png]]
+![](../z_imgs/tmp_377653ea-f9d1-4667-bf43-3587b642a8ab.png)
 
 Primeiro, usei o comando de intervalo de interfaces, `interface range`, para configurar todas as interfaces da VLAN 10 de uma só vez.  
 
@@ -173,13 +173,13 @@ Em seguida, usei novamente o comando de intervalo de interfaces (*interface rang
 
 Por fim, fiz o mesmo para a VLAN 30 e, mais uma vez, a VLAN foi criada automaticamente. Então, usei o comando `show vlan brief` mais uma vez, e aqui você pode ver as três VLANs que criamos e as portas que atribuímos a cada VLAN.  
 
-![[tmp_c4268df1-7730-4ee0-87e1-f412213f1162.png]]
+![](../z_imgs/tmp_c4268df1-7730-4ee0-87e1-f412213f1162.png)
 
 Observe os nomes padrão de cada VLAN; vamos alterá-los para tornar tudo mais compreensível. Então, usei o comando `vlan 10` para entrar no modo de configuração da VLAN 10. Aliás, esse também é o comando para criar uma VLAN. Mas, neste caso, ela já havia sido criada automaticamente quando atribuímos as interfaces.  
 
 Em seguida, atribuo o nome com este comando simples: `name ENGINEERRING`.  Depois, faço o mesmo para a VLAN 20 (HR) e para a VLAN 30 (SALES).  Por fim, confirmei mais uma vez com o comando `show vlan brief`.  
 
-![[tmp_cc0d3b75-20af-4c99-bdb6-7fb3abe73616.png]]
+![](../z_imgs/tmp_cc0d3b75-20af-4c99-bdb6-7fb3abe73616.png)
 
 Observe que os nomes foram alterados para ENGINEERING, HR e SALES. Certo, então, isso é tudo em relação às configurações.  
 
@@ -191,13 +191,13 @@ Da mesma forma, se eu usar o mesmo comando no PC2, o broadcast chegará apenas a
 
 Para uma rápida revisão, aqui está a topologia de rede utilizada.  
 
-![[tmp_041c1716-5ad8-4bce-a90d-d69d72264a3d 1.png]]
+![](../z_imgs/tmp_041c1716-5ad8-4bce-a90d-d69d72264a3d 1.png)
 
 Há um único switch e três VLANs. Todas as interfaces do switch são portas de acesso que pertencem a uma única VLAN: VLAN10, VLAN20 ou VLAN30. Três interfaces são usadas para a conexão com o roteador, uma para cada VLAN. 
 
 Vamos utilizar uma topologia de rede diferente. Aqui está a topologia.
 
-![[tmp_9b89e636-f1ae-4b23-ba25-f48089377814 1.png]]
+![](../z_imgs/tmp_9b89e636-f1ae-4b23-ba25-f48089377814 1.png)
 
 Desta vez, são utilizados dois switches. Observe que a VLAN10, a VLAN do departamento de engenharia, está dividida entre os dois switches. Isso é muito comum, já que os departamentos de uma empresa nem sempre estão divididos exatamente por localização.  
 
@@ -218,7 +218,7 @@ Mais uma vez, elas são diferentes das portas de acesso, que pertencem a apenas 
 
 Então, agora substituí aquelas conexões separadas para cada VLAN por uma única conexão entre SW1 e SW2, e entre SW2 e R1. Para tornar mais claro, vamos adicionar aquelas cores.  
 
-![[tmp_f78d49ec-893c-4552-88ee-ca693a57d9bb.png]]
+![](../z_imgs/tmp_f78d49ec-893c-4552-88ee-ca693a57d9bb.png)
  
 Ok, agora você pode ver quais VLANs são permitidas em cada trunk. Lembre-se: são conexões físicas únicas, mas o tráfego de múltiplas VLANs é permitido em cada trunk. 
 
@@ -240,11 +240,11 @@ Você provavelmente NUNCA usará o ISL no mundo real. Até mesmo equipamentos mo
 
 Você se lembra dos campos do cabeçalho e do trailer Ethernet? 
 
-![[tmp_849b34e7-1a5c-4e63-9912-f8ad19ef8d24.png]]
+![](../z_imgs/tmp_849b34e7-1a5c-4e63-9912-f8ad19ef8d24.png)
 
 O motivo de eu estar mostrando isso é que a tag dot1q é, na verdade, inserida entre dois campos do cabeçalho Ethernet. O Dot1q insere um campo de 4 bytes (ou 32 bits) entre dois campos deste cabeçalho Ethernet. Vamos dar uma olhada.
 
-![[tmp_1bdce9ff-5d36-4e84-8e6d-7a761129e872.png]]
+![](../z_imgs/tmp_1bdce9ff-5d36-4e84-8e6d-7a761129e872.png)
 
 Como você pode ver aqui, a tag dot1q é inserida entre o endereço MAC de origem e os campos de tipo ou comprimento do cabeçalho Ethernet. Vamos rever alguns conceitos básicos. 
 
@@ -254,7 +254,7 @@ Como acabei de dizer, a tag 802.1Q é inserida entre os campos Origem (Source) e
 
 O TCI, por sua vez, consiste em três subcampos. Vamos dar uma olhada rápida em cada campo da tag dot1q. Aqui está um diagrama do formato da tag dot1q, cortesia da Wikipedia.  
 
-![[tmp_8541ca89-12a2-477d-b6aa-018b453c8634.png]]
+![](../z_imgs/tmp_8541ca89-12a2-477d-b6aa-018b453c8634.png)
 
 Observe que ela pode ser dividida em duas metades: o TPID e o TCI, que mencionei anteriormente. Além disso, o TCI pode ser dividido em três subcampos: PCP, DEI e VID.  
 
@@ -294,7 +294,7 @@ O intervalo de VLANs — que, como mencionei, vai de 1 a 4094 — é dividido em
 
 Certo, então vamos analisar este diagrama mais uma vez. 
 
-![[tmp_9b89e636-f1ae-4b23-ba25-f48089377814 1 1.png]]
+![](../z_imgs/tmp_9b89e636-f1ae-4b23-ba25-f48089377814 1 1.png)
 
 
 ### Tráfego em Portas de Trunk  
@@ -315,7 +315,7 @@ Quando um switch recebe um quadro sem tag em uma porta trunk, ele assume que o q
 
 Digamos que eu tenha configurado a VLAN nativa como VLAN10 no link trunk entre o SW1 e o SW2.
 
-![[tmp_3cdb1c60-94d1-40cc-bac2-e1a1ad9c9d56.png]]
+![](../z_imgs/tmp_3cdb1c60-94d1-40cc-bac2-e1a1ad9c9d56.png)
 
 Então, vamos imaginar que o PC envia o tráfego para o SW2. Ele enviará o tráfego para o SW1, mas, como está na VLAN nativa (VLAN10), não adicionará uma tag indicando que pertence à VLAN10. O quadro sem tag chega ao SW1, que assume que o tráfego pertence à VLAN10; então, ele o encaminha para o destino. 
 
@@ -323,7 +323,7 @@ Desta vez, vamos analisar o que acontece se houver uma configuração de VLAN na
 
 Na interface do SW2, configurei a VLAN10 como VLAN nativa. No entanto, na interface do SW1, configurei a VLAN30 como VLAN nativa.  
 
-![[tmp_36f8db48-28ac-492b-9845-7565aefcfcbb.png]]
+![](../z_imgs/tmp_36f8db48-28ac-492b-9845-7565aefcfcbb.png)
 
 Vamos ver o que acontece. Até o momento em que o tráfego chega ao SW1, tudo ocorre da mesma forma. No entanto, quando o SW1 recebe o quadro, é isso que ele pensa: "Este quadro não tem tag de VLAN, portanto, ele deve pertencer à VLAN30". Mas o destino está na VLAN10, não na VLAN30.  
 
@@ -331,7 +331,7 @@ Assim, ele não encaminhará o tráfego para a VLAN10. Acho que agora você cons
 
 Certo, vamos finalmente passar para a configuração das portas trunk. Adicionei os números das interfaces ao diagrama para facilitar a compreensão.
 
-![[tmp_d99db7b2-9c4c-4663-842b-8833d6a1720b.png]]
+![](../z_imgs/tmp_d99db7b2-9c4c-4663-842b-8833d6a1720b.png)
 
 Então, vamos configurar a G0/0 no SW1, e as interfaces G0/0 e G0/1 no SW2 como portas de tronco (*trunk ports*). Vamos começar pelo SW1.
 
@@ -339,7 +339,7 @@ Então, vamos configurar a G0/0 no SW1, e as interfaces G0/0 e G0/1 no SW2 como 
 
 Primeiro, vejamos a configuração de tronco mais básica: configurar manualmente a interface como tronco.
 
-![[tmp_ef7a5d3a-5a81-4f14-81d6-fa57697d66d2.png]]
+![](../z_imgs/tmp_ef7a5d3a-5a81-4f14-81d6-fa57697d66d2.png)
 
 Após entrar no modo de configuração da interface, utilize o comando `switchport mode trunk` para configurar manualmente a interface como tronco. No entanto, neste caso, recebemos uma mensagem de erro.  
 
@@ -355,7 +355,7 @@ Depois de definir o tipo de encapsulação, você pode configurar a interface co
 
 Defino o encapsulamento como dot1q e, então, desta vez o comando `switchport mode trunk` é aceito. Em switches que suportam apenas dot1q, você precisará APENAS do comando `switchport mode trunk`, mas em alguns switches será necessário definir o encapsulamento primeiro.  
 
-![[tmp_89c85684-d6ad-4079-a567-03db8f5fa446.png]]
+![](../z_imgs/tmp_89c85684-d6ad-4079-a567-03db8f5fa446.png)
 
 Usei o comando `show interfaces trunk` para confirmar. Primeiramente, as interfaces de trunk estão listadas aqui. "Mode on" significa que a interface foi configurada manualmente como trunk. O encapsulamento é dot1q, conforme configuramos; o status é trunking; e a VLAN nativa, que eu mencionei anteriormente, é a padrão (VLAN 1).
 
@@ -367,51 +367,51 @@ O último campo do comando `show interfaces trunk` é "Vlans in spanning tree fo
 
 Aqui está o comando para configurar as VLANs permitidas em um trunk: `switchport trunk allowed vlan`.
 
-![[tmp_0eafae69-2c98-4cca-81ac-d4eb61cd9145.png]]
+![](../z_imgs/tmp_0eafae69-2c98-4cca-81ac-d4eb61cd9145.png)
 
 Há algumas opções disponíveis. A opção `WORD` permite configurar simplesmente a lista de VLANs permitidas. 
 
-![[tmp_033ed56c-6fb8-4d1e-a843-8ea0dd23bc49.png]]
+![](../z_imgs/tmp_033ed56c-6fb8-4d1e-a843-8ea0dd23bc49.png)
 
 Vamos ver como isso funciona. Então, usei o comando `switchport trunk allowed vlan 10,30`. Observe que o comando `show interfaces trunk` agora mostra apenas as VLANs 10 e 30 como permitidas no tronco. 
 
 Agora, vamos dar uma olhada na opção `add`. Ela permite adicionar VLANs permitidas à lista existente. Atualmente, as VLANs 10 e 30 estão permitidas; digamos que eu também queira adicionar a 20, mesmo que nenhum host da VLAN 20 esteja conectado ao SW1. Desta vez, usei o comando `switchport trunk allowed add 20`.  
 
-![[tmp_19f8163b-1461-4fe0-bc80-5eeccebbe83b.png]]
+![](../z_imgs/tmp_19f8163b-1461-4fe0-bc80-5eeccebbe83b.png)
 
 O comando `show interfaces trunk` agora mostra as VLANs 10, 20 e 30 como permitidas; portanto, a 20 foi adicionada à lista. Note que, como não criei a VLAN 20 neste switch, ela ainda não é exibida na seção de VLANs permitidas e ativas no domínio de gerenciamento. A seguir, vou mostrar a opção `remove`. A VLAN 20 não é necessária neste tronco, então vamos removê-la.  
 
-![[tmp_65ee9138-50ce-4a7a-9c3d-5309b52dda01.png]]
+![](../z_imgs/tmp_65ee9138-50ce-4a7a-9c3d-5309b52dda01.png)
 
 Usei o comando `switchport trunk allowed vlan remove 20`. Agora, como você pode ver, a VLAN 20 foi removida da lista de VLANs permitidas, restando apenas as VLANs 10 e 30. Em seguida, vamos ver a opção `all`. Acho que esta é bem óbvia, mas vamos dar uma olhada assim mesmo.  
 
-![[tmp_cc21dcf9-9881-469b-8ce0-33613c8c1838.png]]
+![](../z_imgs/tmp_cc21dcf9-9881-469b-8ce0-33613c8c1838.png)
 
 Desta vez, usei o comando `switchport trunk allowed vlan all`. Agora, todas as VLANs são permitidas no tronco. Isso é o mesmo que o estado padrão, já que todas as VLANs são permitidas por padrão. A seguir, vamos analisar a opção `except`. Ela permite todas as VLANs, exceto aquelas que você especificar. Vamos conferir. 
 
-![[tmp_2c7c7850-cb0c-4e39-9ea8-e4b411105d8a.png]]
+![](../z_imgs/tmp_2c7c7850-cb0c-4e39-9ea8-e4b411105d8a.png)
 
 Usei o comando `switchport trunk allowed vlan except 1-5, 10`.  Como você pode ver, ela permite todas as VLANs, exceto essas; ou seja, da 6 a 9 e da 11 a 4094. Certo, finalmente vamos ver a opção `none`, que também é bem fácil de entender.  
 
-![[tmp_62bf955f-7905-4f81-bd81-d18280571e54.png]]
+![](../z_imgs/tmp_62bf955f-7905-4f81-bd81-d18280571e54.png)
 
 Desta vez, usei o comando `switchport trunk allowed vlan none` e, como você pode ver, nenhuma VLAN é permitida no tronco. Isso efetivamente impede a passagem de qualquer tráfego pelo tronco; então, agora vamos realizar as configurações desejadas para esta rede. Aqui está o diagrama mais uma vez.  
 
-![[tmp_d99db7b2-9c4c-4663-842b-8833d6a1720b 1.png]]
+![](../z_imgs/tmp_d99db7b2-9c4c-4663-842b-8833d6a1720b 1.png)
 
 O SW1 tem hosts das VLANs 10 e 30 conectados a ele. Não há hosts da VLAN 20 conectados, portanto, não há necessidade de permitir a VLAN 20 no tronco entre o SW1 e o SW2. Assim, vamos definir as VLANs permitidas como 10 e 30, como fizemos anteriormente.  
 
-![[tmp_033ed56c-6fb8-4d1e-a843-8ea0dd23bc49 1.png]]
+![](../z_imgs/tmp_033ed56c-6fb8-4d1e-a843-8ea0dd23bc49 1.png)
 
 Certo, pronto. Agora, as únicas VLANs permitidas no tronco são as VLANs 10 e 30. O motivo para fazer isso é a segurança: garantir que apenas o tráfego das VLANs necessárias possa utilizar essa conexão. Além disso, para o desempenho da rede, isso evita tráfego desnecessário, pois broadcasts e outros tipos de tráfego de outras VLANs não serão enviados pelo tronco. 
 
 Agora, eu disse que mostraria como alterar a VLAN nativa. Por questões de segurança, o ideal é alterar a VLAN nativa para uma VLAN que não esteja sendo utilizada. Além disso, lembre-se de configurar a VLAN nativa de forma consistente entre os switches. Agora, vamos ver como alterar a VLAN nativa.  
 
-![[tmp_90a22e76-98fc-4204-a6b2-61fa971b24ca.png]]
+![](../z_imgs/tmp_90a22e76-98fc-4204-a6b2-61fa971b24ca.png)
 
 O comando para alterar a VLAN nativa é `switchport trunk native VLAN`, seguido pelo número da VLAN. Escolhi uma VLAN não utilizada, a 1001. Como você pode ver, a VLAN nativa foi alterada para 1001. Após configurar essa porta de tronco (*trunk*), executei o comando `show vlan brief`. 
 
-![[tmp_e8404937-d0d5-4161-ab0f-619955791c5c.png]]
+![](../z_imgs/tmp_e8404937-d0d5-4161-ab0f-619955791c5c.png)
 
 Observe que a G0/0 não aparece em lugar nenhum. Nem na VLAN 10 nem na VLAN 30, embora essas sejam as VLANs permitidas no tronco. Isso ocorre porque o comando `show vlan brief` exibe as portas de acesso atribuídas a cada VLAN, e não as portas de tronco que permitem a passagem de cada VLAN.
 
@@ -419,13 +419,13 @@ Em vez disso, utilize o comando `sh interfaces trunk` para verificar as portas d
 
 Agora que vimos as configurações no SW1, farei rapidamente as configurações no SW2 também.  
 
-![[tmp_b0c24124-74ae-4375-a90c-2bd23a9fa315.png]]
+![](../z_imgs/tmp_b0c24124-74ae-4375-a90c-2bd23a9fa315.png)
 
 Na interface G0/0 do SW2, devemos permitir as VLANs 10 e 30. Já na interface G0/1 do SW2, devemos permitir também a VLAN 20. Aqui estão as configurações para a interface G0/0 do SW2, a interface conectada ao SW1. Elas são iguais às anteriores, então não vou detalhar cada uma.
   
 Agora vamos passar para a G0/1, que está conectada ao R1. Certo, aqui estão as configurações.  
 
-![[tmp_8818af01-7ed7-4900-916a-c0e47c242df9.png]]
+![](../z_imgs/tmp_8818af01-7ed7-4900-916a-c0e47c242df9.png)
 
 Quase idênticas às da G0/0, exceto pelo fato de que permiti a VLAN 20 além das VLANs 10 e 30. Agora, tanto a G0/0 quanto a G0/1 aparecem na saída do comando `show interfaces trunk`. Então, é isso quanto às configurações dos switches por agora. No entanto, você pode estar se perguntando sobre o roteador. Anteriormente, usamos três interfaces separadas para a conexão do SW2 ao R1, e atribuímos um endereço IP diferente a cada uma delas no R1. 
 
@@ -433,7 +433,7 @@ Cada um deles servia como endereço de gateway padrão para os PCs em cada VLAN.
 
 ## Router on a Stick (ROAS)
 
-![[tmp_0839d3eb-6d0e-4e67-be56-b531a33af323.png]]
+![](../z_imgs/tmp_0839d3eb-6d0e-4e67-be56-b531a33af323.png)
 
 "Router on a Stick" (Roteador em uma Haste), também conhecido pela sigla ROAS. É um nome um tanto peculiar, mas é a denominação utilizada para esse método de roteamento entre VLANs, visto que existe apenas uma única interface física conectando o roteador ao switch, e ela se assemelha a uma "haste" no diagrama de topologia da rede.
 
@@ -451,7 +451,7 @@ Agora, vamos analisar as configurações do roteador. Aqui estão as configuraç
 
 ### Configuração de ROAS
 
-![[tmp_91d3b1dd-68ea-4536-9015-af06150a210e.png]]
+![](../z_imgs/tmp_91d3b1dd-68ea-4536-9015-af06150a210e.png)
 
 Primeiro, certifique-se de que a interface esteja habilitada com o comando `no shutdown`, pois as interfaces do roteador vêm desabilitadas por padrão. A seguir, temos a primeira subinterface. Observe como entrar no modo de configuração da subinterface: `interface g0/0.10`. O número dessa subinterface não precisa coincidir com o número da VLAN. No entanto, é altamente recomendável que coincidam, para facilitar a compreensão. Se o número de cada subinterface corresponder ao número da VLAN, fica fácil identificar qual subinterface é utilizada para cada VLAN. 
 
@@ -463,11 +463,11 @@ Depois, fiz o mesmo com as outras duas subinterfaces. Novamente, fiz com que os 
 
 Ao verificar com o comando `show ip interface brief`, é possível ver que cada uma das subinterfaces aparece, assim como a interface física, embora a interface física em si não tenha nenhum endereço IP atribuído a ela.
 
-![[tmp_71916597-c7fa-4af0-a9f8-710b0ccc0771.png]]
+![](../z_imgs/tmp_71916597-c7fa-4af0-a9f8-710b0ccc0771.png)
 
 E aqui está a tabela de roteamento.  
 
-![[tmp_9426789a-cd19-4584-b0ea-eeec04e408a6.png]]
+![](../z_imgs/tmp_9426789a-cd19-4584-b0ea-eeec04e408a6.png)
 
 Observe que as rotas conectadas e locais são adicionadas exatamente como quando endereços IP são atribuídos a interfaces físicas comuns. Quando o R1 envia quadros a partir dessas subinterfaces, ele adiciona a tag VLAN configurada na subinterface. Por exemplo, se um pacote chegar com destino à sub-rede 192.168.1.64/26, ele enviará o pacote pela sua interface G0/0 com a tag da VLAN20. 
 
