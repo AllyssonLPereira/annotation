@@ -129,7 +129,7 @@ Quando a comunicação termina (pelo usuário, por falha, por timeout, etc.), o 
 
 O PPP define seu próprio formato de **envelope** para os dados, chamado **trama PPP**. Essa estrutura é similar à de outras tramas de camada de enlace, mas com características próprias.
 
-![[download.png]]
+![](./../../../../../download.png)
 
 
 A **trama PPP (Point-to-Point Protocol Frame)**, também chamada de **frame PPP**, é o “envelope” que carrega os dados entre dois dispositivos em uma conexão ponto a ponto. Sua estrutura é composta por **seis campos** principais, organizados de forma sequencial para garantir a identificação, entrega e integridade dos dados.
@@ -207,7 +207,7 @@ Cada quadro PPPoE contém:
 - Cabeçalho PPPoE (com versão, tipo, código, ID de sessão e tamanho).
 - Payload PPP (que contém o próprio quadro PPP com o campo Protocolo, dados e FCS).
 
-![[pppoe-basic-principle.webp]]
+![](./../../../../../pppoe-basic-principle.webp)
 
 Esse “duplo encapsulamento” (PPP dentro de PPPoE dentro de Ethernet) é o que permite que o PPP “viaje” sobre Ethernet.
 
