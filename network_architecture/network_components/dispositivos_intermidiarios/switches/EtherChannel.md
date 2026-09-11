@@ -7,7 +7,7 @@ Um EtherChannel de Camada 2 é um grupo de portas de switch que operam como uma 
 
 Então, deixe-me demonstrar um problema. Temos dois switches aqui: ASW1 e DSW1.  
 
-![](tmp_6d3be852-5448-4e9d-b127-df13c19723a3.png)
+![](../../../../073626)
 
 Falarei sobre o design básico de redes em outro artigo, mas ASW significa *access switch* (switch de acesso), que é o switch ao qual dispositivos finais, como PCs e servidores, se conectam. DSW significa *distribution layer switch* (switch da camada de distribuição), ao qual os switches da camada de acesso se conectam. 
 
