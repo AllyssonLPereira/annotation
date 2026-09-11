@@ -260,50 +260,36 @@ No entanto, se todas essas conexões entre switches fossem feitas usando portas 
 
 ![](../../../../z_imgs/125852.png)
 
-Então, começando de uma configuração limpa, nenhum port-channel foi configurado ainda no ASW1.  
-29:11  
-Entro no modo de configuração de intervalo de interfaces (*interface range*) para as interfaces membro e, desta vez, antes de usar  
-29:17  
-o comando CHANNEL-GROUP, uso o comando NO SWITCHPORT para transformá-las em interfaces roteadas de Camada 3.  
-29:24  
-Depois, após usar o comando CHANNEL-GROUP, utilizei o comando SHOW RUNNING-CONFIG para verificar a configuração.  
-29:31  
-Observe que a interface port-channel criada recebe o comando NO SWITCHPORT automaticamente.  
-29:37  
-Agora, como estamos criando um EtherChannel de Camada 3, precisamos de um endereço IP.  
-29:43  
-Onde você acha que ele deve ser configurado? Ele deve ser configurado na interface port-channel.  
-29:48  
-Então, aí está. Agora, vamos verificar o comando SHOW ETHERCHANNEL SUMMARY mais uma vez.  
-29:54  
-A única diferença na saída é que, em vez da flag 'S' (maiúscula), ela  
-29:59  
-apresenta a flag 'R'. O que isso significa? Significa que é um EtherChannel de Camada 3; 'R' significa porta roteada (*routed port*).  
-30:08  
-Na saída do comando SHOW IP INTERFACE BRIEF, você pode ver o endereço IP configurado na interface port-channel  
-30:14  
-1. Assim, agora o ASW1 e o DSW1 funcionam como dois roteadores conectados entre si.  
-30:19  
-Eles estão conectados na Camada 3 e o Spanning Tree não está em execução na conexão entre eles.  
-30:26  
-No entanto, assim como no EtherChannel de Camada 2, o tráfego agora será balanceado entre as  
-30:31  
-quatro interfaces membro. Certo, vamos revisar rapidamente os comandos que abordamos. Revisão dos comandos de configuração e verificação  
-30:38  
-O primeiro é o `PORT-CHANNEL LOAD-BALANCE`, seguido pelo modo que, dependendo do modelo do switch, pode envolver endereços MAC, endereços IP ou números de porta da Camada 4, utilizando  
-30:49  
-a origem, o destino ou ambos (origem e destino) no cálculo para determinar qual interface física  
-30:56  
-é usada para encaminhar um fluxo de tráfego específico. Para visualizar a configuração atual de balanceamento de carga do EtherChannel, use `SHOW ETHERCHANNEL LOAD-BALANCE`.  
-31:07  
-Para configurar uma interface para fazer parte de um EtherChannel, use o comando `CHANNEL-GROUP`, seguido pelo número do port-channel, `MODE` e, em seguida, o modo, que pode ser `DESIRABLE`,  
-31:18  
-`AUTO`, `ACTIVE`, `PASSIVE` ou `ON`. O comando `show` mais útil para EtherChannel é o `SHOW ETHERCHANNEL SUMMARY`, que exibe um  
-31:27  
-resumo de todos os EtherChannels no switch e seus status. Outro comando `show` que você pode usar é o `SHOW ETHERCHANNEL PORT-CHANNEL`, que exibe  
-31:36  
-informações mais detalhadas sobre as interfaces port-channel no switch.  
-31:42  
-Esses são todos os comandos que aprendemos hoje. Claro, existem muitos outros comandos que podem ser usados, mas não precisamos nos aprofundar  
-31:48  
-mais no conceito de EtherChannels. 
+Então, começando de uma configuração limpa, nenhum port-channel foi configurado ainda no ASW1. Entro no modo de configuração de intervalo de interfaces (*interface range*) para as interfaces membro e, desta vez, antes de usar o comando `channel-group 1 mode active`, uso o comando `no switchport` para transformá-las em interfaces roteadas de Camada 3.  
+
+Depois, após usar o comando `channel-group 1 mode active`, utilizei o comando `show running-config` para verificar a configuração.  
+
+![](../../../../z_imgs/172355.png)
+
+Observe que a interface port-channel criada recebe o comando `no switchport` automaticamente. Agora, como estamos criando um EtherChannel de Camada 3, precisamos de um endereço IP. Onde você acha que ele deve ser configurado? Ele deve ser configurado na interface port-channel. Então, aí está. 
+
+![](../../../../z_imgs/172513.png)
+
+Agora, vamos verificar o comando `show etherchannel summary` mais uma vez.  
+
+![](../../../../z_imgs/172705.png)
+
+A única diferença na saída é que, em vez da flag 'S' (maiúscula), ela apresenta a flag 'R'. O que isso significa? Significa que é um EtherChannel de Camada 3; 'R' significa porta roteada (*routed port*). Na saída do comando `show ip interface brief`, você pode ver o endereço IP configurado na interface port-channel 1. 
+
+![](../../../../z_imgs/172810.png)
+
+Assim, agora o ASW1 e o DSW1 funcionam como dois roteadores conectados entre si. Eles estão conectados na Camada 3 e o Spanning Tree não está em execução na conexão entre eles. No entanto, assim como no EtherChannel de Camada 2, o tráfego agora será balanceado entre as quatro interfaces membro. Certo, vamos revisar rapidamente os comandos que abordamos. 
+
+## Revisão dos comandos de configuração e verificação  
+
+- O primeiro é o `port-channel load-balance`, seguido pelo modo que, dependendo do modelo do switch, pode envolver endereços MAC, endereços IP ou números de porta da Camada 4, utilizando a origem, o destino ou ambos (origem e destino) no cálculo para determinar qual interface física é usada para encaminhar um fluxo de tráfego específico. 
+
+- Para visualizar a configuração atual de balanceamento de carga do EtherChannel, use `show etherchannel load-balance`.  
+
+- Para configurar uma interface para fazer parte de um EtherChannel, use o comando `channel-group`, seguido pelo número do port-channel, `mode` e, em seguida, o modo, que pode ser `desirable`, `auto`, `active`, `passive` ou `on`.
+
+- O comando `show` mais útil para EtherChannel é o `show etherchannel summary`, que exibe um resumo de todos os EtherChannels no switch e seus status.
+  
+- Outro comando `show` que você pode usar é o `show etherchannel ort-channel`, que exibe informações mais detalhadas sobre as interfaces port-channel no switch.  
+
+Esses são todos os comandos que aprendemos hoje. Claro, existem muitos outros comandos que podem ser usados.
