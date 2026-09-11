@@ -244,7 +244,7 @@ Como você pode ver, apenas a interface port-channel é listada; as interfaces f
   
 Substituí o ASW1 e o DSW1 por switches multicamada (multilayer switches).  
 
-![](../../../../z_imgs/125317.png)
+![](../../../../z_imgs/133136.png)
 
 Em vez de uma conexão de Camada 2 entre eles, vamos usar uma conexão de Camada 3. O design de redes moderno frequentemente tende a utilizar conexões de Camada 3 entre switches, pois, dessa forma, o Spanning Tree não será um problema em nenhuma parte da rede. Poderíamos ter quatro switches interconectados em uma malha (mesh) e, se os conectássemos com portas roteadas de Camada 3, todas as interfaces estariam ativas e encaminhando tráfego; nenhuma precisaria ser desativada devido ao Spanning Tree. 
 
