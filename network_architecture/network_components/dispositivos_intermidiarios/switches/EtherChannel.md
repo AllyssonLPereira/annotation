@@ -184,15 +184,19 @@ Vale ressaltar que o modo "on" só funciona com o modo "on". As combinações "o
 
 ## Configuração manual do protocolo de negociação (PAgP ou LACP)
 
-Outro comando que você deve conhecer é o comando `channel-protocol`. Ele configura manualmente o protocolo de negociação do EtherChannel que as interfaces membro devem utilizar. Na verdade, esse comando não é muito útil, pois não há necessidade de configurá-lo. Se você configurar `channel-group 1 mode desirable` ou `auto`, a interface utilizará automaticamente o PAgP; ou, se configurar `channel-group 1 mode active` ou `passive`, a interface utilizará automaticamente o LACP. 
+Outro comando que você deve conhecer é o comando `channel-protocol`. 
 
-Portanto, não faz muito sentido usar esse comando. Aqui está uma breve explicação.  
+![](../../../../z_imgs/112157.png)
 
-É claro que existem duas opções, LACP e PAgP, e decidi configurar o LACP.  Então, tentei o comando `channel-group 1 mode desirable`, mas ele foi rejeitado devido à incompatibilidade de protocolos. Eu havia configurado manualmente essas interfaces para usar LACP, mas o modo "desirable" (desejável) refere-se ao PAgP, por isso o comando foi rejeitado. Se eu tentar `channel-group 1 mode on`, ele também é rejeitado.  
+Ele configura manualmente o protocolo de negociação do EtherChannel que as interfaces membro devem utilizar. Na verdade, esse comando não é muito útil, pois não há necessidade de configurá-lo. Se você configurar `channel-group 1 mode desirable` ou `auto`, a interface utilizará automaticamente o PAgP; ou, se configurar `channel-group 1 mode active` ou `passive`, a interface utilizará automaticamente o LACP. Portanto, não faz muito sentido usar esse comando. Aqui está uma breve explicação. 
 
-Então, executo `channel-group 1 mode active` e o comando funciona, pois o modo ativo corresponde ao LACP. Assim, após configurar o EtherChannel — seja em qual modo for: PAgP, LACP ou estático —, você pode configurar a própria interface port-channel. Note que estou usando apenas o exemplo do LACP aqui, já que todas essas informações são as mesmas, independentemente do método utilizado. Também realizei as mesmas configurações no DSW1, de modo que o EtherChannel está operacional.  
+É claro que existem duas opções, LACP e PAgP, e decidi configurar o LACP.  Então, tentei o comando `channel-group 1 mode desirable`, mas ele foi rejeitado devido à incompatibilidade de protocolos. Eu havia configurado manualmente essas interfaces para usar LACP, mas o modo "desirable" (desejável) refere-se ao PAgP, por isso o comando foi rejeitado. Se eu tentar `channel-group 1 mode on`, ele também é rejeitado. Então, executo `channel-group 1 mode active` e o comando funciona, pois o modo ativo corresponde ao LACP. 
 
-Entrei no modo de configuração da interface port-channel 1 e a configurei como trunk. Agora, na saída do comando `show interfaces trunk`, você pode ver o port-channel 1, listado como Po1, como um trunk. Observe que as interfaces físicas individuais não são listadas aqui, apenas a interface  
+Assim, após configurar o EtherChannel — seja em qual modo for: PAgP, LACP ou estático —, você pode configurar a própria interface port-channel. 
+
+![](../../../../z_imgs/112631.png)
+
+Note que estou usando apenas o exemplo do LACP aqui, já que todas essas informações são as mesmas, independentemente do método utilizado. Também realizei as mesmas configurações no DSW1, de modo que o EtherChannel está operacional. Entrei no modo de configuração da interface port-channel 1 e a configurei como trunk. Agora, na saída do comando `do show interfaces trunk`, você pode ver o port-channel 1, listado como Po1, como um trunk. Observe que as interfaces físicas individuais não são listadas aqui, apenas a interface  
 23:59  
 port-channel. Aqui está uma parte da saída do comando `SHOW RUNNING-CONFIG`. Há algo interessante a notar aqui.  
 24:06  
