@@ -166,11 +166,9 @@ O número serve apenas para identificar a interface virtual no switch local. Com
 
 A seguir, vamos ver a configuração do LACP. Depois de explicar tudo isso, não há muito mais o que explicar sobre o LACP. Observe apenas que os nomes dos modos são diferentes. Em vez de *desirable*, o LACP usa o modo *active*. E, em vez de *auto*, o LACP usa o modo *passive*.
 
-
+![](../../../../z_imgs/075731.png)
 
 Portanto, se ambas as pontas estiverem configuradas no modo *passive*, um EtherChannel não será formado. No entanto, as combinações *active* e *passive*, ou *active* e *active*, formarão um EtherChannel. Neste caso, configurei este lado como *active*. Mais uma vez, a interface *port-channel* é criada.  
-
-
 
 Note que, mesmo se você configurar ambos os lados como *passive*, a interface virtual ainda será criada em cada switch. No entanto, ela não funcionará efetivamente como um EtherChannel a menos que um dos lados esteja no modo *active*. Assim, como você pode ver, o comando é basicamente o mesmo; apenas os nomes dos modos são diferentes.  
 
@@ -180,7 +178,7 @@ Mais uma vez, o número do *channel-group* deve coincidir entre as interfaces me
 
 Finalmente, vamos ver como o EtherChannel estático é configurado. Não existem dois modos separados, apenas um: o modo "ON", que instrui manualmente essas interfaces a formar um EtherChannel. Isso criará uma interface *port-channel*, assim como antes.  
 
-
+![](../../../../z_imgs/075920.png)
 
 Vale ressaltar que o modo "on" só funciona com o modo "on". As combinações "on" e *desirable*, ou "on" e *active*, não formarão um EtherChannel com sucesso.  
 
