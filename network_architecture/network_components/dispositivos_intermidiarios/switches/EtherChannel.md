@@ -196,99 +196,70 @@ Assim, após configurar o EtherChannel — seja em qual modo for: PAgP, LACP ou 
 
 ![](../../../../z_imgs/112631.png)
 
-Note que estou usando apenas o exemplo do LACP aqui, já que todas essas informações são as mesmas, independentemente do método utilizado. Também realizei as mesmas configurações no DSW1, de modo que o EtherChannel está operacional. Entrei no modo de configuração da interface port-channel 1 e a configurei como trunk. Agora, na saída do comando `do show interfaces trunk`, você pode ver o port-channel 1, listado como Po1, como um trunk. Observe que as interfaces físicas individuais não são listadas aqui, apenas a interface  
-23:59  
-port-channel. Aqui está uma parte da saída do comando `SHOW RUNNING-CONFIG`. Há algo interessante a notar aqui.  
-24:06  
-As configurações de trunk que apliquei à interface port-channel também foram aplicadas às interfaces físicas; eu não configurei manualmente as interfaces físicas como trunks.  
-24:17  
-Agora, mais um ponto importante sobre a configuração do EtherChannel.  
-Requisitos do EtherChannel (correspondência de duplex, velocidade, etc.)  
-24:23  
-As interfaces membro — as interfaces físicas no EtherChannel — devem ter configurações compatíveis.  
-24:29  
-O que quero dizer com isso? Elas devem ter a mesma configuração de duplex. Devem ter a mesma velocidade.  
-24:36  
-Devem ter o mesmo modo de porta (switchport mode), ou seja, acesso ou trunk. Se forem trunk, devem ter as mesmas VLANs permitidas e VLANs nativas.  
-24:45  
-Se as configurações de uma interface individual não coincidirem com as das outras, ela será excluída  
-24:50  
-do EtherChannel. Ao verificar o status de um EtherChannel usando comandos `SHOW`, o comando mais  
-Verificação do EtherChannel (show etherchannel summary)  
-24:58  
-útil é o `SHOW ETHERCHANNEL SUMMARY`. Aqui embaixo há uma lista das interfaces port-channel no switch.  
-25:06  
-Ao lado do port-channel 1, há duas flags: um "S" maiúsculo e um "U" maiúsculo.  
-25:13  
-Para verificar o significado delas, observe a legenda na parte superior. "S" significa que é um EtherChannel de Camada 2 (Layer 2).  
-25:20  
-"S" vem de *switchport*, aliás. "U" significa *in use* (em uso), indicando que o EtherChannel está ativo e sendo utilizado.  
-25:29  
-Ao lado das portas físicas, há a flag "P". Isso significa que essas portas estão corretamente agrupadas no port-channel.  
-25:36  
-Estas são as flags que você espera ver em um EtherChannel de Camada 2 operacional. Agora, vamos analisar algumas situações em que veremos outras flags.  
-25:45  
-Então, desativei (shutdown) a interface port-channel 1. Agora, ao lado tanto da interface port-channel quanto das interfaces membro, você pode ver a  
-25:54  
-flag "D". Isso significa "down" (inativa). Certo, vou reativar a interface e mostrar outra flag que você pode encontrar.  
-26:04  
-Agora alterei uma das interfaces membro para o modo de acesso. Agora ela apresenta a flag "s" minúscula.  
-26:11  
-Observe que isso é diferente da flag "S" maiúscula. Ela significa "suspended" (suspensa). Portanto, apenas a G0/0 está suspensa, mas o EtherChannel continua operando com apenas três interfaces:  
-26:22  
-G0/1, 2 e 3. Outro comando que você pode usar é o SHOW ETHERCHANNEL PORT-CHANNEL.  
-Verificação do EtherChannel (show etherchannel port-channel)  
-26:31  
-Você pode ver o número de portas no port-channel, qual protocolo está sendo usado, etc.  
-26:37  
-Uma informação importante que não aparece no SHOW ETHERCHANNEL SUMMARY, mas é exibida neste comando, é o modo do channel-group — "active" (ativo), neste caso, porque usei  
-26:47  
-o comando CHANNEL-GROUP 1 MODE ACTIVE anteriormente. No entanto, para EtherChannel, o comando que você certamente mais utilizará é o  
-26:55  
-SHOW ETHERCHANNEL SUMMARY. Eu só queria mostrar outra opção.  
-27:01  
-Como comecei este vídeo falando sobre Spanning Tree, vamos ver como ele é afetado quando o EtherChannel é configurado.  
-27:08  
-Como você pode ver, apenas a interface port-channel é listada; as interfaces físicas não aparecem de forma alguma na saída deste comando.  
-27:15  
-Então, como eu disse...
+Note que estou usando apenas o exemplo do LACP aqui, já que todas essas informações são as mesmas, independentemente do método utilizado. Também realizei as mesmas configurações no DSW1, de modo que o EtherChannel está operacional. Entrei no modo de configuração da interface port-channel 1 e a configurei como trunk. Agora, na saída do comando `do show interfaces trunk`, você pode ver o port-channel 1, listado como Po1, como um trunk. Observe que as interfaces físicas individuais não são listadas aqui, apenas a interface port-channel.
 
+Aqui está uma parte da saída do comando `show running-config`. Há algo interessante a notar aqui.  
 
+![](../../../../z_imgs/123743.png)
 
-...o Spanning Tree trata essas quatro interfaces físicas como uma única  
-27:21  
-interface lógica. Em vez de bloquear três delas, todas podem encaminhar e receber tráfego, sem a preocupação  
-27:27  
-com loops de Camada 2. Para encerrar esta aula, vamos dar uma breve olhada nos EtherChannels de Camada 3.  
-EtherChannel de Camada 3  
-27:35  
+As configurações de trunk que apliquei à interface port-channel também foram aplicadas às interfaces físicas; eu não configurei manualmente as interfaces físicas como trunks. Agora, mais um ponto importante sobre a configuração do EtherChannel.  
+
+## Requisitos do EtherChannel (correspondência de duplex, velocidade, etc.)  
+  
+As interfaces membro — as interfaces físicas no EtherChannel — devem ter configurações compatíveis. O que quero dizer com isso? Elas devem ter a mesma configuração de duplex. Devem ter a mesma velocidade. Devem ter o mesmo modo de porta (switchport mode), ou seja, access ou trunk. Se forem trunk, devem ter as mesmas VLANs permitidas e VLANs nativas. Se as configurações de uma interface individual não coincidirem com as das outras, ela será excluída do EtherChannel.
+
+### Verificação do EtherChannel (`show etherchannel summary`)  
+
+Ao verificar o status de um EtherChannel usando comandos `show`, o comando mais útil é o `show etherchannel summary`. Aqui embaixo há uma lista das interfaces port-channel no switch.  
+
+![](../../../../z_imgs/124221.png)
+ 
+Ao lado do port-channel 1, há duas flags: um "S" maiúsculo e um "U" maiúsculo. Para verificar o significado delas, observe a legenda na parte superior. "S" significa que é um EtherChannel de Camada 2 (Layer 2). "S" vem de *switchport*, aliás. "U" significa *in use* (em uso), indicando que o EtherChannel está ativo e sendo utilizado. Ao lado das portas físicas, há a flag "P". Isso significa que essas portas estão corretamente agrupadas no port-channel. Estas são as flags que você espera ver em um EtherChannel de Camada 2 operacional. Agora, vamos analisar algumas situações em que veremos outras flags.  
+
+Então, desativei (shutdown) a interface port-channel 1. 
+
+![](../../../../z_imgs/124428.png)
+
+Agora, ao lado tanto da interface port-channel quanto das interfaces membro, você pode ver a flag "D". Isso significa "down" (inativa). Certo, vou reativar a interface e mostrar outra flag que você pode encontrar. 
+
+![](../../../../z_imgs/124551.png)
+
+Agora alterei uma das interfaces membro para o modo de acesso. Agora ela apresenta a flag "s" minúscula. Observe que isso é diferente da flag "S" maiúscula. Ela significa "suspended" (suspensa). Portanto, apenas a G0/0 está suspensa, mas o EtherChannel continua operando com apenas três interfaces: G0/1, 2 e 3. Outro comando que você pode usar é o `show etherchannel port-channel`.  
+
+### Verificação do EtherChannel (show etherchannel port-channel)  
+
+Você pode ver o número de portas no port-channel, qual protocolo está sendo usado, etc.
+
+![](../../../../z_imgs/124818.png)
+
+Uma informação importante que não aparece no `show etherchannel summary`, mas é exibida neste comando, é o modo do channel-group — "active" (ativo), neste caso, porque usei o comando `channel-group 1 mode active` anteriormente. No entanto, para EtherChannel, o comando que você certamente mais utilizará é o `show etherchannel summary`. Eu só queria mostrar outra opção.  
+ 
+Como comecei a aula falando sobre Spanning Tree, vamos ver como ele é afetado quando o EtherChannel é configurado.  
+
+![](../../../../z_imgs/125042.png)
+
+Como você pode ver, apenas a interface port-channel é listada; as interfaces físicas não aparecem de forma alguma na saída deste comando. Então, como eu disse, o Spanning Tree trata essas quatro interfaces físicas como uma única interface lógica. Em vez de bloquear três delas, todas podem encaminhar e receber tráfego, sem a preocupação com loops de Camada 2. Para encerrar esta aula, vamos dar uma breve olhada nos EtherChannels de Camada 3.  
+
+## EtherChannel de Camada 3  
+  
 Substituí o ASW1 e o DSW1 por switches multicamada (multilayer switches).  
-27:40  
-Em vez de uma conexão de Camada 2 entre eles, vamos usar uma conexão de Camada 3.  
-27:45  
-O design de redes moderno frequentemente tende a utilizar conexões de Camada 3 entre switches, pois  
-27:50  
-dessa forma o Spanning Tree não será um problema em nenhuma parte da rede. Poderíamos ter quatro switches interconectados em uma malha (mesh) e, se os conectássemos  
-27:59  
-com portas roteadas de Camada 3, todas as interfaces estariam ativas e encaminhando tráfego; nenhuma precisaria  
-28:04  
-ser desativada devido ao Spanning Tree. Agora você pode estar pensando: você não acabou de mostrar que o EtherChannel significa que o Spanning Tree  
-28:11  
-não precisa bloquear nenhuma porta? Bem, estamos analisando apenas uma conexão entre dois switches.  
-28:17  
-Mesmo usando EtherChannel, loops de Camada 2 ainda podem ocorrer se vários switches estiverem conectados entre si formando um loop.  
-28:24  
-Por exemplo, veja este diagrama. Todas as conexões entre os switches utilizam EtherChannel, mas se não bloquearmos  
-28:30  
-nenhuma das interfaces port-channel, os broadcasts ainda podem circular pelos switches dessa maneira  
-28:36  
-e causar uma tempestade de broadcast (broadcast storm). Portanto, o Spanning Tree bloqueará uma dessas interfaces port-channel.  
-28:42  
-No entanto, se todas essas conexões entre switches fossem feitas usando portas roteadas, e não portas de switch de Camada 2, não haveria necessidade alguma de executar o Spanning Tree.  
-28:52  
-Portas roteadas não encaminham broadcasts de Camada 2; logo, não podem ser formados loops de Camada 2. 28:57  
-Você já sabe como configurar portas roteadas com o comando NO SWITCHPORT. Vamos ver como configurar um EtherChannel de Camada 3.  
-29:05  
+
+![](../../../../z_imgs/125317.png)
+
+Em vez de uma conexão de Camada 2 entre eles, vamos usar uma conexão de Camada 3. O design de redes moderno frequentemente tende a utilizar conexões de Camada 3 entre switches, pois, dessa forma, o Spanning Tree não será um problema em nenhuma parte da rede. Poderíamos ter quatro switches interconectados em uma malha (mesh) e, se os conectássemos com portas roteadas de Camada 3, todas as interfaces estariam ativas e encaminhando tráfego; nenhuma precisaria ser desativada devido ao Spanning Tree. 
+
+Agora você pode estar pensando: você não acabou de mostrar que o EtherChannel significa que o Spanning Tree não precisa bloquear nenhuma porta? Bem, estamos analisando apenas uma conexão entre dois switches. Mesmo usando EtherChannel, loops de Camada 2 ainda podem ocorrer se vários switches estiverem conectados entre si formando um loop. Por exemplo, veja este diagrama. Todas as conexões entre os switches utilizam EtherChannel, mas se não bloquearmos nenhuma das interfaces port-channel, os broadcasts ainda podem circular pelos switches dessa maneira...
+
+![](../../../../z_imgs/125459.png)
+
+... e causar uma tempestade de broadcast (broadcast storm). Portanto, o Spanning Tree bloqueará uma dessas interfaces port-channel.  
+
+![](../../../../z_imgs/125742.png)
+
+No entanto, se todas essas conexões entre switches fossem feitas usando portas roteadas, e não portas de switch de Camada 2, não haveria necessidade alguma de executar o Spanning Tree. Portas roteadas não encaminham broadcasts de Camada 2; logo, não podem ser formados loops de Camada 2. Você já sabe como configurar portas roteadas com o comando `no switchport`. Vamos ver como configurar um EtherChannel de Camada 3.  
+
+![](../../../../z_imgs/125852.png)
+
 Então, começando de uma configuração limpa, nenhum port-channel foi configurado ainda no ASW1.  
 29:11  
 Entro no modo de configuração de intervalo de interfaces (*interface range*) para as interfaces membro e, desta vez, antes de usar  
