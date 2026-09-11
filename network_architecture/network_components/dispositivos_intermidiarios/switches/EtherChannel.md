@@ -7,7 +7,7 @@ Um EtherChannel de Camada 2 é um grupo de portas de switch que operam como uma 
 
 Então, deixe-me demonstrar um problema. Temos dois switches aqui: ASW1 e DSW1.  
 
-![](../../../../073626)
+![](../../../../z_imgs/073626.png)
 
 Falarei sobre o design básico de redes em outro artigo, mas ASW significa *access switch* (switch de acesso), que é o switch ao qual dispositivos finais, como PCs e servidores, se conectam. DSW significa *distribution layer switch* (switch da camada de distribuição), ao qual os switches da camada de acesso se conectam. 
 
@@ -21,13 +21,13 @@ Falarei mais sobre isso mais adiante no curso, mas quando a largura de banda das
 
 Certo nível de *oversubscription* é aceitável, mas o excesso causará congestionamento. No entanto, mesmo com três links para o DSW1, o congestionamento não parece ter melhorado, então o administrador de rede decide, mais uma vez, adicionar outro link entre o ASW1 e o DSW1. Assim, agora existem quatro links entre o ASW1 e o DSW1.  
 
-![](tmp_a330dce9-1798-441b-b2e5-c1894479ef44.png)
+![](../../../../z_imgs/073712.png)
 
 Você acha que a situação melhorou? Bem, não melhorou; a conexão entre os dois switches continua tão congestionada quanto antes. Por que isso acontece? 
 
 Se você sabe a resposta, parabéns; se não, não se preocupe, você saberá agora. Digamos que o administrador tenha ido verificar fisicamente as luzes das portas dos dois switches. Que cor você acha que elas tinham? Bem, o administrador de rede verifica o DSW1 e todas as luzes das portas estão verdes, então não parece haver um problema. No entanto, ao verificar o ASW1, ele percebe que, dos links conectados ao DSW1, apenas uma luz está verde, enquanto as outras estão laranja.
 
-![](tmp_490285cb-7541-4425-9bef-9483a5508087.png)
+![](../../../../z_imgs/073743.png)
 
 Por que isso acontece? É devido o protocolo Spanning Tree. Se você conectar dois switches usando múltiplos links, todos, exceto um, serão desativados pelo Spanning Tree. Por que ele faz isso? Bem, se todas as interfaces do ASW1 estivessem encaminhando tráfego, loops de Camada 2 seriam formados entre o ASW1 e o DSW1, resultando em tempestades de broadcast. 
 
@@ -39,7 +39,7 @@ No entanto, ao combinar essas quatro interfaces físicas em uma única interface
  
 Um EtherChannel é representado em diagramas de rede por um círculo desenhado ao redor das interfaces agrupadas, como mostrado aqui.  
 
-![](tmp_63b73295-e6cf-4546-b89f-72cc08a38464.png)
+![](../../../../z_imgs/073830.png)
 
 O EtherChannel agrupa múltiplas interfaces para que atuem como uma única interface. O STP tratará esse grupo como uma interface única. Assim, após agrupar essas interfaces em um EtherChannel, o administrador de rede verifica novamente as luzes dos links. Desta vez, todas estão verdes. Isso não causará um loop de Camada 2?  
  
@@ -51,7 +51,7 @@ O tráfego que utiliza o EtherChannel terá sua carga balanceada entre as interf
 
 Ele propagará o quadro de broadcast por todas as interfaces, exceto aquela pela qual o quadro foi recebido. Digamos que o DSW1 tenha estes outros dois links.
 
-![](tmp_e81aa2c2-a76a-488a-b8ea-f81d239c3920.png)
+![](../../../../z_imgs/073918.png)
 
 Por quais interfaces o DSW1 encaminhará o quadro? Apenas por essas duas. Por que ele não encaminhou o quadro pelas outras três interfaces do EtherChannel? Vou repetir mais uma vez: embora esse EtherChannel contenha quatro interfaces físicas separadas, elas se comportam como uma única interface. O DSW1 não enviará o quadro de broadcast de volta pela mesma interface pela qual ele foi recebido.  
 
@@ -65,7 +65,7 @@ Outros nomes para EtherChannel são Port Channel e LAG, que significa Link Aggre
   
 Ele realiza o balanceamento de carga com base em "fluxos". O que é um fluxo? Um fluxo é uma comunicação entre dois nós na rede. Como, por exemplo, entre o PC1 e o SRV1. 
 
-![](tmp_87fe2bac-ab9e-4f4c-a821-b29955526367.png)
+![](../../../../z_imgs/074012.png)
 
 Aliás, normalmente você não verá um servidor ou uma impressora conectados diretamente a um switch da camada de distribuição; esses também são dispositivos finais (end hosts) que você deve conectar aos switches da camada de acesso. No entanto, apenas para simplificar este diagrama de rede, vou deixá-lo assim. 
 
@@ -77,11 +77,11 @@ Portanto, a questão é que quadros de um mesmo fluxo serão encaminhados usando
 
 Agora, se o PC1 quiser imprimir algo e iniciar um fluxo de comunicação separado com a PR1, o ASW1 encaminhará novamente o quadro usando sua interface virtual de *port channel*. No entanto, ele fará um cálculo separado para determinar qual interface física será usada para o fluxo. Por exemplo, ele pode determinar que a interface com a seta vermelha será usada para o fluxo.  
 
-![](tmp_5eed1aef-f398-4fde-b307-9d81f479df6c.png)
+![](../../../../z_imgs/074047.png)
 
 Assim como antes, quando o PC1 envia outro quadro do fluxo, a mesma interface membro do *EtherChannel* será usada para encaminhá-lo. E se o PC2 também quiser imprimir algo?  Ele envia o primeiro quadro do fluxo para o ASW1, que então fará um cálculo para determinar qual interface física do *EtherChannel* será usada. A escolhida poderia ser a rosa, por exemplo.
 
-![](tmp_c02f9e21-1dcf-4068-b429-bde0402c3146.png)
+![](../../../../z_imgs/074110.png)
 
   
 Então, é assim que o *EtherChannel* realiza o balanceamento de carga: usando interfaces físicas diferentes dentro do *EtherChannel* para fluxos diferentes. O cálculo realizado para determinar qual interface física usar leva em conta alguns parâmetros de entrada. Na verdade, você pode alterar os parâmetros de entrada usados no cálculo de seleção de interface.  
@@ -104,7 +104,7 @@ Alguns switches também suportam balanceamento de carga com base nos números de
 
 Use o comando `show etherchannel load-balance` para ver o método de balanceamento de carga atual. 
 
-![](tmp_c23c478c-75b3-4f2a-bdca-d02ae3346184.png)
+![](../../../../z_imgs/074150.png)
 
 Você pode ver que o padrão para este modelo de switch é realizar o balanceamento de carga com base nos endereços IP de origem e de destino. Então, por exemplo, todo o tráfego vindo de 10.0.0.1 com destino a 10.0.0.2 sempre usará uma determinada interface física dentro do EtherChannel. 
 
@@ -112,11 +112,11 @@ Embaixo, você pode ver um detalhamento mais específico. Quadros que encapsulam
 
 Bem, isso acontece porque, se um pacote IP não estiver encapsulado no quadro Ethernet, não há endereço IP que possa ser usado para determinar o balanceamento de carga; portanto, os endereços MAC são usados em seu lugar. Agora, quanto a como alterar o método de balanceamento de carga, entre no modo de configuração global e use este comando: `port-channel load-balance`, seguido pelo método.  
 
-![](tmp_8ea13ff2-e5f5-41d5-ae9f-43353b8d5ff6.png)
+![](../../../../z_imgs/074234.png)
 
 Neste caso, alterei para usar os endereços MAC de origem e destino do quadro. Depois confirmei mais uma vez, e você pode ver que a configuração de balanceamento de carga foi alterada com sucesso. A propósito, aqui estão as opções disponíveis neste dispositivo. 
 
-![](tmp_624a4eba-eec7-43d6-8f1a-6b5adcaa499e.png)
+![](../../../../z_imgs/074302.png)
 
 Ele pode realizar o balanceamento de carga com base em endereços MAC ou IP e, em ambos os casos, pode fazê-lo com base nos endereços de origem, de destino ou em ambos (origem E destino). Agora, quero destacar um ponto que é um pouco frustrante na configuração de EtherChannel em dispositivos Cisco.  
 
@@ -148,7 +148,7 @@ Então, vamos ver como configurar cada método.
 
 A configuração de cada um é quase idêntica; basta substituir algumas palavras-chave. APrimeiro, usei o comando `interface range` para configurar todas as interfaces membro de uma só vez.  
 
-![](tmp_cf2d6a9f-ac2b-41ff-9a2f-232642c85170.png)
+![](../../../../z_imgs/074342.png)
 
 Essa é uma boa prática para EtherChannel, pois as configurações de cada interface membro precisam ser idênticas; ao configurá-las simultaneamente, você garante isso. Falarei mais sobre isso depois de mostrar as configurações. De qualquer forma, para configurar o EtherChannel propriamente dito, utilize este comando, que inclui mais uma palavra-chave nova: `channel-group`, seguido por um número que identifica a interface virtual, `mode` e, então, como você pode ver, usei o ponto de interrogação para verificar quais opções estão disponíveis. 
 
@@ -156,7 +156,7 @@ Existem cinco opções: duas são usadas para PAgP, duas para LACP e uma para Et
 
 Então, aqui está um resumo: se ambos os lados da conexão estiverem configurados como "auto", nenhum EtherChannel será formado. No entanto, "auto" e "desirable", ou "desirable" e "desirable", formarão um EtherChannel. De qualquer forma, decidi configurar este lado como "desirable". 
 
-![](tmp_a45eb494-d4ea-44e8-b39f-42ca7389502a.png)
+![](../../../../z_imgs/074425.png)
 
 Você pode ver que a interface virtual "port-channel" foi criada, com o número que usamos no comando channel-group. Você pode vê-la aqui na saída do comando `do show ip interfaces brief`, lá embaixo. Então, lembre-se de que o comando `channel-group` é usado para configurar o EtherChannel, mas o nome da interface virtual criada é "port-channel". Aliás, esse número do channel group precisa coincidir entre as interfaces do mesmo switch; no entanto, ele NÃO precisa coincidir com o número do channel-group no outro switch. Por exemplo, o channel-group 1 no ASW1 pode formar um EtherChannel com o channel-group 2 no DSW1.  
 
