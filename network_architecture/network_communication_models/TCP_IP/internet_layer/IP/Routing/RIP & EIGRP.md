@@ -14,6 +14,7 @@ A primeira é a mensagem de solicitação (*Request*), que pede aos roteadores v
 
 A seguir, vamos comparar o RIPv1 e o RIPv2.
 
+
 ## RIPv1 e RIPv2
 
 O RIPv1 é um protocolo muito antigo. Basicamente, se você for usar o RIP, não utilize a versão 1. O RIPv1 anuncia apenas endereços com classes fixas (*classful*), ou seja, Classe A, Classe B e Classe C. Eu ensinei vocês sobre endereçamento com classes fixas (no arquivo de subnetting) porque é importante entender o conceito, mas, em redes modernas, ele não é mais utilizado.
@@ -51,6 +52,7 @@ A seguir, precisamos usar o comando `network`. Primeiro, utilizei `network 10.0.
 
 A interface G0/0 do R1 é `10.0.12.0/30` e sua interface G1/0 é `10.0.13.0/30`, mas eu digitei apenas o comando `network 10.0.0.0`. Vamos examinar exatamente como o comando `network` funciona.
 
+
 ### Comando 'network'
 
 O comando `network` instrui o roteador a procurar interfaces com um endereço IP que esteja dentro da faixa especificada — isto é, a faixa definida no próprio comando `network`. Em seguida, ele ativará o RIP na interface ou nas interfaces que se enquadrarem nessa faixa. Ele estabelecerá adjacências com outros vizinhos conectados que tenham o RIP habilitado e anunciará o prefixo de rede da interface.
@@ -65,6 +67,7 @@ Como o comando de rede opera com base em classes, assume-se que 172.16.0.0 seja 
 
 Mais um ponto importante: embora não haja vizinhos RIP conectados à G2/0, o R1 continuará enviando anúncios RIP pela interface G2/0. Esse é um tráfego desnecessário; portanto, a G2/0 deve ser configurada como uma interface passiva. Vamos ver como fazer isso. 
 
+
 ### Comando `passive-interface`
 
 Utilizei o comando `passive-interface G2/0`.
@@ -74,6 +77,7 @@ Utilizei o comando `passive-interface G2/0`.
 Isso configura a G2/0 como uma interface passiva. Observe que o comando é executado no modo de configuração do RIP, e não diretamente na própria interface. É por isso que você precisa especificar a interface no comando. O comando `passive-interface` instrui o roteador a parar de enviar anúncios RIP através da interface especificada — que, neste caso, é a G2/0. No entanto, o roteador continuará anunciando o prefixo de rede da interface, que é 172.16.1.0/28, para seus vizinhos RIP, R2 e R3. Recomenda-se sempre utilizar esse comando em interfaces que não possuam vizinhos RIP.
 
 Tanto o EIGRP quanto o OSPF possuem a mesma funcionalidade de interface passiva, utilizando o mesmo comando. 
+
 
 ### Anunciar rota padrão via RIP 
 
@@ -90,6 +94,7 @@ Novamente, o comando é executado no modo de configuração do RIP. Agora que in
 Observe que é indicado "Gateway of last resort is 10.0.34.1 to network 0.0.0.0" (Gateway de última instância é 10.0.34.1 para a rede 0.0.0.0); no entanto, abaixo disso, você pode ver duas rotas: uma via F2/0 para o R3 e outra via G0/0 para o R2. Apenas uma é realmente declarada no topo como o gateway de última instância, mas, como ambas as rotas têm a mesma contagem de saltos (*hop-count*), o R4 fará o balanceamento de carga do tráfego entre as duas rotas.
 
 Estou me repetindo, mas o RIP trata todas as conexões da mesma forma, como um único salto; portanto, mesmo que a conexão via R3 seja uma conexão Fast Ethernet mais lenta, o RIP a considera equivalente à conexão Gigabit Ethernet mais rápida via R2. A propósito, o OSPF também possui o mesmo comando `default-information originate` para compartilhar uma rota padrão com vizinhos. Veremos isso novamente quando estudarmos o OSPF.
+
 
 ### 'show ip protocols' (RIP)
 
@@ -131,48 +136,26 @@ Por fim, uma característica exclusiva do EIGRP é que ele é o único IGP capaz
 
 O EIGRP é um excelente protocolo, mas, como seu uso é praticamente restrito a dispositivos Cisco, ele não é tão utilizado quanto o OSPF. Certo, vamos analisar as configurações básicas do EIGRP.
 
+
 ## Configuração do EIGRP
 
-Aqui está a mesma rede de antes. Removi as configurações do RIP, embora seja possível manter o RIP e o EIGRP em execução
-20:21
-simultaneamente. Mas isso seria apenas um desperdício de recursos nos roteadores; portanto, geralmente haverá
-20:27
-apenas um IGP em execução em um roteador. Então, entre no modo de configuração do EIGRP com este comando: `router eigrp`, seguido pelo número do AS,
-20:37
-ou seja, o número do sistema autônomo. Eu usei 1. O número do AS deve coincidir entre os roteadores; caso contrário, eles não formarão uma adjacência nem compartilharão
-20:46
-informações de roteamento. Eu já havia configurado o mesmo número de AS (1) nos roteadores R2, R3 e R4, então precisei configurar o
-20:54
-mesmo valor aqui no R1. Em seguida, desativei o *auto-summary* (resumo automático). Ele funciona da mesma forma que no RIP: anuncia redes com base em classes (*classful*) em vez do prefixo de rede
-21:04
-real configurado nas interfaces. O *auto-summary* pode vir ativado ou desativado por padrão, dependendo do roteador ou da versão do VIOS.
-21:13
-Se estiver ativado, desative-o. Na verdade, na versão que estou usando aqui, ele já vem desativado por padrão, mas eu só
-21:20
-queria mostrar que o EIGRP também possui o recurso de *auto-summary*, assim como o RIP, e que você deve garantir que ele esteja desativado.
-21:27
-Depois, usei o mesmo comando `passive-interface` que utilizei para o RIP. Em seguida, usei o comando `network 10.0.0.0` para ativar o EIGRP nas interfaces G0/0 e G1/0.
-21:41
-Você pode usar uma máscara com o comando `network` do EIGRP; no entanto, ele assumirá um endereço baseado em classe (*classful*) se você não especificar a máscara.
-21:48
-Portanto, `network 10.0.0.0` é interpretado como `10.0.0.0/8`.
-21:55
-Esse comando `network` funciona como o do RIP. Você não está realmente instruindo o roteador a anunciar a rede `10.0.0.0/8`. 22:02
-Você está instruindo o sistema a ativar o EIGRP em interfaces com um endereço IP que se enquadre na faixa 10.0.0.0/8,
-22:09
-ou seja, qualquer endereço IP que comece com 10. Isso inclui a G0/0 e a G1/0; portanto, o EIGRP é ativado em ambas as interfaces.
-22:21
-Se você especificar a máscara, o comando fica assim: `NETWORK 172.16.1.0 0.0.0.15` ativa o EIGRP na interface G2/0.
-22:34
-Se esta é a primeira vez que você aprende isso, provavelmente está um pouco confuso agora. O que é 0.0.0.15?
-22:42
-A máscara de sub-rede para um prefixo /28 não é 255.255.255.240?
-22:48
-Sim, é. Mas o EIGRP usa uma "máscara curinga" (*wildcard mask*) em vez de uma máscara de sub-rede comum.
-22:56
-Deixe-me explicar exatamente o que isso significa. Uma máscara curinga é, basicamente, uma máscara de sub-rede "invertida".
-Máscaras Curinga
-23:04
+Aqui está a mesma rede de antes.
+
+![](../../../../../../z_imgs/172602.png)
+
+Removi as configurações do RIP, embora seja possível manter o RIP e o EIGRP em execução simultaneamente. Mas isso seria apenas um desperdício de recursos nos roteadores; portanto, geralmente haverá apenas um IGP em execução em um roteador. Então, entre no modo de configuração do EIGRP com este comando: `router eigrp`, seguido pelo número do AS, ou seja, o número do sistema autônomo. Eu usei 1. O número do AS deve coincidir entre os roteadores; caso contrário, eles não formarão uma adjacência nem compartilharão informações de roteamento.
+
+Eu já havia configurado o mesmo número de AS (1) nos roteadores R2, R3 e R4, então precisei configurar o mesmo valor aqui no R1. Em seguida, desativei o *auto-summary* (resumo automático). Ele funciona da mesma forma que no RIP: anuncia redes com base em classes (*classful*) em vez do prefixo de rede real configurado nas interfaces. O *auto-summary* pode vir ativado ou desativado por padrão, dependendo do roteador ou da versão do IOS. Se estiver ativado, desative-o. Na verdade, na versão que estou usando aqui, ele já vem desativado por padrão, mas eu só queria mostrar que o EIGRP também possui o recurso de *auto-summary*, assim como o RIP, e que você deve garantir que ele esteja desativado.
+
+Depois, usei o mesmo comando `passive-interface` que utilizei para o RIP. Em seguida, usei o comando `network 10.0.0.0` para ativar o EIGRP nas interfaces G0/0 e G1/0. Você pode usar uma máscara com o comando `network` do EIGRP; no entanto, ele assumirá um endereço baseado em classe (*classful*) se você não especificar a máscara. Portanto, `network 10.0.0.0` é interpretado como `10.0.0.0/8`. Esse comando `network` funciona como o do RIP. Você não está realmente instruindo o roteador a anunciar a rede `10.0.0.0/8`. Você está instruindo o sistema a ativar o EIGRP em interfaces com um endereço IP que se enquadre na faixa 10.0.0.0/8, ou seja, qualquer endereço IP que comece com 10. Isso inclui a G0/0 e a G1/0; portanto, o EIGRP é ativado em ambas as interfaces.
+
+Se você especificar a máscara, o comando fica assim: `network 172.16.1.0 0.0.0.15` ativa o EIGRP na interface G2/0. Se esta é a primeira vez que você aprende isso, provavelmente está um pouco confuso agora. O que é 0.0.0.15? A máscara de sub-rede para um prefixo /28 não é 255.255.255.240? Sim, é. Mas o EIGRP usa uma "máscara curinga" (*wildcard mask*) em vez de uma máscara de sub-rede comum. Deixe-me explicar exatamente o que isso significa. 
+
+
+### Máscaras Curinga
+
+Uma máscara curinga é, basicamente, uma máscara de sub-rede "invertida".
+
 Todos os bits 1 na máscara de sub-rede tornam-se 0 na máscara curinga equivalente, e todos os bits 0 na máscara de sub-rede
 23:11
 tornam-se 1 na máscara curinga equivalente. Vamos dar uma olhada. Aqui está uma máscara de sub-rede em binário:
