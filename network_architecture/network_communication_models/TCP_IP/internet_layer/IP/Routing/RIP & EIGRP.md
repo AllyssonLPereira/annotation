@@ -39,97 +39,38 @@ Certo, agora vou apresentar a vocês a configuração básica do RIP.
 
 ## Configuração do RIP
 
-Primeiro, a configuração do RIP é muito simples, servindo como uma boa introdução à configuração de roteamento dinâmico. Segundo, alguns mecanismos são semelhantes aos da configuração do OSPF, o que facilitará o aprendizado quando abordarmos o OSPF mais a fundo posteriormente. Então, assumindo que todos os outros roteadores já foram configurados com RIP, vamos apenas configurar o R1. Aqui está a configuração básica. Primeiro, entre no modo de configuração do RIP com o comando ROUTER RIP.
+Primeiro, a configuração do RIP é muito simples, servindo como uma boa introdução à configuração de roteamento dinâmico. Segundo, alguns mecanismos são semelhantes aos da configuração do OSPF, o que facilitará o aprendizado quando abordarmos o OSPF mais a fundo posteriormente. Então, assumindo que todos os outros roteadores já foram configurados com RIP, vamos apenas configurar o R1. Aqui está a configuração básica. 
 
+![](../../../../../../z_imgs/075403.png)
 
+Primeiro, entre no modo de configuração do RIP com o comando `router rip`. Observe que, logo abaixo, o prompt agora exibe 'config-router' em vez de apenas 'config'. Em seguida, configure o roteador para usar a versão 2 do RIP com o comando `version 2`. Isso não é obrigatório, mas você deve sempre usar a versão 2 se for utilizar o RIP. O endereçamento IPv4 baseado em classes (*classful*) é coisa do passado; em redes modernas, precisamos utilizar recursos como VLSM e CIDR.
 
-Observe que, logo abaixo, o prompt agora exibe 'config-router' em vez de apenas 'config'.
-7:59
-Em seguida, configure o roteador para usar a versão 2 do RIP com o comando VERSION 2.
-8:05
-Isso não é obrigatório, mas você deve sempre usar a versão 2 se for utilizar o RIP.
-8:11
-O endereçamento IPv4 baseado em classes (*classful*) é coisa do passado; em redes modernas, precisamos utilizar recursos como VLSM e CIDR.
-8:18
-Depois, use o comando NO AUTO-SUMMARY. O recurso de sumarização automática (*auto-summary*) vem ativado por padrão e converte automaticamente as redes anunciadas pelo roteador
-8:26
-em redes baseadas em classes. Por exemplo, usando a lógica de classes, a rede 172.16.1.0/28 conectada ao R1 é uma rede de classe B,
-8:36
-portanto, ela seria anunciada como 172.16.0.0/16.
-8:43
-Sempre utilize esses dois comandos ao configurar o RIP: VERSION 2, seguido por NO AUTO-SUMMARY.
-8:50
-A seguir, precisamos usar o comando NETWORK. Primeiro, utilizei NETWORK 10.0.0.0.
-8:56
-Agora, preciso explicar alguns detalhes sobre isso. O comando em si opera com base em classes (*classful*); ele converterá automaticamente o endereço para o formato de rede de classe padrão.
-9:05
-Por exemplo, mesmo que você digite o comando `NETWORK 10.0.12.0`, ele será convertido para
-9:11
-`10.0.0.0`. O endereço `10.0.12.0` pertence à faixa da Classe A; portanto, assume-se um comprimento de prefixo `/8`.
-9:19
-Assim, após os primeiros 8 bits, todos os outros bits serão convertidos para 0.
-9:25
-Devido a esse comportamento, não há necessidade de inserir uma máscara de rede. Certo, então qual é o efeito real desse comando?
-9:31
-A interface G0/0 do R1 é `10.0.12.0/30` e sua interface G1/0 é `10.0.13.0/30`, mas
-9:41
-eu digitei apenas o comando `NETWORK 10.0.0.0`. Vamos examinar exatamente como o comando `NETWORK` funciona.
-comando 'network'
-9:49
-O comando `NETWORK` instrui o roteador a procurar interfaces com um endereço IP que esteja dentro da faixa especificada — isto é, a faixa definida no próprio comando `NETWORK`.
-9:58
-Em seguida, ele ativará o RIP na interface ou nas interfaces que se enquadrarem nessa faixa.
-10:04
-Ele estabelecerá adjacências com outros vizinhos conectados que tenham o RIP habilitado e anunciará o prefixo de rede da interface.
-10:11
-Esse prefixo não é necessariamente aquele que você especificou no comando `network`. É assim que os comandos `NETWORK` do EIGRP e do OSPF também operam, embora existam algumas
-10:20
-diferenças. Então, vou explicar passo a passo aqui; isso facilitará o entendimento do EIGRP e do
-10:26
-OSPF mais adiante. Portanto, acabamos de inserir o comando `network 10.0.0.0` no R1. 10:34
-Como o comando NETWORK opera com base em classes (*classful*), assume-se que 10.0.0.0 seja 10.0.0.0/8.
-10:42
-O R1 buscará interfaces com um endereço IP que corresponda a 10.0.0.0/8.
-10:48
-/8 significa que apenas os primeiros 8 bits precisam coincidir; portanto, o primeiro octeto do endereço IP
-10:54
-precisa ser igual. Tanto 10.0.12.1 quanto 10.0.13.1 correspondem a esse critério, pois ambos possuem o mesmo primeiro octeto: 10.
-11:04
-Assim, o RIP é ativado nas interfaces G0/0 e G1/0. O R1 então estabelece adjacências com seus vizinhos, R2 e R3.
-11:13
-O R1 enviará e receberá informações de roteamento de e para o R2 e o R3.
-11:19
-Aqui está a parte importante: o R1 anuncia 10.0.12.0/30 e 10.0.13.0/30 — os prefixos de rede
-11:28
-de suas interfaces G0/0 e G1/0 — para seus vizinhos RIP, R2 e R3.
-11:35
-Embora tenhamos usado o comando NETWORK 10.0.0.0, o R1 não anuncia a rede 10.0.0.0/8.
-11:43
-O comando NETWORK não diz ao roteador quais redes anunciar. Ele indica em quais interfaces o RIP deve ser ativado e, então, o roteador anuncia
-11:52
-o prefixo de rede dessas interfaces. Certo, também configuramos o comando NETWORK 172.16.0.0.
-12:00
-Vamos analisar isso também. Como o comando de rede opera com base em classes, assume-se que 172.16.0.0 seja 172.16.0.0/16. 12:12
-O R1 buscará quaisquer interfaces com um endereço IP que corresponda a 172.16.0.0/16.
-12:20
-O endereço 172.16.1.14 corresponde, portanto, o R1 ativará o RIP na interface G2/0.
-12:28
-Desta vez, não há vizinhos RIP conectados à G2/0; logo, nenhuma nova adjacência é formada.
-12:33
-No entanto, o R1 anuncia a rede 172.16.1.0/28 (e NÃO a 172.16.0.0/16) para seus vizinhos RIP.
-12:44
-Mais um ponto importante: embora não haja vizinhos RIP conectados à G2/0, o R1
-12:50
-continuará enviando anúncios RIP pela interface G2/0. Esse é um tráfego desnecessário; portanto, a G2/0 deve ser configurada como uma interface passiva.
-12:58
-Vamos ver como fazer isso. Utilizei o comando PASSIVE-INTERFACE G2/0.
-comando 'passive-interface'
-13:05
+Depois, use o comando `no auto-summary`. O recurso de sumarização automática (*auto-summary*) vem ativado por padrão e converte automaticamente as redes anunciadas pelo roteador em redes baseadas em classes. Por exemplo, usando a lógica de classes, a rede 172.16.1.0/28 conectada ao R1 é uma rede de classe B, portanto, ela seria anunciada como 172.16.0.0/16. Sempre utilize esses dois comandos ao configurar o RIP: `version 2`, seguido por `no auto-summary`.
+
+A seguir, precisamos usar o comando `network`. Primeiro, utilizei `network 10.0.0.0`. Agora, preciso explicar alguns detalhes sobre isso. O comando em si opera com base em classes (*classful*); ele converterá automaticamente o endereço para o formato de rede de classe padrão. Por exemplo, mesmo que você digite o comando `network  10.0.12.0`, ele será convertido para `10.0.0.0`. O endereço `10.0.12.0` pertence à faixa da Classe A; portanto, assume-se um comprimento de prefixo `/8`. Assim, após os primeiros 8 bits, todos os outros bits serão convertidos para 0. Devido a esse comportamento, não há necessidade de inserir uma máscara de rede. Certo, então qual é o efeito real desse comando?
+
+A interface G0/0 do R1 é `10.0.12.0/30` e sua interface G1/0 é `10.0.13.0/30`, mas eu digitei apenas o comando `network 10.0.0.0`. Vamos examinar exatamente como o comando `network` funciona.
+
+### Comando 'network'
+
+O comando `network` instrui o roteador a procurar interfaces com um endereço IP que esteja dentro da faixa especificada — isto é, a faixa definida no próprio comando `network`. Em seguida, ele ativará o RIP na interface ou nas interfaces que se enquadrarem nessa faixa. Ele estabelecerá adjacências com outros vizinhos conectados que tenham o RIP habilitado e anunciará o prefixo de rede da interface.
+
+Esse prefixo não é necessariamente aquele que você especificou no comando `network`. É assim que os comandos `network` do EIGRP e do OSPF também operam, embora existam algumas diferenças. Então, vou explicar passo a passo aqui; isso facilitará o entendimento do EIGRP e do OSPF mais adiante. Portanto, acabamos de inserir o comando `network 10.0.0.0` no R1. 
+
+Como o comando `network` opera com base em classes (*classful*), assume-se que 10.0.0.0 seja 10.0.0.0/8. O R1 buscará interfaces com um endereço IP que corresponda a 10.0.0.0/8. /8 significa que apenas os primeiros 8 bits precisam coincidir; portanto, o primeiro octeto do endereço IP precisa ser igual. Tanto 10.0.12.1 quanto 10.0.13.1 correspondem a esse critério, pois ambos possuem o mesmo primeiro octeto: 10. Assim, o RIP é ativado nas interfaces G0/0 e G1/0. O R1 então estabelece adjacências com seus vizinhos, R2 e R3.
+
+O R1 enviará e receberá informações de roteamento de e para o R2 e o R3. Aqui está a parte importante: o R1 anuncia 10.0.12.0/30 e 10.0.13.0/30 — os prefixos de rede de suas interfaces G0/0 e G1/0 — para seus vizinhos RIP, R2 e R3. Embora tenhamos usado o comando `network 10.0.0.0`, o R1 não anuncia a rede 10.0.0.0/8. O comando `network` não diz ao roteador quais redes anunciar. Ele indica em quais interfaces o RIP deve ser ativado e, então, o roteador anuncia o prefixo de rede dessas interfaces. Certo, também configuramos o comando `network 172.16.0.0`. Vamos analisar isso também. 
+
+Como o comando de rede opera com base em classes, assume-se que 172.16.0.0 seja 172.16.0.0/16. O R1 buscará quaisquer interfaces com um endereço IP que corresponda a 172.16.0.0/16. O endereço 172.16.1.14 corresponde, portanto, o R1 ativará o RIP na interface G2/0. Desta vez, não há vizinhos RIP conectados à G2/0; logo, nenhuma nova adjacência é formada. No entanto, o R1 anuncia a rede 172.16.1.0/28 (e NÃO a 172.16.0.0/16) para seus vizinhos RIP. 
+
+Mais um ponto importante: embora não haja vizinhos RIP conectados à G2/0, o R1 continuará enviando anúncios RIP pela interface G2/0. Esse é um tráfego desnecessário; portanto, a G2/0 deve ser configurada como uma interface passiva. Vamos ver como fazer isso. 
+
+### Comando `passive-interface`
+
+Utilizei o comando `passive-interface G2/0`.
+
 Isso configura a G2/0 como uma interface passiva. Observe que o comando é executado no modo de configuração do RIP, e não diretamente na própria interface.
 
-
-.
-13:14
 É por isso que você precisa especificar a interface no comando. O comando `passive-interface` instrui o roteador a parar de enviar anúncios RIP através
 13:23
 da interface especificada — que, neste caso, é a G2/0. No entanto, o roteador continuará anunciando o prefixo de rede da interface, que
