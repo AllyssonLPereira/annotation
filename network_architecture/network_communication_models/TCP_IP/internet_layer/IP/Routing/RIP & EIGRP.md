@@ -69,89 +69,58 @@ Mais um ponto importante: embora não haja vizinhos RIP conectados à G2/0, o R1
 
 Utilizei o comando `passive-interface G2/0`.
 
-Isso configura a G2/0 como uma interface passiva. Observe que o comando é executado no modo de configuração do RIP, e não diretamente na própria interface.
+![](../../../../../../z_imgs/122646.png)
 
-É por isso que você precisa especificar a interface no comando. O comando `passive-interface` instrui o roteador a parar de enviar anúncios RIP através
-13:23
-da interface especificada — que, neste caso, é a G2/0. No entanto, o roteador continuará anunciando o prefixo de rede da interface, que
-13:31
-é 172.16.1.0/28, para seus vizinhos RIP, R2 e R3.
-13:38
-Recomenda-se sempre utilizar esse comando em interfaces que não possuam vizinhos RIP.
-13:43
-Tanto o EIGRP quanto o OSPF possuem a mesma funcionalidade de interface passiva, utilizando o mesmo comando.
-Anunciar rota padrão via RIP
-13:51
-Para demonstrar mais uma função do RIP, adicionei uma conexão com a Internet ao R1, por meio de sua interface G3/0.
-13:59
-Em seguida, configurei uma rota padrão apontando para a Internet. Assim, quaisquer pacotes que não correspondam a nenhuma das outras entradas na tabela de roteamento do R1
-14:07
-serão enviados para a Internet. Aqui você pode vê-la na tabela de roteamento. O gateway de última instância (*gateway of last resort*) é 203.0.113.2 para a rede 0.0.0.0.
-14:18
-Logo abaixo, você pode ver a rota estática configurada para 0.0.0.0/0.
-14:23
-Agora, quero usar o RIP para informar ao R2, R3 e R4 sobre essa rota padrão, para que eles também possam
-14:29
-acessar a Internet. O comando para compartilhar essa rota padrão no RIP é `default-information originate`; novamente,
-14:37
-o comando é executado no modo de configuração do RIP. Agora que inseri esse comando, o R1 anunciará a rota para o R2 e o R3, e eles
-14:46
-a anunciarão para o R4. Vamos verificar a tabela de roteamento do R4. 14:52
-Observe que é indicado "Gateway of last resort is 10.0.34.1 to network 0.0.0.0" (Gateway de última instância é 10.0.34.1 para a rede 0.0.0.0); no entanto, abaixo
-15:01
-disso, você pode ver duas rotas: uma via F2/0 para o R3 e outra via G0/0 para o R2.
-15:08
-Apenas uma é realmente declarada no topo como o gateway de última instância, mas, como ambas as rotas têm a mesma contagem de saltos (*hop-count*), o R4 fará o balanceamento de carga do tráfego entre as duas rotas.
-15:17
-Estou me repetindo, mas o RIP trata todas as conexões da mesma forma, como um único salto; portanto, mesmo que
-15:23
-a conexão via R3 seja uma conexão Fast Ethernet mais lenta, o RIP a considera equivalente à
-15:28
-conexão Gigabit Ethernet mais rápida via R2. A propósito, o OSPF também possui o mesmo comando `default-information originate` para compartilhar uma
-15:36
-rota padrão com vizinhos. Veremos isso novamente quando estudarmos o OSPF.
-'show ip protocols' (RIP)
-15:43
-Agora, vamos analisar um comando `show` muito útil: o `show ip protocols`.
-15:48
-Esse comando pode ser usado com RIP, EIGRP e OSPF para verificar diversas estatísticas.
-15:54
-Vamos passar rapidamente por alguns dos pontos que você precisa conhecer. Primeiramente, esta parte identifica o protocolo em uso — neste caso, o RIP.
-16:03
-Estes são alguns temporizadores que o RIP utiliza para operar; não falaremos sobre eles no contexto de RIP ou EIGRP,
-16:08
-mas abordaremos o assunto em detalhes quando estudarmos o OSPF. Aqui estão informações sobre a versão utilizada; note que é a versão 2, conforme
-16:17
-configuramos anteriormente. O resumo automático de redes (*automatic network summarization*) não está ativo; isso ocorre porque usamos o comando `no auto-summary`
-16:25
-mais cedo. O número máximo de caminhos é 4; isso se refere ao balanceamento de carga ECMP. 16:32
-Por padrão, o RIP insere até 4 caminhos para o mesmo destino na tabela de roteamento, caso tenham a mesma métrica.
-16:38
-No entanto, isso pode ser alterado. O comando é `maximum-paths`, seguido de um número de 1 a 32.
-16:46
-Isso é feito no modo de configuração do RIP. Vou definir como 8, por exemplo. A propósito, esse comando é o mesmo para EIGRP e OSPF.
-16:56
-A seguir, esta seção mostra as redes que inserimos com o comando `network`. Mais uma vez, essas não são as redes reais que o RIP está anunciando; o comando `network` apenas
-17:05
-identifica em quais interfaces o RIP deve ser ativado. Aqui você pode ver as interfaces passivas listadas — apenas a G2/0, neste caso.
-17:15
-Em "routing information sources" (fontes de informações de roteamento), você pode ver os vizinhos RIP do R1: 10.0.12.2, que
-17:21
-é o R2, e 10.0.13.2, que é o R3.
-17:26
-Por fim, o campo "distance" indica a distância administrativa do RIP, que atualmente é o padrão de 120.
-17:33
-Isso pode ser alterado no modo de configuração do RIP com o comando `distance`, seguido
-17:38
-de um número de 1 a 255. Por exemplo, se você quiser dar preferência às rotas RIP em relação às rotas EIGRP por algum motivo,
-17:46
-poderia definir o valor como 85, como acabei de fazer, para tornar a AD (distância administrativa) do RIP menor que a AD do EIGRP, que é de
-17:52
-90. A propósito, o comando `distance` também é o mesmo para EIGRP e OSPF.
-Introdução ao EIGRP
-17:59
+Isso configura a G2/0 como uma interface passiva. Observe que o comando é executado no modo de configuração do RIP, e não diretamente na própria interface. É por isso que você precisa especificar a interface no comando. O comando `passive-interface` instrui o roteador a parar de enviar anúncios RIP através da interface especificada — que, neste caso, é a G2/0. No entanto, o roteador continuará anunciando o prefixo de rede da interface, que é 172.16.1.0/28, para seus vizinhos RIP, R2 e R3. Recomenda-se sempre utilizar esse comando em interfaces que não possuam vizinhos RIP.
+
+Tanto o EIGRP quanto o OSPF possuem a mesma funcionalidade de interface passiva, utilizando o mesmo comando. 
+
+### Anunciar rota padrão via RIP 
+
+![](../../../../../../z_imgs/122947.png)
+
+Para demonstrar mais uma função do RIP, adicionei uma conexão com a Internet ao R1, por meio de sua interface G3/0. Em seguida, configurei uma rota padrão apontando para a Internet. Assim, quaisquer pacotes que não correspondam a nenhuma das outras entradas na tabela de roteamento do R1 serão enviados para a Internet. Na imagem, é possível vê-la na tabela de roteamento. 
+
+O gateway de última instância (*gateway of last resort*) é 203.0.113.2 para a rede 0.0.0.0. Logo abaixo, você pode ver a rota estática configurada para 0.0.0.0/0. Agora, quero usar o RIP para informar ao R2, R3 e R4 sobre essa rota padrão, para que eles também possam acessar a Internet. O comando para compartilhar essa rota padrão no RIP é `default-information originate`.
+
+![](../../../../../../z_imgs/123400.png)
+
+Novamente, o comando é executado no modo de configuração do RIP. Agora que inseri esse comando, o R1 anunciará a rota para o R2 e o R3, e eles a anunciarão para o R4. Vamos verificar a tabela de roteamento do R4. 
+
+Observe que é indicado "Gateway of last resort is 10.0.34.1 to network 0.0.0.0" (Gateway de última instância é 10.0.34.1 para a rede 0.0.0.0); no entanto, abaixo disso, você pode ver duas rotas: uma via F2/0 para o R3 e outra via G0/0 para o R2. Apenas uma é realmente declarada no topo como o gateway de última instância, mas, como ambas as rotas têm a mesma contagem de saltos (*hop-count*), o R4 fará o balanceamento de carga do tráfego entre as duas rotas.
+
+Estou me repetindo, mas o RIP trata todas as conexões da mesma forma, como um único salto; portanto, mesmo que a conexão via R3 seja uma conexão Fast Ethernet mais lenta, o RIP a considera equivalente à conexão Gigabit Ethernet mais rápida via R2. A propósito, o OSPF também possui o mesmo comando `default-information originate` para compartilhar uma rota padrão com vizinhos. Veremos isso novamente quando estudarmos o OSPF.
+
+### 'show ip protocols' (RIP)
+
+Agora, vamos analisar um comando `show` muito útil: o `show ip protocols`. 
+
+![](../../../../../../z_imgs/124003.png)
+
+Esse comando pode ser usado com RIP, EIGRP e OSPF para verificar diversas estatísticas. Vamos passar rapidamente por alguns dos pontos que você precisa conhecer. 
+
+- Primeiramente, temos a parte 'Routing protocol is "RIP"' esta parte identifica o protocolo em uso — neste caso, o RIP.
+- Mais abaixo, temos alguns temporizadores que o RIP utiliza para operar; não falaremos sobre eles no contexto de RIP ou EIGRP, mas abordaremos o assunto em detalhes quando estudarmos o OSPF.
+- Em seguida, temos o campo "Default version control", que consta de informações sobre a versão utilizada; note que é a versão 2, conforme configuramos anteriormente.
+- O resumo automático de redes (*automatic network summarization*) não está ativo; isso ocorre porque usamos o comando `no auto-summary` mais cedo.
+- O número máximo de caminhos é 4; isso se refere ao balanceamento de carga ECMP. Por padrão, o RIP insere até 4 caminhos para o mesmo destino na tabela de roteamento, caso tenham a mesma métrica. No entanto, isso pode ser alterado. O comando é `maximum-paths`, seguido de um número de 1 a 32. Isso é feito no modo de configuração do RIP. Vou definir como 8, por exemplo. A propósito, esse comando é o mesmo para EIGRP e OSPF.
+
+![](../../../../../../z_imgs/124624.png)
+
+- A seguir, temos a seção que mostra as redes que inserimos com o comando `network`. Mais uma vez, essas não são as redes reais que o RIP está anunciando; o comando `network` apenas identifica em quais interfaces o RIP deve ser ativado.
+- Abaixo você pode ver as interfaces passivas listadas — apenas a G2/0, neste caso.
+- Em "routing information sources" (fontes de informações de roteamento), você pode ver os vizinhos RIP do R1: 10.0.12.2, que é o R2, e 10.0.13.2, que é o R3.
+- Por fim, o campo "distance" indica a distância administrativa do RIP, que atualmente é o padrão de 120. Isso pode ser alterado no modo de configuração do RIP com o comando `distance`, seguido de um número de 1 a 255.
+
+![](../../../../../../z_imgs/124825.png)
+
+- Por exemplo, se você quiser dar preferência às rotas RIP em relação às rotas EIGRP por algum motivo, poderia definir o valor como 85, como acabei de fazer, para tornar a AD (distância administrativa) do RIP menor que a AD do EIGRP, que é de 90. A propósito, o comando `distance` também é o mesmo para EIGRP e OSPF.
+
 Certo, isso é tudo sobre o RIP. Vamos passar para o EIGRP; você verá que muitas coisas são semelhantes às do RIP.
-18:06
+
+
+# Introdução ao EIGRP
+
 EIGRP significa *Enhanced Interior Gateway Routing Protocol*. É uma versão aprimorada do antigo IGRP (Interior Gateway Routing Protocol).
 18:16
 O EIGRP era proprietário da Cisco, mas a empresa o disponibilizou abertamente para que outros fabricantes pudessem
