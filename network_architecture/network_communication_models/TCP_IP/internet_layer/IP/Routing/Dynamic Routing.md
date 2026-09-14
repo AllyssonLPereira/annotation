@@ -12,13 +12,13 @@ Por fim, falaremos sobre algo chamado "distância administrativa", que é outro 
 
 Aqui está a topologia de rede que usarei no início desta demonstração. 
 
-![](../../../../../../tmp_ae9b5890-7bd6-4ea4-9259-145385a9a35a.png)
+![](../../../../../../z_imgs/tmp_ae9b5890-7bd6-4ea4-9259-145385a9a35a.png)
 
 Quatro roteadores — R1, R2, R3 e R4 — e há uma LAN conectada ao R4: 192.168.4.0/24.  
 
 Vamos focar principalmente na perspectiva do R1 por enquanto. Sem configurar nenhuma rota estática ou protocolo de roteamento dinâmico, a tabela de roteamento do R1 fica assim: apenas rotas conectadas e locais, que foram adicionadas automaticamente quando os endereços IP foram configurados em suas interfaces.  
 
-![](../../../../../../tmp_6b863a73-a12e-4e52-b135-7b9e66a40cea.png)
+![](../../../../../../z_imgs/tmp_6b863a73-a12e-4e52-b135-7b9e66a40cea.png)
 ### Rota de rede/Rota de host  
   
 Deixe-me aproveitar um momento para esclarecer alguns pontos da lista de tópicos do exame. As duas rotas, 10.0.12.0/30 e 10.0.13.0/30, são exemplos de rotas de rede. 
@@ -47,7 +47,7 @@ E se ocorrer um erro e a interface G0/0 do R4 cair? Os outros roteadores se adap
 
 E se a mesma situação ocorresse ao utilizar roteamento estático? Configurei uma rota estática no R1.
 
-![](../../../../../../tmp_5a0e28a4-d44d-42e6-b050-5d424a3ee5a5.png)
+![](../../../../../../z_imgs/tmp_5a0e28a4-d44d-42e6-b050-5d424a3ee5a5.png)
 
 Ele consegue enviar tráfego para a rede do R4 sem problemas. No entanto, e se a mesma falha no link ocorrer? Como não há um protocolo de roteamento dinâmico em uso, o R1 não sabe que não consegue mais alcançar a rede 192.168.4.0. Se ele receber pacotes destinados a essa rede, continuará encaminhando-os para o R2, sem saber que o R2 não consegue mais alcançar a rede. 
 
@@ -57,13 +57,13 @@ Certo, então essa é uma vantagem do roteamento dinâmico: o roteador removerá
 
 Então, adicionei outra conexão entre R3 e R4. 
 
-![](../../../../../../tmp_3541e615-f704-4759-af1b-53611dcae41a.png)
+![](../../../../../../z_imgs/tmp_3541e615-f704-4759-af1b-53611dcae41a.png)
 
 Agora, R1 tem dois caminhos válidos para a rede interna de R4: via R2 e via R3. Vamos verificar a tabela de roteamento de R1.
 
 Você pode ver que ela ainda mantém a rota via R2 na tabela, pois indica "via 10.0.12.2". Nesse caso, o que acontecerá se eu desativar a interface G0/0 de R4 para simular uma falha? Bem, vamos verificar a tabela de roteamento de R1 nesse caso. 
 
-![](../../../../../../tmp_c5d9f8e5-7af6-48b6-8f3a-dba6ad620d63.png)
+![](../../../../../../z_imgs/tmp_c5d9f8e5-7af6-48b6-8f3a-dba6ad620d63.png)
 
 Como você pode ver, a rota via R2 foi substituída automaticamente pela rota via R3; agora indica "via 10.0.13.2". Então, nós perdemos a rota preferencial para 192.168.4.0, mas o tráfego ainda pode seguir por esse caminho. 
 
@@ -87,7 +87,7 @@ Os IGPs são usados para compartilhar rotas dentro de um único sistema autônom
 
 Talvez este diagrama facilite a compreensão. 
 
-![](../../../../../../tmp_cf939f1a-31ec-4409-9d44-ffc6ea4b66cb.png)
+![](../../../../../../z_imgs/tmp_cf939f1a-31ec-4409-9d44-ffc6ea4b66cb.png)
 
 A Empresa A, a Empresa B, o ISP A e o ISP B constituem, cada um, seu próprio sistema autônomo (AS). Dentro de cada organização, utiliza-se um IGP para trocar informações de roteamento. No entanto, para trocar informações de roteamento entre sistemas autônomos (ASs), utiliza-se um EGP. 
 
@@ -97,7 +97,7 @@ O objetivo básico dos IGPs e EGPs é o mesmo: compartilhar informações sobre 
 
 Agora, vamos detalhar ainda mais essas categorias. Como mencionei, as duas grandes categorias são *Interior Gateway Protocols* (IGPs) e *Exterior Gateway Protocols* (EGPs). No entanto, é possível subdividir essas categorias com base no "tipo de algoritmo". Isso se refere aos processos utilizados por cada protocolo para compartilhar informações de rota e determinar a melhor rota para cada destino.  
 
-![](../../../../../../tmp_555e0606-bb30-4b1b-8ad2-f19a98c8c1b0.png)
+![](../../../../../../z_imgs/tmp_555e0606-bb30-4b1b-8ad2-f19a98c8c1b0.png)
 
 Existe apenas um tipo de algoritmo EGP: o *Path Vector* (Vetor de Caminho). Não apenas existe apenas um tipo de algoritmo EGP, como também existe apenas um EGP utilizado em redes modernas. Trata-se do BGP, o *Border Gateway Protocol*.
 
@@ -149,13 +149,13 @@ Para protocolos de roteamento dinâmico, a rota com a menor métrica é consider
 
 Nesta imagem que mostrei anteriormente, embora o R1 aprenda dois caminhos para 192.168.4.0/24 — um via R2 e outro via R3 —, apenas a rota via R2 é adicionada à tabela de roteamento. 
 
-![](../../../../../../tmp_f087794d-8860-40fe-97b6-870e2f5e3019.png)
+![](../../../../../../z_imgs/tmp_f087794d-8860-40fe-97b6-870e2f5e3019.png)
 
 Esta conexão Fast Ethernet aqui tem um custo de métrica mais alto do que as outras conexões Gigabit Ethernet; portanto, essa rota é menos favorável. Agora, você pode estar se perguntando: e se essa também fosse uma conexão Gigabit Ethernet? Ambas as rotas teriam o mesmo custo; então, qual rota seria adicionada à tabela de roteamento? Vamos ver o que acontece.  
 
 Alterei a conexão entre R3 e R4 para ser uma conexão Gigabit Ethernet, assim como as outras. Vamos verificar a tabela de roteamento do R1. 
 
-![](../../../../../../tmp_4c54cb2b-c46f-434a-8e95-750839c8e3f9.png)
+![](../../../../../../z_imgs/tmp_4c54cb2b-c46f-434a-8e95-750839c8e3f9.png)
 
 Veja só: AMBAS as rotas foram adicionadas à tabela. Via 10.0.13.2 (que é o R3) e via 10.0.12.2 (que é o R2). Portanto, se um roteador aprende duas (ou mais) rotas via o mesmo protocolo de roteamento para o mesmo destino, com a mesma métrica, ambas serão adicionadas à tabela de roteamento. O tráfego será balanceado entre as duas rotas.
 
@@ -171,7 +171,7 @@ Quanto a estes valores à esquerda dos colchetes, trata-se de outro valor import
 
 Já que acabei de mostrar o ECMP — balanceamento de carga de múltiplos caminhos de custo igual com um protocolo de roteamento dinâmico —, quero informar que você também pode fazer o mesmo com rotas estáticas. Desativei o OSPF no R1 e configurei duas rotas estáticas para 192.168.4.0: uma via R2 e outra via R3.
 
-![](../../../../../../tmp_c04f9325-a1fa-4009-9f49-5819fed23fef.png)
+![](../../../../../../z_imgs/tmp_c04f9325-a1fa-4009-9f49-5819fed23fef.png)
 
 Assim, ambas são adicionadas à tabela de roteamento, e o tráfego será distribuído entre as duas rotas. Observe que ambas as rotas têm métrica 0. Rotas estáticas não utilizam realmente o conceito de "métrica", então você sempre verá 0 aqui.
 
@@ -179,7 +179,7 @@ Observe também que o valor da distância administrativa (AD) das rotas estátic
 
 ### Continuação das métricas
 
-![](../../../../../../tmp_58518ce3-2ffb-4e8c-bd95-e297b4c27b17.png)
+![](../../../../../../z_imgs/tmp_58518ce3-2ffb-4e8c-bd95-e297b4c27b17.png)
 
 O RIP utiliza, de longe, a métrica mais simples: a contagem de saltos (*hop count*). Cada roteador no caminho até o destino conta como um "salto", e a métrica total é o número total de saltos para alcançar o destino.  
 
@@ -197,7 +197,7 @@ Certo, então não vou falar muito sobre o IS-IS, mas darei mais detalhes sobre 
 
 O objetivo de todas essas métricas é o mesmo: permitir que o roteador selecione a melhor rota para o destino. Para demonstrar brevemente como a diferença nas métricas pode afetar as rotas selecionadas pelo roteador, vamos analisar novamente este diagrama sob a perspectiva do R1, ao decidir qual rota para a rede 192.168.4.0/24 selecionar para sua tabela de roteamento. 
 
-![](../../../../../../tmp_06336c40-fd06-40c9-b6aa-9d66dd70833c.png)
+![](../../../../../../z_imgs/tmp_06336c40-fd06-40c9-b6aa-9d66dd70833c.png)
 
 Se ele usar o RIP, a métrica é a contagem de saltos. Via R2, a contagem de saltos é 2: um salto até o R2 e um salto até o R4. Via R3, a contagem de saltos também é 2: um salto até o R3 e um salto até o R4, embora a conexão entre R3 e R4 seja uma conexão Fast Ethernet mais lenta. Assim, ambas as rotas serão inseridas na tabela de roteamento do R1, e o R1 fará o balanceamento de carga do tráfego usando as duas rotas, mesmo que uma delas seja mais lenta. 
 
@@ -219,7 +219,7 @@ Uma AD mais baixa é preferível e indica que o protocolo de roteamento é consi
 
 Pronto para memorizar algumas coisas?
 
-![](../../../../../../tmp_da497fd0-9d35-426a-95a6-ad80a1f78ffe.png)
+![](../../../../../../z_imgs/tmp_da497fd0-9d35-426a-95a6-ad80a1f78ffe.png)
 
 Estas são as distâncias administrativas dos tipos de rota mais comuns.Novamente, um valor de AD menor é preferível e será selecionado em detrimento de uma AD maior. Lembre-se de que esses são os valores usados em dispositivos Cisco; outros fabricantes podem classificá-los de forma diferente. 
 
@@ -241,13 +241,13 @@ Qual rota para 10.1.1.0/24 será adicionada à tabela de rotas? Bem, a resposta 
 
 A rota OSPF sempre terá precedência sobre as rotas RIP, porque possui uma AD menor. 
 
-![](../../../../../../tmp_f18f9e9d-6eea-48ec-8166-a6e498e2c11f.png)
+![](../../../../../../z_imgs/tmp_f18f9e9d-6eea-48ec-8166-a6e498e2c11f.png)
 
 Revisitando a tabela de rotas que mostrei anteriormente, aqui você pode ver a AD de 1 para essas rotas estáticas. As rotas conectadas e locais acima delas têm AD 0, mas isso não é exibido na tabela de rotas.
 
 E aqui está outra visualização desta tabela de rotas com rotas OSPF.
 
-![](../../../../../../tmp_c9391424-2e7d-4594-9ff4-984524f8379f.png)
+![](../../../../../../z_imgs/tmp_c9391424-2e7d-4594-9ff4-984524f8379f.png)
 
 Aqui você pode ver a AD de 110. Lembre-se de que o número à esquerda, entre colchetes, é a AD, e o número à direita é a métrica.  
 
@@ -257,7 +257,7 @@ Um último ponto. Você pode alterar a AD de um protocolo de roteamento, e demon
 
 Você também pode alterar a AD de uma rota estática. 
 
-![](../../../../../../tmp_eca90876-061a-40ba-b13d-bb1be6fdd145.png)
+![](../../../../../../z_imgs/tmp_eca90876-061a-40ba-b13d-bb1be6fdd145.png)
 
 Observe que aqui usei o comando padrão para configurar uma rota estática: IP ROUTE, seguido pelo destino, pela máscara de sub-rede e, então, pelo endereço do próximo salto (next hop). No entanto, usei o ponto de interrogação para verificar outras opções. Aqui aparece "distance metric" para esta rota.
 
