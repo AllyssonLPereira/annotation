@@ -154,64 +154,34 @@ Se você especificar a máscara, o comando fica assim: `network 172.16.1.0 0.0.0
 
 ### Máscaras Curinga
 
-Uma máscara curinga é, basicamente, uma máscara de sub-rede "invertida".
+Uma máscara curinga é, basicamente, uma máscara de sub-rede "invertida". Todos os bits 1 na máscara de sub-rede tornam-se 0 na máscara curinga equivalente, e todos os bits 0 na máscara de sub-rede tornam-se 1 na máscara curinga equivalente. Vamos dar uma olhada. Aqui está uma máscara de sub-rede em binário: 255.255.255.0 em notação decimal pontuada.
 
-Todos os bits 1 na máscara de sub-rede tornam-se 0 na máscara curinga equivalente, e todos os bits 0 na máscara de sub-rede
-23:11
-tornam-se 1 na máscara curinga equivalente. Vamos dar uma olhada. Aqui está uma máscara de sub-rede em binário:
-23:18
-255.255.255.0 em notação decimal pontuada. Se você inverter todos os bits, obtém isto:
-23:25
-0.0.0.255 em notação decimal pontuada. Portanto, essa é a máscara curinga equivalente a /24: 0.0.0.255.
-23:35
-Observe que todos os bits 1 da máscara de sub-rede viraram 0, e os bits 0 da máscara de sub-rede viraram 1.
-23:41
-Aqui está outro exemplo. 255.255.0.0 torna-se 0.0.255.255.
-23:49
-Esta é a máscara curinga equivalente a /16. E aqui está outra: 255.0.0.0 torna-se 0.255.255.255.
-24:00
-Esta é a máscara curinga equivalente a /8. Certo, esses são fáceis; agora vamos ver algo um pouco mais desafiador.
-24:09
-Em nossa rede, a interface G2/0 do R1 tem um comprimento de prefixo /28 — ou seja, 255.255.255.240, escrito
-24:18
-como uma máscara de sub-rede normal em formato decimal pontuado. Se você inverter os bits, obtém isto.
-24:23
-Se você escrever isso em decimal pontuado, obtém 0.0.0.15. Então, é assim que se escreve um comprimento de prefixo /28 usando uma máscara curinga.
-24:32
-Vamos fazer mais alguns exercícios. Pause o vídeo agora e converta isto em uma máscara curinga.
-24:43
-Certo, aqui está
+![](../../../../../../z_imgs/173835.png)
 
+Se você inverter todos os bits, obtém isto: 0.0.0.255 em notação decimal pontuada. Portanto, essa é a máscara curinga equivalente a /24: 0.0.0.255. Observe que todos os bits 1 da máscara de sub-rede viraram 0, e os bits 0 da máscara de sub-rede viraram 1.
 
-A resposta, 0.0.0.127, corresponde a um comprimento de prefixo /25.
-24:49
-Vamos tentar outro. Pause o vídeo agora e converta esta máscara de sub-rede em uma máscara curinga (*wildcard mask*).
-25:00
-Certo, aqui está a resposta: 0.3.255.255.
-25:05
-É assim que se escreve um comprimento de prefixo /14 como uma máscara curinga. Vamos fazer mais um por enquanto.
-25:12
-Pause o vídeo agora e converta esta máscara de sub-rede em uma máscara curinga.
-25:19
-Certo, aqui está a resposta: 0.0.31.255, que é um comprimento de prefixo /19 escrito como máscara curinga.
-25:29
-Embora eu ache sempre importante entender a lógica binária por trás de tudo isso, um bom atalho é subtrair cada octeto da máscara de sub-rede de 255.
-25:39
-Então, com esta máscara de sub-rede, por exemplo: 255 menos 255 é igual a 0.
-25:46
-255 menos 255 é igual a 0; 255 menos 248 é igual a 7; e 255 menos 0 é igual a 255.
-25:58
-Portanto, esta máscara de sub-rede /21 torna-se 0.0.7.255 quando escrita como máscara curinga.
-26:08
-Para encerrar o assunto sobre máscaras curinga, vou explicar um pouco mais sobre a função delas. Um '0' na máscara curinga significa que os bits devem coincidir entre o endereço IP da interface
-26:19
-e o comando de rede do EIGRP. Um '1' na máscara curinga significa que os bits não precisam coincidir.
-26:26
-Então, o endereço IP na interface G2/0 do R1 é 172.16.1.14. 26:33
-Usei o comando de rede EIGRP `network 172.16.1.0`, com a seguinte máscara curinga: `0.0.0.15`.
-26:43
-Isso significa que os primeiros 28 bits devem coincidir. Eles coincidem? Sim, coincidem.
-26:48
+Aqui está outro exemplo. 
+
+![](../../../../../../z_imgs/174008.png)
+
+255.255.0.0 torna-se 0.0.255.255. Esta é a máscara curinga equivalente a /16.
+
+E aqui está outra: 255.0.0.0 torna-se 0.255.255.255.
+
+![](../../../../../../z_imgs/174100.png)
+
+Esta é a máscara curinga equivalente a /8. Certo, esses são fáceis; agora vamos ver algo um pouco mais desafiador. Em nossa rede, a interface G2/0 do R1 tem um comprimento de prefixo /28 — ou seja, 255.255.255.240, escrito como uma máscara de sub-rede normal em formato decimal pontuado. Se você inverter os bits, obtém isto.
+
+![](../../../../../../z_imgs/174241.png)
+
+Se você escrever isso em decimal pontuado, obtém 0.0.0.15. Então, é assim que se escreve um comprimento de prefixo /28 usando uma máscara curinga. Para encerrar o assunto sobre máscaras curinga, vou explicar um pouco mais sobre a função delas. 
+
+Um '0' na máscara curinga significa que os bits devem coincidir entre o endereço IP da interface e o comando de rede do EIGRP. Um '1' na máscara curinga significa que os bits não precisam coincidir. Então, o endereço IP na interface G2/0 do R1 é 172.16.1.14. Usei o comando de rede EIGRP `network 172.16.1.0`, com a seguinte máscara curinga: `0.0.0.15`. Isso significa que os primeiros 28 bits devem coincidir. Eles coincidem? 
+
+![](../../../../../../z_imgs/174804.png)
+
+Sim, coincidem.
+
 Portanto, temos uma correspondência e o EIGRP será ativado na interface. Vamos tentar outro caso para ver se haverá correspondência.
 26:57
 Com o mesmo endereço IP, usei este comando de rede: `network 172.16.1.0`, com uma máscara curinga de `0.0.0.7`.
