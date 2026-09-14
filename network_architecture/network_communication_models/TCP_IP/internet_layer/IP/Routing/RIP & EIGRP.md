@@ -121,42 +121,18 @@ Certo, isso é tudo sobre o RIP. Vamos passar para o EIGRP; você verá que muit
 
 # Introdução ao EIGRP
 
-EIGRP significa *Enhanced Interior Gateway Routing Protocol*. É uma versão aprimorada do antigo IGRP (Interior Gateway Routing Protocol).
-18:16
-O EIGRP era proprietário da Cisco, mas a empresa o disponibilizou abertamente para que outros fabricantes pudessem
-18:21
-implementá-lo em seus equipamentos. No entanto, pelo que entendo, a Cisco não abriu o protocolo por completo; partes dele permanecem
-18:28
-como propriedade da Cisco, e acredito que poucos fabricantes se deram ao trabalho de implementar o EIGRP. Portanto, na prática, ele ainda é considerado um protocolo exclusivo da Cisco.
-18:38
-É considerado um protocolo "avançado"
+EIGRP significa *Enhanced Interior Gateway Routing Protocol*. É uma versão aprimorada do antigo IGRP (Interior Gateway Routing Protocol). O EIGRP era proprietário da Cisco, mas a empresa o disponibilizou abertamente para que outros fabricantes pudessem implementá-lo em seus equipamentos. No entanto, pelo que entendo, a Cisco não abriu o protocolo por completo; partes dele permanecem como propriedade da Cisco, e acredito que poucos fabricantes se deram ao trabalho de implementar o EIGRP. Portanto, na prática, ele ainda é considerado um protocolo exclusivo da Cisco.
 
+É considerado um protocolo de roteamento vetorial de distância "avançado" ou "híbrido". Ele aprimora as operações básicas do RIP, seu equivalente na categoria de protocolos de vetor de distância. Ele reage muito mais rápido que o RIP a mudanças na rede. Não possui o limite de 15 "saltos" (hop count) do RIP, permitindo, assim, o suporte a redes de grande porte.
 
-...ou protocolo de roteamento de vetor de distância "híbrido". Ele aprimora as operações básicas do RIP, seu equivalente na categoria de protocolos de vetor de distância.
-18:48
-Ele reage muito mais rápido que o RIP a mudanças na rede. Não possui o limite de 15 "saltos" (hop count) do RIP, permitindo, assim, o suporte a redes de grande porte.
-18:58
-Ele envia mensagens utilizando o endereço multicast 224.0.0.10.
-19:03
-Lembre-se: o RIPv1 envia mensagens via broadcast, enquanto o RIPv2 utiliza multicast para o endereço 224.0.0.9.
-19:11
-O EIGRP utiliza multicast para o endereço 224.0.0.10.
-19:16
-Tente memorizar esses endereços multicast; eles podem aparecer em questões de prova. Por fim, uma característica exclusiva do EIGRP é que ele é o único IGP capaz de realizar balanceamento de carga
-19:29
-com custos desiguais. Por padrão, ele realiza balanceamento de carga ECMP (Equal-Cost Multi-Path) em 4 caminhos, assim como o RIP, mas é possível configurá-lo
-19:36
-para realizar o balanceamento de carga em múltiplos caminhos que não possuem custos iguais. O EIGRP chega a distribuir a carga proporcionalmente à largura de banda de cada caminho.
-19:43
-Assim, mais tráfego é enviado pelos caminhos com métrica menor, por serem mais rápidos, e
-19:48
-menos tráfego é enviado pelos caminhos com métrica maior, por serem mais lentos. O EIGRP é um excelente protocolo, mas, como seu uso é praticamente restrito a dispositivos Cisco,
-19:59
-ele não é tão utilizado quanto o OSPF. É por isso que a Cisco tornou o OSPF o foco principal do novo CCNA no que diz respeito a protocolos de roteamento dinâmico.
-20:08
-Certo, vamos analisar as configurações básicas do EIGRP.
-Configuração do EIGRP
-20:13
+Ele envia mensagens utilizando o endereço multicast 224.0.0.10. Lembre-se: o RIPv1 envia mensagens via broadcast, enquanto o RIPv2 utiliza multicast para o endereço 224.0.0.9. O EIGRP utiliza multicast para o endereço 224.0.0.10. 
+
+Por fim, uma característica exclusiva do EIGRP é que ele é o único IGP capaz de realizar balanceamento de carga com custos desiguais. Por padrão, ele realiza balanceamento de carga ECMP (Equal-Cost Multi-Path) em 4 caminhos, assim como o RIP, mas é possível configurá-lo para realizar o balanceamento de carga em múltiplos caminhos que não possuem custos iguais. O EIGRP chega a distribuir a carga proporcionalmente à largura de banda de cada caminho. Assim, mais tráfego é enviado pelos caminhos com métrica menor, por serem mais rápidos, e menos tráfego é enviado pelos caminhos com métrica maior, por serem mais lentos. 
+
+O EIGRP é um excelente protocolo, mas, como seu uso é praticamente restrito a dispositivos Cisco, ele não é tão utilizado quanto o OSPF. Certo, vamos analisar as configurações básicas do EIGRP.
+
+## Configuração do EIGRP
+
 Aqui está a mesma rede de antes. Removi as configurações do RIP, embora seja possível manter o RIP e o EIGRP em execução
 20:21
 simultaneamente. Mas isso seria apenas um desperdício de recursos nos roteadores; portanto, geralmente haverá
