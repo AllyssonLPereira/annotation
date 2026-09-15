@@ -104,11 +104,11 @@ Agora, vamos analisar um comando `show` muito útil: o `show ip protocols`.
 
 Esse comando pode ser usado com RIP, EIGRP e OSPF para verificar diversas estatísticas. Vamos passar rapidamente por alguns dos pontos que você precisa conhecer. 
 
-- Primeiramente, temos a parte 'Routing protocol is "RIP"' esta parte identifica o protocolo em uso — neste caso, o RIP.
-- Mais abaixo, temos alguns temporizadores que o RIP utiliza para operar; não falaremos sobre eles no contexto de RIP ou EIGRP, mas abordaremos o assunto em detalhes quando estudarmos o OSPF.
-- Em seguida, temos o campo "Default version control", que consta de informações sobre a versão utilizada; note que é a versão 2, conforme configuramos anteriormente.
-- O resumo automático de redes (*automatic network summarization*) não está ativo; isso ocorre porque usamos o comando `no auto-summary` mais cedo.
-- O número máximo de caminhos é 4; isso se refere ao balanceamento de carga ECMP. Por padrão, o RIP insere até 4 caminhos para o mesmo destino na tabela de roteamento, caso tenham a mesma métrica. No entanto, isso pode ser alterado. O comando é `maximum-paths`, seguido de um número de 1 a 32. Isso é feito no modo de configuração do RIP. Vou definir como 8, por exemplo. A propósito, esse comando é o mesmo para EIGRP e OSPF.
+Primeiramente, temos a parte 'Routing protocol is "RIP"' esta parte identifica o protocolo em uso — neste caso, o RIP. Mais abaixo, temos alguns temporizadores que o RIP utiliza para operar; não falaremos sobre eles no contexto de RIP ou EIGRP, mas abordaremos o assunto em detalhes quando estudarmos o OSPF.
+
+Em seguida, temos o campo "Default version control", que consta de informações sobre a versão utilizada; note que é a versão 2, conforme configuramos anteriormente. O resumo automático de redes (*automatic network summarization*) não está ativo; isso ocorre porque usamos o comando `no auto-summary` mais cedo.
+
+O número máximo de caminhos é 4; isso se refere ao balanceamento de carga ECMP. Por padrão, o RIP insere até 4 caminhos para o mesmo destino na tabela de roteamento, caso tenham a mesma métrica. No entanto, isso pode ser alterado. O comando é `maximum-paths`, seguido de um número de 1 a 32. Isso é feito no modo de configuração do RIP. Vou definir como 8, por exemplo. A propósito, esse comando é o mesmo para EIGRP e OSPF.
 
 ![](../../../../../../z_imgs/124624.png)
 
@@ -180,130 +180,65 @@ Um '0' na máscara curinga significa que os bits devem coincidir entre o endere�
 
 ![](../../../../../../z_imgs/174804.png)
 
-Sim, coincidem.
+Sim, coincidem. Portanto, temos uma correspondência e o EIGRP será ativado na interface. Vamos tentar outro caso para ver se haverá correspondência. Com o mesmo endereço IP, usei este comando de rede: `network 172.16.1.0`, com uma máscara curinga de `0.0.0.7`. Isso significa que os primeiros 29 bits devem coincidir. Eles coincidem? Na verdade, não.
 
-Portanto, temos uma correspondência e o EIGRP será ativado na interface. Vamos tentar outro caso para ver se haverá correspondência.
-26:57
-Com o mesmo endereço IP, usei este comando de rede: `network 172.16.1.0`, com uma máscara curinga de `0.0.0.7`.
-27:08
-Isso significa que os primeiros 29 bits devem coincidir. Eles coincidem? Na verdade, não.
-27:14
-Este bit aqui não coincide entre a interface G2/0 do R1 e o comando `network`.
-27:19
-Logo, não há correspondência e o EIGRP não será ativado na interface.
-27:24
-Certo, tente descobrir isso por conta própria. Com o comando `network 172.16.1.8 0.0.0.7`, o EIGRP seria ativado na interface?
-27:37
-Pause o vídeo agora para encontrar a resposta.
-27:43
-Certo, vamos verificar. Estamos usando a mesma máscara curinga da última vez, então os primeiros 29 bits precisam coincidir.
-27:50
-Eles coincidem desta vez? Sim, coincidem; os primeiros 29 bits de `172.16.1.14` e os primeiros 29 bits de `172.16.1.8` correspondem.
-28:02
-Portanto, temos uma correspondência e o EIGRP será ativado na interface.
-28:07
-Certo, uma última questão de prática sobre máscaras curinga. O comando de rede é `network 168.0.0.0 7.255.255.255`. 28:20
-Nesse caso, o EIGRP seria ativado na interface? Pause o vídeo agora para encontrar a resposta.
-28:30
-Certo, vamos verificar. Com essa máscara curinga (*wildcard mask*), apenas os primeiros 5 bits precisam coincidir entre o IP da interface
-28:37
-e o comando de rede do EIGRP. Os primeiros cinco bits do endereço IP são 1 0 1 0 1, e os primeiros cinco bits do
-28:46
-comando de rede também são 1 0 1 0 1; portanto, temos uma correspondência novamente, e o EIGRP será
-28:53
-ativado na interface. Então, neste caso, usei uma máscara curinga /28 — o mesmo comprimento de prefixo da rede à qual a interface G2/0
-Configuração do EIGRP (continuação)
-29:02
-está conectada —, mas, como acabei de demonstrar, você pode usar várias máscaras curinga diferentes para
-29:07
-ativar o EIGRP na interface. No entanto, geralmente você optará pela simplicidade e usará o mesmo comprimento de prefixo da própria interface,
-29:15
-como fiz aqui. Ou talvez usar uma máscara curinga /32 e especificar o endereço IP exato da interface.
-29:24
-Como você escreveria uma máscara curinga /32? Bem, como você sabe, a máscara de sub-rede é 255.255.255.255; portanto, a máscara curinga seria composta apenas por zeros: 0.0.0.0.
-29:38
-De qualquer forma, o OSPF também utiliza máscaras curinga, então as revisaremos novamente em um vídeo futuro.
-29:45
-Lembre-se apenas de que esse comando especifica apenas em qual interface (ou interfaces) o EIGRP deve ser ativado.
-29:52
-O R1 então anunciará o prefixo de rede dessa interface — 172.16.1.0/28, neste caso. 'show ip protocols' (EIGRP)
-30:01
-Vamos analisar o comando SHOW IP PROTOCOLS quando o EIGRP está em execução. "Routing protocol is EIGRP 1" — sendo "1" o número do AS que configuramos, é claro.
-30:13
-Lembra-se do que eu disse no vídeo anterior sobre a métrica do EIGRP? Por padrão, ele utiliza a largura de banda e o atraso (delay) da interface; esses são os valores "K1" e "K3"
-30:22
-que estão definidos como 1 aqui. A largura de banda do link mais lento no caminho, somada aos valores de atraso de todos os
-30:29
-links do caminho, é utilizada para calcular a métrica. Os outros valores K (K2, K4 e K5) são definidos como 0 por padrão e não são usados ​​para calcular
-30:40
-a métrica; no entanto, isso pode ser alterado via configuração. A seguir, temos o router-ID.
-Router ID do EIGRP
-30:47
-No EIGRP e no OSPF, o roteador possui um router ID exclusivo que o identifica dentro do AS.
-30:54
-Observe que o padrão no R1 é 172.16.1.14. Por que isso acontece?
-30:59
-Bem, o router ID é determinado da seguinte forma: primeiro, se o router ID for configurado manualmente, esse será o router ID utilizado.
-31:09
-Se o router ID não for configurado manualmente, o endereço IP mais alto entre todas as
-31:14
-interfaces loopback do roteador será definido como o router ID. Interfaces loopback são interfaces virtuais dentro do r...
+![](../../../../../../z_imgs/072500.png)
+
+O bit na posição 4 não coincide entre a interface G2/0 do R1 e o comando `network`. Logo, não há correspondência e o EIGRP não será ativado na interface.
+
+Certo, tente descobrir isso por conta própria. Com o comando `network 172.16.1.8 0.0.0.7`, o EIGRP seria ativado na interface? Certo, vamos verificar. Estamos usando a mesma máscara curinga da última vez, então os primeiros 29 bits precisam coincidir. Eles coincidem desta vez? Sim, coincidem; os primeiros 29 bits de `172.16.1.14` e os primeiros 29 bits de `172.16.1.8` correspondem. Portanto, temos uma correspondência e o EIGRP será ativado na interface.
+
+Certo, uma última questão de prática sobre máscaras curinga. O comando de rede é `network 168.0.0.0 7.255.255.255`. Nesse caso, o EIGRP seria ativado na interface? Certo, vamos verificar. Com essa máscara curinga (*wildcard mask*), apenas os primeiros 5 bits precisam coincidir entre o IP da interface e o comando de rede do EIGRP. Os primeiros cinco bits do endereço IP são 1 0 1 0 1, e os primeiros cinco bits do comando de rede também são 1 0 1 0 1; portanto, temos uma correspondência novamente, e o EIGRP será ativado na interface. 
+
+- 172.16.1.8    = 1 0 1 0 1 1 0 0 . 0 0 0 1 0 0 0 0 . 0 0 0 0 0 0 0 1 . 0 0 0 0 1 0 0 0
+- 168.0.0.0     = 1 0 1 0 1 0 0 0 . 0 0 0 0 0 0 0 0 . 0 0 0 0 0 0 0 0 . 0 0 0 0 0 0 0 0
+- 7.255.255.255 = 0 0 0 0 0 1 1 1 . 1 1 1 1 1 1 1 1 . 1 1 1 1 1 1 1 1 . 1 1 1 1 1 1 1 1
+
+## Configuração do EIGRP (continuação)
+
+![](../../../../../../z_imgs/172602.png)
+
+Então, neste caso, usei uma máscara curinga /28 — o mesmo comprimento de prefixo da rede à qual a interface G2/0 está conectada —, mas, como acabei de demonstrar, você pode usar várias máscaras curinga diferentes para ativar o EIGRP na interface. No entanto, geralmente você optará pela simplicidade e usará o mesmo comprimento de prefixo da própria interface, como fiz aqui. Ou talvez usar uma máscara curinga /32 e especificar o endereço IP exato da interface.
+
+Como você escreveria uma máscara curinga /32? Bem, como você sabe, a máscara de sub-rede é 255.255.255.255; portanto, a máscara curinga seria composta apenas por zeros: 0.0.0.0. Lembre-se apenas de que esse comando especifica apenas em qual interface (ou interfaces) o EIGRP deve ser ativado. O R1 então anunciará o prefixo de rede dessa interface — 172.16.1.0/28, neste caso. 
+
+### 'show ip protocols' (EIGRP)
+
+Vamos analisar o comando `show ip protocols` quando o EIGRP está em execução. 
+
+![](../../../../../../z_imgs/074644.png)
 
 
-...falarei mais sobre eles
-31:22
-nos vídeos sobre OSPF. Por fim, se não houver interfaces *loopback* configuradas, como é o caso aqui, o endereço IP mais alto
-31:30
-em qualquer uma das interfaces físicas do roteador se tornará o *router ID*.
-31:35
-Assim, o endereço 172.16.1.14 da interface G2/0 tornou-se o *router ID*.
-31:42
-Observe que o *router ID* não é, na verdade, um endereço IP; é apenas um número de 32 bits formatado
-31:47
-como um endereço IP em notação decimal pontuada, e você pode alterá-lo para qualquer número de 32 bits.
-31:52
-Veja como configurar o *router ID* do EIGRP. No modo de configuração do EIGRP, use o comando `eigrp router-id`, seguido pelo *router ID*
-32:04
-que você deseja configurar; neste caso, usei 1.1.1.1.
-32:09
-Agora você pode ver que o *router ID* muda para 1.1.1.1, já que a configuração manual tem
-32:14
-prioridade máxima. Certo, os dois campos seguintes nós vimos ao estudar o RIP.
-32:20
-A sumarização automática está desativada, como deveria estar, e o EIGRP também realiza balanceamento de carga ECMP
-32:26
-em até 4 caminhos por padrão, assim como o RIP. Roteamento para as redes 10.0.0.0 e 172.16.1.0/28.
-32:37
-Estes são os dois comandos `network` que inserimos anteriormente. A interface G2/0 está configurada como interface passiva, há dois vizinhos — R2 e R3 — e o EIGRP
-32:48
-possui dois valores de AD distintos: 90 para rotas internas e 170 para externas.
-32:54
-Lembre-se de ambos os números. Rotas internas são rotas EIGRP normais, mas rotas externas são rotas provenientes de fora do EIGRP
-33:03
-que são então inseridas no EIGRP; mas esse é um tópico mais avançado, para o nível CCNP.
-'show ip route' (EIGRP)
-33:10
-Por fim, quero mostrar como o EIGRP aparece na tabela de roteamento. Primeiro, observe que as rotas EIGRP são indicadas pela letra D, e não E. Além disso, veja
-33:20
-os custos das métricas. 3072, 3328, 28416 — esses custos são muito mais altos do que os vistos no OSPF e no RIP, e esta é
-33:32
-uma rede muito pequena. Em redes grandes, esses números podem ser muito maiores.
-33:37
-Talvez essa seja uma desvantagem do EIGRP: as métricas são mais difíceis de entender.
-33:42
-Certo, isso é tudo o que abordaremos sobre RIP e EIGRP neste vídeo.
-Tópicos abordados
-33:48
-Antes de passar para o quiz de hoje, vamos recapitular o que vimos neste vídeo.
-33:53
-Primeiro, abordamos os fundamentos do RIP e sua configuração. Depois, fizemos o mesmo para o EIGRP.
-33:59
-Novamente, esses assuntos não constam na lista de tópicos do exame, mas isso não significa que você não precise saber nada sobre eles.
-34:06
-Além disso, o que você aprendeu neste vídeo tornará muito mais fácil o aprendizado de OSPF nos próximos vídeos.
-34:13
-Há mais uma coisa sobre o EIGRP que quero mencionar: o balanceamento de carga com custos desiguais,
-34:18
-mas abordarei isso no vídeo do laboratório. Portanto, não deixe de assistir a esse vídeo; ele é o próximo.
+"Routing protocol is EIGRP 1" — sendo "1" o número do AS que configuramos, é claro.
+
+Em relação a métrica do EIGRP, por padrão, ele utiliza a largura de banda e o atraso (delay) da interface; esses são os valores "K1" e "K3" que estão definidos como 1 no campo "Metrics weight". A largura de banda do link mais lento no caminho, somada aos valores de atraso de todos os links do caminho, é utilizada para calcular a métrica. Os outros valores K (K2, K4 e K5) são definidos como 0 por padrão e não são usados ​​para calcular a métrica; no entanto, isso pode ser alterado via configuração.
+
+A seguir, temos o "Router-ID".
+
+#### Router ID do EIGRP
+
+No EIGRP e no OSPF, o roteador possui um router ID exclusivo que o identifica dentro do AS. Observe que o padrão no R1 é 172.16.1.14. Por que isso acontece? Bem, o router ID é determinado da seguinte forma: 
+
+1. Primeiro, se o router ID for configurado manualmente, esse será o router ID utilizado.
+2. Se o router ID não for configurado manualmente, o endereço IP mais alto entre todas as interfaces loopback do roteador será definido como o router ID (interfaces loopback são interfaces virtuais dentro do roteador. Falarei mais sobre eles no arquivo sobre OSPF).
+3. Por fim, se não houver interfaces *loopback* configuradas, como é o caso aqui, o endereço IP mais alto em qualquer uma das interfaces físicas do roteador se tornará o *router ID*.
+
+Assim, o endereço 172.16.1.14 da interface G2/0 tornou-se o *router ID*. Observe que o *router ID* não é, na verdade, um endereço IP; é apenas um número de 32 bits formatado como um endereço IP em notação decimal pontuada, e você pode alterá-lo para qualquer número de 32 bits.
+
+Veja como configurar o *router ID* do EIGRP. No modo de configuração do EIGRP, use o comando `eigrp router-id`, seguido pelo *router ID* que você deseja configurar, como, por exemplo, 1.1.1.1. Assim, o *router ID* mudaria para 1.1.1.1, já que a configuração manual tem prioridade máxima. 
+
+Certo, os dois campos seguintes nós vimos ao estudar o RIP. A sumarização automática está desativada, como deveria estar, e o EIGRP também realiza balanceamento de carga ECMP em até 4 caminhos por padrão, assim como o RIP.
+
+No parte final, temos os dois comandos `network` que inserimos anteriormente. A interface G2/0 está configurada como interface passiva, há dois vizinhos — R2 e R3 — e o EIGRP possui dois valores de AD distintos: 90 para rotas internas e 170 para externas. Rotas internas são rotas EIGRP normais, mas rotas externas são rotas provenientes de fora do EIGRP que são então inseridas no EIGRP; mas esse é um tópico mais avançado.
+
+### 'show ip route' (EIGRP)
+
+Por fim, quero mostrar como o EIGRP aparece na tabela de roteamento. 
+
+![](../../../../../../z_imgs/075913.png)
+
+Primeiro, observe que as rotas EIGRP são indicadas pela letra D, e não E. Além disso, veja os custos das métricas. 3072, 3328, 28416 — esses custos são muito mais altos do que os vistos no OSPF e no RIP, e esta é uma rede muito pequena. Em redes grandes, esses números podem ser muito maiores. Talvez essa seja uma desvantagem do EIGRP: as métricas são mais difíceis de entender.
+
+Certo, isso é tudo o que abordaremos sobre RIP e EIGRP neste arquivo.
 
 
