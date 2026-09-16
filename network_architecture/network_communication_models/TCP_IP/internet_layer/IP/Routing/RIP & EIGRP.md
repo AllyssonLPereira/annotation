@@ -313,36 +313,15 @@ Aqui está a rota para 192.168.4.0/24, conforme exibido na tabela de rotas do R1
 
 ![](../../../../../../z_imgs/080313.png)
 
-Observe que, embora as duas rotas tenham valores de métrica diferentes, o R1 agora insere ambas
-21:10
-na tabela de roteamento.
-21:11
-No entanto, o R1 enviará um pouco mais de tráfego via R2 do que via R3, pois o caminho do R2 tem uma
-21:18
-métrica menor; é um caminho mais rápido.
-Resumo da terminologia do EIGRP
-21:22
+Observe que, embora as duas rotas tenham valores de métrica diferentes, o R1 agora insere ambas na tabela de roteamento. No entanto, o R1 enviará um pouco mais de tráfego via R2 do que via R3, pois o caminho do R2 tem uma métrica menor; é um caminho mais rápido.
+
 Antes de terminar, deixe-me revisar esses quatro termos.
-21:24
-A distância viável (feasible distance) de uma rota é o valor da métrica *deste* roteador até o destino da rota.
-21:30
-A distância reportada (reported distance) de uma rota é o valor da métrica do roteador vizinho até o destino.
-21:36
-Lembre-se de que isso também é chamado de "Distância Anunciada" (Advertised Distance).
-21:39
-Uma rota sucessora é a rota com a menor métrica até o destino, a melhor
-21:44
-rota.
-21:45
-No entanto, pode haver múltiplos sucessores se eles tiverem a mesma métrica; o EIGRP fará
-21:50
-balanceamento de carga ECMP. 21:52
-Uma rota sucessora viável é uma rota alternativa para o destino que atende à condição de viabilidade.
-21:57
-condição.
-21:59
-E, finalmente, essa condição de viabilidade é a seguinte: uma rota é considerada uma sucessora viável
-22:04
-se a sua distância reportada for menor do que a distância viável da rota sucessora.
+
+## Resumo da terminologia do EIGRP
+
+- A distância viável (feasible distance) de uma rota é o valor da métrica *do* roteador até o destino da rota.
+- A distância reportada (reported distance) de uma rota é o valor da métrica do roteador vizinho até o destino. Lembre-se de que isso também é chamado de "Distância Anunciada" (Advertised Distance).
+- Uma rota sucessora é a rota com a menor métrica até o destino, a melhor rota. No entanto, pode haver múltiplos sucessores se eles tiverem a mesma métrica; o EIGRP fará balanceamento de carga ECMP. 
+- Uma rota sucessora viável é uma rota alternativa para o destino que atende à condição de viabilidade. Essa condição de viabilidade é a seguinte: uma rota é considerada uma sucessora viável se a sua distância reportada for menor do que a distância viável da rota sucessora.
 
 
