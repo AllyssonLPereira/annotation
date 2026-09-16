@@ -239,6 +239,110 @@ Por fim, quero mostrar como o EIGRP aparece na tabela de roteamento.
 
 Primeiro, observe que as rotas EIGRP são indicadas pela letra D, e não E. Além disso, veja os custos das métricas. 3072, 3328, 28416 — esses custos são muito mais altos do que os vistos no OSPF e no RIP, e esta é uma rede muito pequena. Em redes grandes, esses números podem ser muito maiores. Talvez essa seja uma desvantagem do EIGRP: as métricas são mais difíceis de entender.
 
-Certo, isso é tudo o que abordaremos sobre RIP e EIGRP neste arquivo.
+## Métrica do EIGRP 
+
+Primeiro, deixe-me explicar um pouco mais sobre a métrica do EIGRP, embora eu já a tenha mencionado brevemente algumas vezes. Por padrão, o EIGRP usa largura de banda e atraso para calcular a métrica de uma rota. Esta é a fórmula usada para calcular a métrica.
+
+> ([K1 * bandwidth + (K2 * bandwidth) / (256 - load) + K3 * delay] * [K5 / (reliability + K4)]) * 256
+
+Ela parece bastante complicada, mas não há necessidade de memorizá-la. Observe os valores 'K' — K1, K2, K3, K4 e K5 — na fórmula. Os valores K padrão são K1 = 1, K2 = 0, K3 = 1, K4 = 0 e K5 = 0. O K1 é multiplicado pela largura de banda e o K3 é multiplicado pelo atraso. Como você não precisa se preocupar em memorizar essa fórmula ou calcular a métrica do EIGRP por conta própria, pode pensar na métrica do EIGRP desta forma: A métrica é igual à largura de banda mais o atraso.
+
+Mas há algo mais que você deve saber; deixe-me demonstrar aqui.
+
+![](../../../../../../z_imgs/073335.png)
+
+Não é simplesmente largura de banda mais atraso, mas sim a largura de banda do link mais lento no caminho até o destino, somada ao atraso de todos os links no caminho até o destino. Por exemplo, digamos que o R1 queira enviar tráfego para a LAN do R4, 192.168.4.0/24. A rota via R2 é a melhor. Então, a largura de banda do link mais lento — retângulo vermelho — é somada ao atraso de todos os links (retângulos azuis), e assim você obtém o valor total da métrica da rota. 
+
+![](../../../../../../z_imgs/073714.png)
+
+Aliás, os roteadores não enviam mensagens de ping para medir o atraso de cada link; o valor de "delay" é, na verdade, um valor padrão baseado na largura de banda da interface. Vamos em frente.
+
+## Terminologia do EIGRP
+
+Agora, vamos abordar alguns termos importantes do EIGRP.
+
+![](../../../../../../z_imgs/074045.png)
+
+*Feasible distance* (distância viável) significa o valor da métrica *do roteador* até o destino da rota. Da perspectiva do R1, ao tentar alcançar a rede 192.168.4.0/24, isso significa a métrica de toda a rota: do R1 para o R2, depois do R2 para o R4, e então o R4 enviando o tráfego para fora de sua própria interface (isso é representado pela seta vermelha). Mas há outro termo que você deve conhecer.
+
+*Reported distance* (distância reportada), também conhecida como *advertised distance* (distância anunciada). Esse é o valor da métrica do vizinho para alcançar o destino. Portanto, para esta rota, o vizinho é o R2; a distância reportada é a métrica do R2 até o destino (isso é representado pela seta azul ).
+
+Observe que esses termos NÃO estão relacionados ao conceito de distância administrativa. O EIGRP usa o termo "distância", mas trata-se da métrica usada para comparar rotas do EIGRP, e não da distância administrativa, que é usada para comparar rotas de diferentes protocolos de roteamento. Vamos dar uma olhada nos custos reais no Packet Tracer.
+
+Na imagem, você pode ver saída do comando `show ip eigrp topology`, apenas para a rota para a rede 192.168.4.0/24. O número destacado em vermelho é a métrica do R1, a *Feasible Distance* (Distância Viável). O número destacado em azul é a métrica do vizinho do R1, o R2 — a *Reported Distance* (Distância Informada).
+
+E quanto à rota abaixo dela, via R3? O número destacado em amarelo é a *feasible distance*, a métrica total do R1 para alcançar o destino. O número destacado em rosa é a *reported distance*, a métrica do vizinho do R1, o R3, para alcançar o destino. Por que é importante conhecer esses dois termos? Você precisa conhecê-los para entender os próximos dois termos que vou apresentar. Aqui estão os próximos dois termos.
+
+*Successor* (Sucessor) é o termo para a rota com a menor métrica até o destino; portanto, é a melhor rota. Neste caso, qual rota para 192.168.4.0/24 é a sucessora? É a rota via R2, pois ela tem a menor métrica; é a melhor rota. Próximo termo.
+
+Um *Feasible Successor* (Sucessor Viável) é uma rota alternativa para o destino; não é a melhor rota, mas deve atender à "condição de viabilidade" (*feasibility condition*). Certo, preste atenção aqui.
+
+Qual é a condição de viabilidade que deve ser atendida? Uma rota é considerada um *feasible successor* se a sua *reported distance* for menor do que a *feasible distance* da rota sucessora. Então, a rota via R3 atende a essa condição de viabilidade? 
+
+A distância informada pelo R3 é 28.416. A distância viável da rota sucessora via R2 é 28.672. 28.416 é menor que 28.672; portanto, a rota via R3 é uma sucessora viável. Por que o EIGRP utiliza esse sistema de sucessores viáveis? É uma forma de prevenção de loops.
+
+Se uma rota atende ao requisito de viabilidade, garante-se que ela não formará um loop. Não vou perder tempo explicando isso em detalhes, mas lembre-se de que este é um mecanismo de prevenção de loops.
+
+## Balanceamento de carga com custos desiguais no EIGRP
+
+Com base nisso, vou explicar agora como o EIGRP realiza o balanceamento de carga com custos desiguais, um recurso exclusivo do EIGRP, já que outros protocolos de roteamento só realizam balanceamento de carga se as métricas de cada rota forem iguais. Aqui está uma saída do comando `show ip protocols`.
+
+![](../../../../../../z_imgs/075604.png)
+
+Logo abaixo, consta: "EIGRP maximum metric variance 1". Esse é o valor padrão: 1. Com uma variância de 1, será realizado o balanceamento de carga ECMP (Equal-Cost Multi-Path). Isso significa que a distância viável (FD) de uma rota deve ser igual à da rota sucessora escolhida para o balanceamento de carga. Na verdade, se a FD de outra rota for igual à FD da rota sucessora, essa rota também é uma sucessora; podem existir múltiplos sucessores. Portanto, com as configurações padrão, o EIGRP não realiza balanceamento de carga com custos desiguais.
+
+Por exemplo, estas são as rotas do R1 para 192.168.4.0/24.
+
+![](../../../../../../z_imgs/075805.png)
+
+O FD da sucessora viável é maior do que o FD da rota sucessora, então não pode ser usada para balanceamento de carga. Então, no modo de configuração do EIGRP, usei o comando `variance` e defini o valor como 2. O que isso significa?
+
+![](../../../../../../z_imgs/080043.png)
+
+Bem, é basicamente um multiplicador. `variance 2` significa que rotas de sucessores viáveis ​​com uma FD de até duas vezes a FD da rota sucessora podem ser usadas para balanceamento de carga. Deixe-me explicar usando nosso exemplo.
+
+Aqui estão nossas rotas.
+
+![](../../../../../../z_imgs/075805.png)
+
+A FD do sucessor é 28.672, mas acabei de configurar uma variância de 2, então podemos dobrar esse valor. 28.672 vezes 2 é igual a 57.344. A FD do sucessor viável é 30.976. 30.976 é menor que 57.344, então a rota via R3 agora pode ser usada para balanceamento de carga. Vou mostrar que ela já foi inserida na tabela de roteamento do R1. Mas deixe-me enfatizar uma coisa.
+
+O EIGRP só realizará balanceamento de carga com custos desiguais (unequal-cost load-balancing) usando rotas de sucessor viável (feasible successor). Se uma rota não atender ao requisito de viabilidade, ela NUNCA será selecionada para balanceamento de carga, independentemente da variância. Isso ocorre porque o requisito de viabilidade é um mecanismo importante de prevenção de loops; portanto, o roteador nunca o ignorará para inserir uma rota inviável na tabela de roteamento.
+
+Aqui está a rota para 192.168.4.0/24, conforme exibido na tabela de rotas do R1.
+
+![](../../../../../../z_imgs/080313.png)
+
+Observe que, embora as duas rotas tenham valores de métrica diferentes, o R1 agora insere ambas
+21:10
+na tabela de roteamento.
+21:11
+No entanto, o R1 enviará um pouco mais de tráfego via R2 do que via R3, pois o caminho do R2 tem uma
+21:18
+métrica menor; é um caminho mais rápido.
+Resumo da terminologia do EIGRP
+21:22
+Antes de terminar, deixe-me revisar esses quatro termos.
+21:24
+A distância viável (feasible distance) de uma rota é o valor da métrica *deste* roteador até o destino da rota.
+21:30
+A distância reportada (reported distance) de uma rota é o valor da métrica do roteador vizinho até o destino.
+21:36
+Lembre-se de que isso também é chamado de "Distância Anunciada" (Advertised Distance).
+21:39
+Uma rota sucessora é a rota com a menor métrica até o destino, a melhor
+21:44
+rota.
+21:45
+No entanto, pode haver múltiplos sucessores se eles tiverem a mesma métrica; o EIGRP fará
+21:50
+balanceamento de carga ECMP. 21:52
+Uma rota sucessora viável é uma rota alternativa para o destino que atende à condição de viabilidade.
+21:57
+condição.
+21:59
+E, finalmente, essa condição de viabilidade é a seguinte: uma rota é considerada uma sucessora viável
+22:04
+se a sua distância reportada for menor do que a distância viável da rota sucessora.
 
 
