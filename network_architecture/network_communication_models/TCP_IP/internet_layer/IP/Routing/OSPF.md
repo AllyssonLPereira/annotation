@@ -49,17 +49,15 @@ Então, digamos que esta rede de quatro roteadores esteja executando o OSPF. Tod
 
 Assim, o R4 precisa informar aos outros roteadores sobre esse novo segmento de rede. Para isso, o R4 cria um LSA para comunicar aos seus vizinhos a existência da rede na interface G1/0. Um LSA do OSPF contém algumas informações básicas, como o RID, ou seja, o ID do roteador. Para esta demonstração, o ID do roteador R4 é 4.4.4.4; nenhuma de suas interfaces físicas possui o endereço IP 4.4.4.4; portanto, ou o R4 tem uma interface de loopback com o endereço IP 4.4.4.4, ou o ID do roteador foi configurado manualmente.
 
-A rede na interface G1/0 está, naturalmente, incluída no LSA, já que esse é o objetivo
-6:47
-principal do LSA. O custo do R4 também está incluído. Falarei mais sobre a métrica do OSPF, chamada de custo, na próxima aula, mas esta interface GigabitEthernet
-6:57
-tem um custo de 1. O LSA é então propagado (flooded) por toda a rede até que todos os roteadores recebam uma cópia.
-7:06
-O processo ocorre desta forma. Isso resulta em todos os roteadores da área OSPF possuindo o mesmo LSDB.
-7:11
-O LSDB tem esta aparência, contendo LSAs para todos os diferentes links da rede.
-7:19
-Agora que o OSPF foi ativado na interface G1/0 do R4, esse novo LSA é adicionado ao
+A rede na interface G1/0 está, naturalmente, incluída no LSA, já que esse é o objetivo principal do LSA. O custo do R4 também está incluído. Falarei mais sobre a métrica do OSPF, chamada de custo, no próximo arquivo, mas esta interface GigabitEthernet tem um custo de 1. 
+
+![](../../../../../../z_imgs/173624.png)
+
+O LSA é então propagado (flooded) por toda a rede até que todos os roteadores recebam uma cópia. O processo ocorre desta forma. 
+
+![](../../../../../../z_imgs/173924.png)
+
+Isso resulta em todos os roteadores da área OSPF possuindo o mesmo LSDB. O LSDB tem esta aparência da imagem anterior, contendo LSAs para todos os diferentes links da rede. Agora que o OSPF foi ativado na interface G1/0 do R4, esse novo LSA é adicionado ao
 7:25
 LSDB. Tenho certeza de que repetirei isso muitas vezes, mas lembre-se de que esse LSDB é idêntico
 7:31
