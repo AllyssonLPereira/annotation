@@ -9,91 +9,46 @@ Certo, vamos começar com o OSPF.
 
 Primeiramente, aqui está o mesmo gráfico dos diferentes tipos de protocolos de roteamento que mostrei antes.
 
-123046
+![](../../../../../../z_imgs/123046.png)
 
-Lembre-se de que o OSPF é um protocolo de roteamento dinâmico do tipo *Link State* (estado do enlace). Você verá neste vídeo que ele funciona de maneira bem diferente dos protocolos de roteamento
-2:17
-do tipo *Distance Vector* (vetor de distância), como o RIP e o EIGRP. Para recapitular: protocolos *Distance Vector* utilizam o conceito de "roteamento por boato" (*routing by rumor*), no qual cada roteador compartilha informações
-2:26
-sobre as rotas que conhece e o custo da métrica para alcançar cada destino. No entanto, os roteadores não possuem um mapa completo da rede; eles apenas utilizam as informações
-2:36
-fornecidas pelos roteadores vizinhos para determinar a melhor rota para cada destino.
-2:41
-Agora, vamos revisar como funcionam os protocolos *Link State*. Aqui está outro slide que mostrei no vídeo do Dia 24.
-Revisão – Como funcionam os protocolos *Link State*
-2:49
-Ao utilizar um protocolo de roteamento *Link State*, cada roteador cria um "mapa de conectividade" da rede. 2:54
-Para permitir isso, cada roteador anuncia informações sobre suas interfaces (suas redes conectadas)
-3:00
-aos seus vizinhos. Esses anúncios são repassados ​​a outros roteadores, até que todos os roteadores da rede
-3:06
-construam o mesmo mapa da rede. Isso é importante: todos os roteadores possuem o mesmo mapa completo da rede.
-3:13
-Então, cada roteador usa esse mapa de forma independente para calcular as melhores rotas para cada destino.
-3:20
-Devido a esse processo, os protocolos de estado de link consomem mais recursos do roteador, pois mais informações são compartilhadas.
-3:26
-Eles exigem mais do roteador. No entanto, os protocolos de estado de link tendem a reagir mais rapidamente a mudanças na rede do que
-3:32
-os protocolos de vetor de distância. Essa foi uma breve revisão dos protocolos de roteamento de estado de link.
-3:38
-Agora, vamos nos aprofundar no funcionamento do OSPF; você entenderá melhor o significado de tudo isso e verá como ele difere do RIP e do EIGRP, mas também
-3:47
-perceberá as semelhanças. Então, vamos começar com o OSPF.
-Introdução ao OSPF
-3:53
-OSPF significa "Open Shortest Path First" (Abrir o Caminho Mais Curto Primeiro). O protocolo OSPF utiliza o algoritmo "shortest path first" (caminho mais curto primeiro), criado pelo cientista da computação holandês
-4:01
-Edsger Dijkstra. Outro nome para o algoritmo é "algoritmo de Dijkstra" — lembre-se desse nome!
-4:08
-Pode cair em uma questão de prova. Existem três versões do OSPF.
-4:13
-A versão 1 foi lançada em 1989. É antiga e não é mais utilizada.
-4:19
-A versão 2 foi lançada em 1998 e é, tipicamente, a versão utilizada em redes
-4:24
-IP versão 4. Dê uma olhada novamente nos tópicos do exame. A versão do OSPF presente na lista de tópicos do exame é a versão 2; portanto, ao falar sobre OSPF
-4:33
-nestes vídeos, estarei me referindo à versão 2. Existe também o OSPF versão 3, desenvolvido para IPv6.
-4:42
-Ele também pode ser usado com IPv4, mas a versão 2 é mais comum em redes IPv4. Certo, agora alguns pontos gerais sobre o OSPF.
-4:51
-Os roteadores armazenam informações sobre a rede em LSAs (Link State Advertisements — Anúncios de Estado de Link), que são organizados em uma estrutura chamada LSDB (Link State Database — Banco de Dados de Estado de Link).
-5:01
-LSA e LSDB são dois termos importantes no OSPF. Falarei mais sobre eles ao longo destes vídeos sobre o protocolo.
-5:10
-Os roteadores propagam (fazem o *flood* de) LSAs até que todos os roteadores na área OSPF tenham o mesmo mapa da
-5:15
-rede, ou seja, o mesmo LSDB. Portanto, esses são mais dois termos importantes: *flood* e *area* (área).
-5:22
-Você já conhece o termo *flood*; os switches fazem isso quando recebem um quadro de *broadcast* ou *unicast* desconhecido.
-5:28
-No caso do OSPF, isso significa enviar os LSAs para todos os seus vizinhos OSPF.
-5:33
-As "áreas" do OSPF são uma característica única do protocolo, e falarei mais sobre elas mais adiante neste vídeo.
-5:40
-Deixe-me detalhar brevemente os dois últimos pontos do slide anterior, sobre LSAs e o LSDB.
-Propagação (Flood) de LSA
-5:46
-Então, digamos que esta rede de quatro roteadores esteja executando o OSPF. Todos esses roteadores são vizinhos OSPF, possuem o mesmo banco de dados de estado de link e a
-5:56
-rede está estável. Então, o OSPF é habilitado na interface G1/0 do roteador R4.
-6:01
-Assim, o R4 precisa informar aos outros roteadores sobre esse novo segmento de rede. Para isso, o R4 cria um LSA para comunicar aos seus vizinhos a existência da rede na interface G1/0. 6:12
-Um LSA do OSPF contém mais informações do que isso — e veremos isso mais a fundo mais tarde —, mas algumas
-6
+Lembre-se de que o OSPF é um protocolo de roteamento dinâmico do tipo *Link State* (estado do enlace). Você verá neste arquivo que ele funciona de maneira bem diferente dos protocolos de roteamento do tipo *Distance Vector* (vetor de distância), como o RIP e o EIGRP. Para recapitular: protocolos *Distance Vector* utilizam o conceito de "roteamento por boato" (*routing by rumor*), no qual cada roteador compartilha informações sobre as rotas que conhece e o custo da métrica para alcançar cada destino. No entanto, os roteadores não possuem um mapa completo da rede; eles apenas utilizam as informações fornecidas pelos roteadores vizinhos para determinar a melhor rota para cada destino.
 
+Agora, vamos revisar como funcionam os protocolos *Link State*.
 
+## Revisão – Como funcionam os protocolos *Link State*
 
-:18
-...das informações básicas em um LSA é o RID, ou seja, o ID do roteador.
-6:23
-Para esta demonstração, o ID do roteador R4 é 4.4.4.4.
-6:28
-Nenhuma de suas interfaces físicas possui o endereço IP 4.4.4.4; portanto, ou o R4 tem uma interface de loopback
-6:34
-com o endereço IP 4.4.4.4, ou o ID do roteador foi configurado manualmente.
-6:41
+Ao utilizar um protocolo de roteamento *Link State*, cada roteador cria um "mapa de conectividade" da rede. Para permitir isso, cada roteador anuncia informações sobre suas interfaces (suas redes conectadas) aos seus vizinhos. Esses anúncios são repassados ​​a outros roteadores, até que todos os roteadores da rede construam o mesmo mapa da rede. Isso é importante: todos os roteadores possuem o mesmo mapa completo da rede.
+
+Então, cada roteador usa esse mapa de forma independente para calcular as melhores rotas para cada destino. Devido a esse processo, os protocolos de estado de link consomem mais recursos do roteador, pois mais informações são compartilhadas. Eles exigem mais do roteador. No entanto, os protocolos de estado de link tendem a reagir mais rapidamente a mudanças na rede do que os protocolos de vetor de distância.
+
+Essa foi uma breve revisão dos protocolos de roteamento de estado de link. Agora, vamos nos aprofundar no funcionamento do OSPF; você entenderá melhor o significado de tudo isso e verá como ele difere do RIP e do EIGRP, mas também perceberá as semelhanças. Então, vamos começar com o OSPF.
+
+## Introdução ao OSPF
+
+OSPF significa "Open Shortest Path First" (Abrir o Caminho Mais Curto Primeiro). O protocolo OSPF utiliza o algoritmo "shortest path first" (caminho mais curto primeiro), criado pelo cientista da computação holandês Edsger Dijkstra. Outro nome para o algoritmo é "algoritmo de Dijkstra".
+
+Existem três versões do OSPF.
+
+- A versão 1 foi lançada em 1989. É antiga e não é mais utilizada.
+- A versão 2 foi lançada em 1998 e é, tipicamente, a versão utilizada em redes IP versão 4.
+- Existe também o OSPF versão 3, desenvolvido para IPv6. Ele também pode ser usado com IPv4, mas a versão 2 é mais comum em redes IPv4.
+
+Certo, agora alguns pontos gerais sobre o OSPF.
+
+Os roteadores armazenam informações sobre a rede em LSAs (Link State Advertisements — Anúncios de Estado de Link), que são organizados em uma estrutura chamada LSDB (Link State Database — Banco de Dados de Estado de Link). LSA e LSDB são dois termos importantes no OSPF. Falarei mais sobre eles ao longo destes arquivos sobre o protocolo.
+
+Os roteadores propagam (fazem o *flood* de) LSAs até que todos os roteadores na área OSPF tenham o mesmo mapa da rede, ou seja, o mesmo LSDB. Portanto, esses são mais dois termos importantes: *flood* e *area* (área). 
+
+Você já conhece o termo *flood*; os switches fazem isso quando recebem um quadro de *broadcast* ou *unicast* desconhecido. No caso do OSPF, isso significa enviar os LSAs para todos os seus vizinhos OSPF. As "áreas" do OSPF são uma característica única do protocolo, e falarei mais sobre elas mais adiante neste arquivo. Deixe-me detalhar brevemente sobre LSAs e o LSDB.
+
+### Propagação (Flood) de LSA
+
+![](../../../../../../z_imgs/125436.png)
+
+Então, digamos que esta rede de quatro roteadores esteja executando o OSPF. Todos esses roteadores são vizinhos OSPF, possuem o mesmo banco de dados de estado de link e a rede está estável. Então, o OSPF é habilitado na interface G1/0 do roteador R4.
+
+Assim, o R4 precisa informar aos outros roteadores sobre esse novo segmento de rede. Para isso, o R4 cria um LSA para comunicar aos seus vizinhos a existência da rede na interface G1/0. Um LSA do OSPF contém algumas informações básicas, como o RID, ou seja, o ID do roteador. Para esta demonstração, o ID do roteador R4 é 4.4.4.4; nenhuma de suas interfaces físicas possui o endereço IP 4.4.4.4; portanto, ou o R4 tem uma interface de loopback com o endereço IP 4.4.4.4, ou o ID do roteador foi configurado manualmente.
+
 A rede na interface G1/0 está, naturalmente, incluída no LSA, já que esse é o objetivo
 6:47
 principal do LSA. O custo do R4 também está incluído. Falarei mais sobre a métrica do OSPF, chamada de custo, na próxima aula, mas esta interface GigabitEthernet
