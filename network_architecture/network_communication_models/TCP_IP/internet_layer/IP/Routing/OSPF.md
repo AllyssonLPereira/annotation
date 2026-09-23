@@ -132,128 +132,63 @@ A área 1 agora é não contígua. Em vez de estar toda conectada, metade da ár
 ![](../../../../../../z_imgs/075308.png)
 
 Agora, todas as áreas são contíguas e o OSPF pode funcionar corretamente.
-16:41
-Próxima regra: todas as áreas OSPF devem ter pelo menos um ABR conectado à área backbone.
-16:47
-Na verdade, já mencionei isso, mas vale a pena repetir. Vamos olhar novamente para o diagrama de rede. 16:54
-Então, observe que a área 1 possui um ABR conectado tanto à área 1 quanto à área 0; a área 2 possui um ABR
-17:01
-conectado tanto à área 2 quanto à área 0; e a área 3 também possui um ABR conectado tanto à área 3
-17:07
-quanto à área 0. Esse é um projeto de rede OSPF correto. Como mostrei anteriormente, uma rede como esta não representa um projeto OSPF correto e causará
-17:17
-problemas, pois a área 1 não possui um ABR conectado à área de backbone,
 
+Próxima regra: todas as áreas OSPF devem ter pelo menos um ABR conectado à área backbone. Na verdade, já mencionei isso, mas vale a pena repetir. Vamos olhar novamente para o diagrama de rede. Então, observe que a área 1 possui um ABR conectado tanto à área 1 quanto à área 0; a área 2 possui um ABR conectado tanto à área 2 quanto à área 0; e a área 3 também possui um ABR conectado tanto à área 3 quanto à área 0. Esse é um projeto de rede OSPF correto.
 
+![](../../../../../../z_imgs/122255.png)
 
-área 0.
-17:24
-Mais uma regra: interfaces OSPF na mesma sub-rede devem estar na mesma área.
-17:29
-Se não estiverem na mesma área, elas não se tornarão vizinhas OSPF e não trocarão informações sobre as redes que conhecem.
-17:36
-Em um vídeo futuro, detalharei outros requisitos para que roteadores se tornem vizinhos OSPF, mas, por enquanto, vamos ficar apenas com esta regra.
-17:43
-Então, deixe-me demonstrar. Neste exemplo, estes três roteadores possuem uma interface na área 0, na sub-rede
-17:53
-192.168.1.0/29. Este roteador também possui uma interface na sub-rede 192.168.1.0/29, mas a interface está na área 1, e não na
-18:02
-área 0. Embora todas as quatro interfaces estejam na mesma sub-rede e o OSPF esteja habilitado nelas, o
-18:08
-roteador da área 1 não se tornará vizinho OSPF dos outros. Desta vez, a interface do ABR da área 1 na sub-rede 192.168.1.0/29 está configurada corretamente
-18:20
-na área 0. Assim, todos os quatro roteadores se tornarão vizinhos OSPF. Aqui está um resumo dessas três regras.
-18:28
-É claro que abordarei muitos outros pontos sobre o OSPF nos próximos vídeos. Falarei detalhadamente sobre vizinhos OSPF, LSAs OSPF e outros tópicos.
-18:37
-Mas agora vamos abordar algumas configurações básicas do OSPF para que possamos praticá-las no vídeo de laboratório.
-Configuração Básica de OSPF
-18:44
-Então, vamos usar a mesma topologia de rede que utilizamos para RIP e EIGRP, já que você já está familiarizado com ela. 18:50
-Embora seja importante entender as regras e os termos relacionados às áreas OSPF, para
-18:55
-o CCNA você só precisa configurar o OSPF de área única; portanto, todas essas interfaces de roteador estão
-19:01
-na área OSPF 0. Já configurei os roteadores R2, R3 e R4, então vamos configurar o OSPF no R1.
-19:10
-Aqui está a configuração básica do OSPF; vamos analisá-la. Primeiramente, para entrar no modo de configuração do OSPF, usa-se o comando `router ospf`, seguido
-19:20
-de um ID de processo. Um roteador pode executar vários processos OSPF simultaneamente, e esse ID é usado no roteador para
-19:28
-identificar cada um deles. Normalmente, utiliza-se apenas um único processo OSPF, então não se preocupe muito com esse número;
-19:34
-eu escolhi usar o 1. Se você se lembra da configuração do EIGRP, utilizava-se o comando `router eigrp`, seguido
-19:43
-de um número de AS. Para que roteadores EIGRP se tornem vizinhos, seus números de AS precisam coincidir.
-19:49
-No entanto, o ID de processo do OSPF é diferente. O ID de processo do OSPF tem significado local.
-19:56
-Roteadores com IDs de processo diferentes podem se tornar vizinhos OSPF. Geralmente, uso apenas o ID de processo 1, mas você poderia, por exemplo, usar o ID de processo 1 no R1 e
-20:08
-o ID de processo 2 no R2; eles ainda assim se tornariam vizinhos OSPF e trocariam LSAs.
-20:15
-Observe que esse ID de processo não tem relação alguma com a área. Você verá a seguir que a área é configurada separadamente.
-20:22
-Então, em seguida, tentei usar o comando `network`, assim como fiz no EIGRP.
-20:27
-Note que o OSPF utiliza máscaras curinga (*wildcard masks*), exatamente como o EIGRP. Se precisar revisá-las, volte e assista ao vídeo do Dia 25.
-20:35
-Basicamente, trata-se de uma máscara de sub-rede invertida. Enfim, tentei usar aquele comando, mas o roteador respondeu com "Incomplete command" (comando incompleto).
-20:43
-Isso acontece porque o comando `network` do OSPF exige que você especifique a área.
-20:49
-Então, ativei o OSPF em todas essas interfaces, na área 0.
-20:54
-Mais uma vez: para o CCNA, você só precisa configurar o OSPF de área única e, geralmente,
-20:59
-você usará a área 0. No OSPF de área única, é possível usar qualquer número de área, mas considera-se
-21:06
-uma boa prática utilizar a área 0. Antes de prosseguir, deixe-me revisar a função do comando `network`; ele funciona exatamente como no
-21:14
-RIP e no EIGRP. O comando `network` instrui o OSPF a procurar interfaces com um endereço IP contido
-21:21
-na faixa especificada no comando e, em seguida, ativar o OSPF nessa interface
-21:26
-na área especificada. Por exemplo, no primeiro comando `network`, especifiquei 10.0.12.0 com uma máscara curinga (wildcard) /28,
-21:35
-na área 0. A interface G0/0 do R1 tem o endereço IP 10.0.12.1, que está contido na faixa 10.0.12.0/28.
-21:45
-Portanto, o OSPF será ativado na interface G0/0, na área 0.
-21:51
-Quando o OSPF é ativado na interface, o roteador tenta estabelecer uma vizinhança OSPF com outros roteadores vizinhos que também tenham o OSPF ativado.
-22:00
-Nesse caso, o R1 estabelecerá vizinhança OSPF com o R2 e o R3. Explicarei esse processo detalhadamente no próximo vídeo.
-22:08
-Então, lembre-se apenas de que o comando `network` serve simplesmente para indicar ao roteador em quais interfaces o OSPF deve ser ativado.
-22:15
-Ele não instrui o roteador a "anunciar essas redes". Mas já abordamos isso no vídeo anterior; agora, vamos ver algumas outras configurações
-22:23
-que você pode realizar no OSPF. Para começar, o comando `passive-interface`.
-comando passive-interface
-22:29
-Você já conhece esse comando do RIP e do EIGRP; ele funciona exatamente da mesma forma no OSPF.
-22:35
-O comando `passive-interface` instrui o roteador a parar de enviar mensagens "hello" do OSPF por meio daquela interface.
-22:42
-O OSPF utiliza mensagens "hello" para se anunciar a outros roteadores — aguarde o vídeo do Dia 27 para mais detalhes sobre isso.
-22:48
-No entanto, o roteador continuará enviando LSAs para informar seus vizinhos...
+Uma rede como esta não representa um projeto OSPF correto e causará problemas, pois a área 1 não possui um ABR conectado à área de backbone, área 0.
 
+Mais uma regra: interfaces OSPF na mesma sub-rede devem estar na mesma área. Se não estiverem na mesma área, elas não se tornarão vizinhas OSPF e não trocarão informações sobre as redes que conhecem. Em outro arquivo, detalharei outros requisitos para que roteadores se tornem vizinhos OSPF, mas, por enquanto, vamos ficar apenas com esta regra. Então, deixe-me demonstrar. 
 
+![](../../../../../../z_imgs/122519.png)
 
-...da sub-rede configurada na interface.
-22:55
-Então, embora o R1 não envie pacotes *hello* pela interface G2/0 nem tente encontrar vizinhos OSPF, ele
-23:01
-ainda informará aos seus outros vizinhos sobre a rede 172.16.1.0/28.
-23:08
-Você deve sempre usar esse comando em interfaces que não possuem vizinhos OSPF. É um desperdício enviar continuamente mensagens *hello* por uma interface à qual não há outros
-23:17
-roteadores conectados. Portanto, esse é o comando PASSIVE-INTERFACE; ele é basicamente o mesmo utilizado para RIP e EIGRP.
-anunciar uma rota padrão no OSPF
-23:26
+Neste exemplo, há três roteadores que possuem uma interface na área 0, na sub-rede 192.168.1.0/29. O roteador na área 1 também possui uma interface na sub-rede 192.168.1.0/29, mas a interface está na área 1, e não na área 0. Embora todas as quatro interfaces estejam na mesma sub-rede e o OSPF esteja habilitado nelas, o roteador da área 1 não se tornará vizinho OSPF dos outros. 
+
+![](../../../../../../z_imgs/123101.png)
+
+Desta vez, a interface do ABR da área 1 na sub-rede 192.168.1.0/29 está configurada corretamente na área 0.  Assim, todos os quatro roteadores se tornarão vizinhos OSPF. Aqui está um resumo dessas três regras.
+
+- Áreas OSPF devem ser contíguas;
+- Todas as áreas OSPF devem ter um roteador ABR conectado à área 0, backbone area; e
+- Interfaces OSPF na mesma subrede  devem estar na mesma área.
+
+É claro que abordarei muitos outros pontos sobre o OSPF nos próximos arquivos. Falarei detalhadamente sobre vizinhos OSPF, LSAs OSPF e outros tópicos. Mas agora vamos abordar algumas configurações básicas do OSPF para que possamos praticá-las no vídeo de laboratório.
+
+### Configuração Básica de OSPF
+
+Então, vamos usar a mesma topologia de rede que utilizamos para RIP e EIGRP, já que você já está familiarizado com ela.
+
+![](../../../../../../z_imgs/074923.png)
+
+Todas essas interfaces de roteador estão na área OSPF 0. Já configurei os roteadores R2, R3 e R4, então vamos configurar o OSPF no R1. Aqui está a configuração básica do OSPF; vamos analisá-la. 
+
+![](../../../../../../z_imgs/123617.png)
+
+Primeiramente, para entrar no modo de configuração do OSPF, usa-se o comando `router ospf`, seguido de um ID de processo. Um roteador pode executar vários processos OSPF simultaneamente, e esse ID é usado no roteador para identificar cada um deles. Normalmente, utiliza-se apenas um único processo OSPF, então não se preocupe muito com esse número; eu escolhi usar o 1.
+
+Se você se lembra da configuração do EIGRP, utilizava-se o comando `router eigrp`, seguido de um número de AS. Para que roteadores EIGRP se tornem vizinhos, seus números de AS precisam coincidir. No entanto, o ID de processo do OSPF é diferente. O ID de processo do OSPF tem significado local. Roteadores com IDs de processo diferentes podem se tornar vizinhos OSPF. Geralmente, uso apenas o ID de processo 1, mas você poderia, por exemplo, usar o ID de processo 1 no R1 e o ID de processo 2 no R2; eles ainda assim se tornariam vizinhos OSPF e trocariam LSAs.
+
+Observe que esse ID de processo não tem relação alguma com a área. Você verá a seguir que a área é configurada separadamente. Então, em seguida, tentei usar o comando `network`, assim como fiz no EIGRP. Note que o OSPF utiliza máscaras curinga (*wildcard masks*), exatamente como o EIGRP. Se precisar revisá-las, volte e leia o arquivo sobre RIP e EIGRP. Basicamente, trata-se de uma máscara de sub-rede invertida. Enfim, tentei usar aquele comando, mas o roteador respondeu com "Incomplete command" (comando incompleto).
+
+Isso acontece porque o comando `network` do OSPF exige que você especifique a área. Então, ativei o OSPF em todas essas interfaces, na área 0. No OSPF de área única, é possível usar qualquer número de área, mas considera-se uma boa prática utilizar a área 0. Antes de prosseguir, deixe-me revisar a função do comando `network`; ele funciona exatamente como no RIP e no EIGRP. O comando `network` instrui o OSPF a procurar interfaces com um endereço IP contido na faixa especificada no comando e, em seguida, ativar o OSPF nessa interface na área especificada. 
+
+Por exemplo, no primeiro comando `network`, especifiquei 10.0.12.0 com uma máscara curinga (wildcard) /28, na área 0. A interface G0/0 do R1 tem o endereço IP 10.0.12.1, que está contido na faixa 10.0.12.0/28. Portanto, o OSPF será ativado na interface G0/0, na área 0. Quando o OSPF é ativado na interface, o roteador tenta estabelecer uma vizinhança OSPF com outros roteadores vizinhos que também tenham o OSPF ativado. Nesse caso, o R1 estabelecerá vizinhança OSPF com o R2 e o R3. Explicarei esse processo detalhadamente no próximo arquivo.
+
+Então, lembre-se apenas de que o comando `network` serve simplesmente para indicar ao roteador em quais interfaces o OSPF deve ser ativado. Ele não instrui o roteador a "anunciar essas redes". Mas já abordamos isso antes, no arquivo sobre RIP e EIGRP; agora, vamos ver algumas outras configurações que você pode realizar no OSPF.
+
+![](../../../../../../z_imgs/125559.png)
+
+Para começar, o comando `passive-interface`. Você já conhece esse comando do RIP e do EIGRP; ele funciona exatamente da mesma forma no OSPF. O comando `passive-interface` instrui o roteador a parar de enviar mensagens "hello" do OSPF por meio daquela interface. O OSPF utiliza mensagens "hello" para se anunciar a outros roteadores — aguarde o próximo arquivo para mais detalhes sobre isso.
+
+No entanto, o roteador continuará enviando LSAs para informar seus vizinhos da sub-rede configurada na interface. Então, embora o R1 não envie pacotes *hello* pela interface G2/0 nem tente encontrar vizinhos OSPF, ele ainda informará aos seus outros vizinhos sobre a rede 172.16.1.0/28. Você deve sempre usar esse comando em interfaces que não possuem vizinhos OSPF. É um desperdício enviar continuamente mensagens *hello* por uma interface à qual não há outros roteadores conectados. Portanto, esse é o comando `passive-interface`; ele é basicamente o mesmo utilizado para RIP e EIGRP.
+
+#### Anunciar uma rota padrão no OSPF
+
 A seguir, vamos ver como anunciar uma rota padrão no OSPF, assim como mostrei anteriormente para o RIP.
-23:32
+
+![](../../../../../../z_imgs/125656.png)
+
 Então, adicionei uma conexão com a Internet ao R1. Em seguida, configurei uma rota padrão no R1, sendo que o próximo salto (*next hop*) é o endereço IP do provedor (ISP):
 23:41
 203.0.113.2. Aqui estão essas informações na tabela de roteamento do R1.
