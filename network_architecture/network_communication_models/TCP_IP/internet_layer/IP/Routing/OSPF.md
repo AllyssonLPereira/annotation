@@ -189,107 +189,51 @@ A seguir, vamos ver como anunciar uma rota padrão no OSPF, assim como mostrei a
 
 ![](../../../../../../z_imgs/125656.png)
 
-Então, adicionei uma conexão com a Internet ao R1. Em seguida, configurei uma rota padrão no R1, sendo que o próximo salto (*next hop*) é o endereço IP do provedor (ISP):
-23:41
-203.0.113.2. Aqui estão essas informações na tabela de roteamento do R1.
-23:47
-Fique à vontade para pausar aqui se quiser conferir também as outras rotas OSPF que o R1 aprendeu.
-23:54
-Assim como mostrei no RIP, o comando para anunciar a rota padrão no OSPF é DEFAULT-INFORMATION ORIGINATE.
-24:01
-No OSPF, isso fará com que o roteador crie um novo LSA e o propague (*flood*). Verifiquei a tabela de roteamento do R2 e é possível ver que ele adicionou a rota padrão via R1 à sua
-24:11
-tabela de rotas. O R3 e o R4 fariam o mesmo. Agora, vamos dar uma olhada no comando SHOW IP PROTOCOLS sob a perspectiva do OSPF, e vamos
-show ip protocols
-24:22
-verificar também alguns outros comandos. Na parte superior, aparece a informação "routing protocol is ospf 1".
-24:28
-1 é o ID do processo que configurei anteriormente. O OSPF também utiliza um Router ID, e esse identificador é determinado exatamente da mesma forma que
-24:37
-no EIGRP; vamos relembrar. Aqui está a ordem de prioridade para determinar o Router ID do OSPF.
-24:46
-Primeiramente, se você configurar o Router ID manualmente, esse será o Router ID utilizado.
-24:51
-Se você não configurar o Router ID manualmente, o endereço IP mais alto em uma interface loopback
-24:57
-será definido como o Router ID. Se o roteador não possuir interfaces loopback com endereço IP, o endereço IP mais alto em uma
-25:04
-interface física será definido como o Router ID. Atualmente, o Router ID do R1 é 172.16.1.14, pois não configurei manualmente o
-25:13
-Router ID e também não configurei uma interface loopback no R1. Vamos ver como configurar o Router ID manualmente.
-25:22
-No modo de configuração do OSPF, utilize o comando ROUTER-ID. Isso é um pouco diferente do EIGRP; no EIGRP, o comando é EIGRP ROUTER-ID, mas
-25:33
-no OSPF é apenas ROUTER-ID. Então, inseri o Router ID 1.1.1.1, mas o roteador exibiu esta mensagem:
-25:43
-"Reinicie ou use o comando 'clear ip ospf process' para que isso entre em vigor".
-25:49
-Portanto, no momento, o Router ID ainda é 172.16.1.14; para que o 1.1.1.1 entre em vigor, precisamos
-25:57
-reiniciar o roteador ou usar aquele comando para limpar o processo OSPF e reiniciá-lo.
-26:02
-Eu fiz isso: a partir do modo EXEC privilegiado, utilizei o comando CLEAR IP OSPF PROCESS.
-26:10
-Basicamente, isso reinicia o OSPF no roteador. Essa é uma má ideia em uma rede real, pois o roteador perderá todas as suas rotas OSPF
-26:18
-por um curto período e não conseguirá encaminhar tráfego para esses destinos. Em um laboratório como este, no entanto, não há problema.
-26:27
-Uma observação: note o "no" entre colchetes. Quando você vê isso após inserir um comando, significa que "no" é a opção padrão.
-26:35
-Se você apenas pressionar Enter, o roteador assumirá "no" e não limpará o processo OSPF.
-26:41
-No entanto, eu digitei "yes", então ele foi limpo. Depois, executei o comando SHOW IP PROTOCOLS novamente e você pode ver que o Router ID agora é 1.1.1.1.
-26:53
-Agora, vamos analisar o restante do comando. Veja isto: "It is an autonomous system boundary router" (É um roteador de borda de sistema autônomo).
-26:59
-Um roteador de borda de sistema autônomo, ou ASBR, é um roteador OSPF que conecta a rede OSPF
-27:06
-a uma rede externa. O R1 está conectado à Internet. Ao usar o comando DEFAULT-INFORMATION ORIGINATE, o R1 se torna um ASBR; ele conecta a
-27:16
-rede OSPF à Internet. É por isso que vemos essa saída aqui no R1.
-27:23
-A seguir, o número de áreas neste roteador é 1: 1 normal, 0 stub, 0 nssa.
-27:31
-Esses são três tipos diferentes de áreas OSPF; não é necessário conhecer os diferentes tipos para o CCNA, mas queria destacar que você pode ver o número de áreas em que este
-27:40
-roteador está inserido — apenas uma, pois trata-se de OSPF de área única. Em seguida, o número máximo de caminhos é 4.
-27:49
-Ao contrário do EIGRP, o OSPF não suporta balanceamento de carga com custos desiguais, mas suporta balanceamento de carga ECMP
-27:56
-em até 4 caminhos por padrão. Para alterar o número máximo de caminhos, use o comando MAXIMUM-PATHS, assim como no RIP
-28:05
-e no EIGRP. Aqui, alterei o número para 8. A seção "routing for networks" mostra os comandos de rede que utilizamos.
-28:14
-Vale ressaltar que isso determina apenas em quais interfaces o OSPF será ativado; não
-28:20
-instrui o OSPF a propagar (flood) LSAs para essas redes específicas. Aqui está a interface passiva que configuramos, e aqui estão os vizinhos do R1.
-28:30
-Observe os IDs do roteador; eu configurei essas interfaces de loopback
+Então, adicionei uma conexão com a Internet ao R1. Em seguida, configurei uma rota padrão no R1, sendo que o próximo salto (*next hop*) é o endereço IP do provedor (ISP): 203.0.113.2. Aqui estão essas informações na tabela de roteamento do R1.
 
+Assim como mostrei no RIP, o comando para anunciar a rota padrão no OSPF é `default-information originate`.
 
+![](../../../../../../z_imgs/125918.png)
 
-...nos roteadores R2, R3 e R4 e
-28:37
-seus endereços IP tornaram-se os IDs de roteador. Por fim, aqui embaixo é exibida a AD (Distância Administrativa) do OSPF; o padrão é 110, como vocês sabem.
-28:46
-Se quiser alterá-la, o comando é o mesmo usado para RIP e EIGRP.
-28:51
-No modo de configuração do OSPF, basta usar o comando DISTANCE. Por exemplo, eu a alterei para 85, de modo que as rotas OSPF tenham preferência sobre as rotas EIGRP neste roteador.
-29:02
-É isso para esta aula. Abordamos muitas informações, mas grande parte delas é semelhante ou igual ao que
-Tópicos abordados
-29:08
-aprendemos sobre RIP e EIGRP. Claro, também houve muitas informações novas.
-29:14
-Antes de passar para o quiz, vamos revisar o que vimos. Apresentei uma visão geral básica das operações do OSPF, incluindo uma breve análise das LSAs, que
-29:23
-abordaremos com mais detalhes posteriormente. Introduzi o conceito de áreas OSPF.
-29:29
-Embora o CCNA exija apenas a configuração de OSPF de área única, você ainda precisa ter uma compreensão básica
-29:34
-sobre áreas OSPF. Lembre-se das regras e termos básicos do OSPF, como *area border router* (ABR) e
-29:42
-*autonomous system boundary router* (ASBR). Por fim, vimos algumas configurações básicas do OSPF.
+No OSPF, isso fará com que o roteador crie um novo LSA e o propague (*flood*). Verifiquei a tabela de roteamento do R2 e é possível ver que ele adicionou a rota padrão via R1 à sua tabela de rotas.
+
+![](../../../../../../z_imgs/172044.png)
+
+O R3 e o R4 fariam o mesmo. Agora, vamos dar uma olhada no comando `show ip protocols` sob a perspectiva do OSPF, e vamos verificar também alguns outros comandos. 
+
+![](../../../../../../z_imgs/172140.png)
+
+Na parte superior, aparece a informação "routing protocol is ospf 1". 1 é o ID do processo que configurei anteriormente. O OSPF também utiliza um Router ID, e esse identificador é determinado exatamente da mesma forma que no EIGRP; vamos relembrar.
+
+Aqui está a ordem de prioridade para determinar o Router ID do OSPF: 
+
+- Primeiramente, se você configurar o Router ID manualmente, esse será o Router ID utilizado;
+- Se você não configurar o Router ID manualmente, o endereço IP mais alto em uma interface loopback será definido como o Router ID; e
+- Se o roteador não possuir interfaces loopback com endereço IP, o endereço IP mais alto em uma interface física será definido como o Router ID.
+
+Atualmente, o Router ID do R1 é 172.16.1.14, pois não configurei manualmente o Router ID e também não configurei uma interface loopback no R1. Vamos ver como configurar o Router ID manualmente.
+
+![](../../../../../../z_imgs/172407.png)
+
+No modo de configuração do OSPF, utilize o comando `router-id`. Isso é um pouco diferente do EIGRP; no EIGRP, o comando é `eigrp router-id`, mas no OSPF é apenas `router-id`. Então, inseri o Router ID 1.1.1.1, mas o roteador exibiu esta mensagem: "Reinicie ou use o comando 'clear ip ospf process' para que isso entre em vigor". Portanto, no momento, o Router ID ainda é 172.16.1.14; para que o 1.1.1.1 entre em vigor, precisamos reiniciar o roteador ou usar aquele comando para limpar o processo OSPF e reiniciá-lo.
+
+![](../../../../../../z_imgs/173448.png)
+
+Eu fiz isso: a partir do modo EXEC privilegiado, utilizei o comando `clear ip ospf process`. Basicamente, isso reinicia o OSPF no roteador. Essa é uma má ideia em uma rede real, pois o roteador perderá todas as suas rotas OSPF por um curto período e não conseguirá encaminhar tráfego para esses destinos. Em um laboratório como este, no entanto, não há problema.
+
+Uma observação: note o "no" entre colchetes. Quando você vê isso após inserir um comando, significa que "no" é a opção padrão. Se você apenas pressionar Enter, o roteador assumirá "no" e não limpará o processo OSPF.
+
+No entanto, eu digitei "yes", então ele foi limpo. Depois, executei o comando `show ip protocols` novamente e você pode ver que o Router ID agora é 1.1.1.1.
+
+![](../../../../../../z_imgs/173707.png)
+
+Agora, vamos analisar o restante do comando. Veja isto: "It is an autonomous system boundary router" (É um roteador de borda de sistema autônomo). Um roteador de borda de sistema autônomo, ou ASBR, é um roteador OSPF que conecta a rede OSPF a uma rede externa. O R1 está conectado à Internet. Ao usar o comando `default-information originate`, o R1 se torna um ASBR; ele conecta a rede OSPF à Internet. É por isso que vemos essa saída aqui no R1.
+
+A seguir, o número de áreas neste roteador é 1: 1 normal, 0 stub, 0 nssa. Em seguida, o número máximo de caminhos é 4. Ao contrário do EIGRP, o OSPF não suporta balanceamento de carga com custos desiguais, mas suporta balanceamento de carga ECMP em até 4 caminhos por padrão. Para alterar o número máximo de caminhos, use o comando `maximum-paths`, assim como no RIP e no EIGRP.
+
+A seção "routing for networks" mostra os comandos de rede que utilizamos. Vale ressaltar que isso determina apenas em quais interfaces o OSPF será ativado; não instrui o OSPF a propagar (flood) LSAs para essas redes específicas.
+
+Observe os IDs do roteador; eu configurei essas interfaces de loopback nos roteadores R2, R3 e R4 e seus endereços IP tornaram-se os IDs de roteador. Por fim, aqui embaixo é exibida a AD (Distância Administrativa) do OSPF; o padrão é 110, como vocês sabem. Se quiser alterá-la, o comando é o mesmo usado para RIP e EIGRP. No modo de configuração do OSPF, basta usar o comando `distance`.
 29:50
 A maioria delas era igual à do RIP e do EIGRP, com algumas pequenas diferenças.
 
