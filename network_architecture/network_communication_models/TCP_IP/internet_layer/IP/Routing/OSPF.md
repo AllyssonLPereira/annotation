@@ -123,17 +123,15 @@ Se o roteador na área 1 aprende uma rota para a sub-rede na área 2, ela é con
 
 ### Regras de Área OSPF
 
-Primeiro, as áreas OSPF devem ser "contíguas". O que isso significa? Significa que cada área individual deve ser conectada, e não dividida.
-16:01
-É mais fácil demonstrar com o diagrama de rede. Então, esta rede satisfaz essa regra.
-16:09
-Todas as áreas são contíguas. Agora, vamos ver o que significa ser não contígua.
-16:15
-A área 1 agora é não contígua. Em vez de estar toda conectada, metade da área 1 está aqui e a outra metade está aqui.
-16:23
-Esse tipo de projeto de rede não é permitido no OSPF e causará problemas. Então, em vez de ter a área 1 dividida e não contígua dessa forma,
-16:31
-você deve transformar esta seção à direita em uma área separada: a área 3. Agora, todas as áreas são contíguas e o OSPF pode funcionar corretamente.
+Primeiro, as áreas OSPF devem ser "contíguas". O que isso significa? Significa que cada área individual deve ser conectada, e não dividida. É mais fácil demonstrar com o diagrama de rede. 
+
+![](../../../../../../z_imgs/114545.png)
+
+A área 1 agora é não contígua. Em vez de estar toda conectada, metade da área 1 está de um lado e a outra metade está do outro lado. Esse tipo de projeto de rede não é permitido no OSPF e causará problemas. Então, em vez de ter a área 1 dividida e não contígua dessa forma, você deve transformar esta seção à direita em uma área separada: a área 3. 
+
+![](../../../../../../z_imgs/075308.png)
+
+Agora, todas as áreas são contíguas e o OSPF pode funcionar corretamente.
 16:41
 Próxima regra: todas as áreas OSPF devem ter pelo menos um ABR conectado à área backbone.
 16:47
