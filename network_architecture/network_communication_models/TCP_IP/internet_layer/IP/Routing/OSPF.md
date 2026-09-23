@@ -57,157 +57,72 @@ O LSA é então propagado (flooded) por toda a rede até que todos os roteadores
 
 ![](../../../../../../z_imgs/173924.png)
 
-Isso resulta em todos os roteadores da área OSPF possuindo o mesmo LSDB. O LSDB tem esta aparência da imagem anterior, contendo LSAs para todos os diferentes links da rede. Agora que o OSPF foi ativado na interface G1/0 do R4, esse novo LSA é adicionado ao
-7:25
-LSDB. Tenho certeza de que repetirei isso muitas vezes, mas lembre-se de que esse LSDB é idêntico
-7:31
-para todos os roteadores na área OSPF. Cada roteador então utiliza o algoritmo SPF — o algoritmo de Dijkstra — para calcular sua melhor rota para
-7:41
-192.168.4.0/24. Lembre-se: cada um desses roteadores possui um mapa completo da rede.
-7:47
-Assim, por exemplo, ao olharmos para este diagrama, você e eu podemos ver que a melhor rota do R2 para
-7:53
-192.168.4.0/24 é esta rota via G1/0. Bem, o R2 está basicamente analisando o mesmo diagrama, então ele consegue calcular que enviar
-8:03
-o tráfego pela interface G1/0 é a melhor rota. É claro que ele não está olhando para um diagrama visual como nós, mas, na prática, é a mesma
-8:11
-coisa. Por fim, observe que cada LSA individual possui um temporizador de envelhecimento, que é de 30 minutos por padrão.
-8:17
-O LSA será propagado novamente (flooded) após o término do temporizador; portanto, isso ocorre a cada 30 minutos, por padrão.
-Processo Básico do OSPF
-8:25
-Deixe-me resumir o processo. No OSPF, existem três etapas principais no processo de compartilhamento de LSAs e determinação da
-8:31
-melhor rota para cada destino na rede. A Etapa 1 consiste em estabelecer uma relação de vizinhança com outros roteadores conectados ao mesmo segmento.
-8:40
-Na rede do slide anterior, por exemplo, o R4 era vizinho OSPF do R2 e
-8:45
-do R3. A Etapa 2 consiste em trocar LSAs com os roteadores vizinhos, algo que você viu no slide anterior.
-8:52
-Em seguida, cada roteador calcula de forma independente suas melhores rotas para cada destino e as insere
-8:57
-na tabela de roteamento. Abordarei essas etapas detalhadamente na próxima aula.
-9:02
-Apenas tenha em mente esse processo básico do OSPF. Vamos passar para outro conceito fundamental do OSPF, que não existe no RIP ou no EIGRP.
-Áreas OSPF
-9:13
-Áreas OSPF. O OSPF utiliza áreas para dividir a rede.
-9:19
-No entanto, redes pequenas podem operar com uma única área sem efeitos negativos no desempenho da rede.
-9:25
-Por exemplo, esta rede com quatro roteadores é uma rede pequena. Ao configurar o OSPF em uma rede como essa, podemos utilizar apenas uma única "área" OSPF e
-9:35
-não haverá degradação do desempenho da rede. Em redes maiores, contudo, um projeto de área única pode acarretar alguns efeitos negativos. 9:44
-Por exemplo, se a rede OSPF tivesse 500 roteadores com mais de 1000 sub-redes, em vez de 4 roteadores
-9:50
-e apenas algumas sub-redes, usar uma única área OSPF seria uma má ideia.
-9:56
-Você deve dividir uma rede grande como essa em várias áreas menores. Agora, quais são alguns dos efeitos negativos de usar um design de área única em uma rede grande?
-10:05
-Bem, por exemplo, o algoritmo SPF leva mais tempo para calcular rotas em uma rede grande.
-10:12
-Ele também exige exponencialmente mais poder de processamento em cada roteador para realizar os cálculos.
-10:18
-O fato de cada roteador compartilhar um único e enorme banco de dados de estado de enlace também consome mais memória nos
-10:23
-roteadores. Além disso, qualquer pequena alteração na rede — por exemplo, uma nova interface sendo
-10:29
-ativada — faria com que LSAs fossem propagados (inundados) para todos os 500 roteadores, e todos eles
-10:34
-teriam que refazer o cálculo SPF. Ao dividir uma rede OSPF grande em várias áreas menores, você pode evitar esses efeitos
-10:43
-negativos. Verificando os tópicos do exame mais uma vez, note que apenas o OSPF de área única é mencionado.
-10:50
-Portanto, darei apenas uma breve visão geral das áreas OSPF e de como elas funcionam; você não precisa
-10:55
-de muitos detalhes para o CCNA. Não vou criar um diagrama com 500 roteadores, mas aqui está um exemplo de uma rede
-11:02
-maior do que a anterior. É possível transformar esta em uma rede grande de área única.
-11:07
-Todas as interfaces de todos os roteadores são atribuídas à área 0, também conhecida como área backbone.
-11:12
-Você verá em breve que a área 0 tem importância especial no OSPF, sendo chamada de
-11:18
-área "backbone". Agora, em vez de uma única área grande, vou mostrar como a rede pode ser dividida em áreas
-11:25
-separadas. Veja como isso é feito. Existem algumas regras e terminologias sobre áreas OSPF que você precisa conhecer; vou explicá-las
-11:33
-agora. Primeiramente, o que é uma área? É um conjunto de roteadores e links que compartilham o mesmo LSDB — banco de dados de estado de link.
-11:43
-Olhando para este diagrama...
+Isso resulta em todos os roteadores da área OSPF possuindo o mesmo LSDB. O LSDB tem esta aparência da imagem anterior, contendo LSAs para todos os diferentes links da rede. Agora que o OSPF foi ativado na interface G1/0 do R4, esse novo LSA é adicionado ao LSDB. Tenho certeza de que repetirei isso muitas vezes, mas lembre-se de que esse LSDB é idêntico para todos os roteadores na área OSPF. Cada roteador então utiliza o algoritmo SPF — o algoritmo de Dijkstra — para calcular sua melhor rota para 192.168.4.0/24. 
 
+Lembre-se: cada um desses roteadores possui um mapa completo da rede. Assim, por exemplo, ao olharmos para este diagrama, você e eu podemos ver que a melhor rota do R2 para 192.168.4.0/24 é esta rota via G1/0. Bem, o R2 está basicamente analisando o mesmo diagrama, então ele consegue calcular que enviar o tráfego pela interface G1/0 é a melhor rota. É claro que ele não está olhando para um diagrama visual como nós, mas, na prática, é a mesma coisa. Por fim, observe que cada LSA individual possui um temporizador de envelhecimento, que é de 30 minutos por padrão. O LSA será propagado novamente (flooded) após o término do temporizador; portanto, isso ocorre a cada 30 minutos, por padrão.
 
+### Processo Básico do OSPF
 
-Mais uma vez: quantas áreas existem? Área 0, Área 1, Área 2 e Área 3.
-11:50
-Portanto, existem quatro áreas. Cada uma dessas áreas mantém um LSDB exclusivo.
-11:56
-Em seguida, a área de backbone (que é a área 0) é uma área — uma área especial — à qual todas as outras
-12:02
-áreas devem se conectar. Vamos verificar aquele diagrama de rede novamente.
-12:07
-Observe que a área 1, a área 2 e a área 3 se conectam à área 0, a área de backbone.
-12:14
-Esse tipo de projeto de rede, por exemplo, não é permitido no OSPF. Observe que a área 1 não está conectada à área 0, a área de backbone.
-12:23
-Ela está conectada apenas à área 2. Isso não é permitido no OSPF.
-12:28
-A seguir: roteadores com todas as interfaces na mesma área são chamados de "roteadores internos". Então, neste diagrama, quais são os roteadores internos?
-12:36
-Se todas as interfaces do roteador estiverem na mesma área, ele é um roteador interno.
-12:42
-Este roteador aqui é interno à área 0. Estes roteadores são roteadores internos da área 1.
-12:48
-O mesmo vale para estes roteadores na área 2 e estes roteadores na área 3. Portanto, esses são roteadores internos: roteadores com todas as suas interfaces na mesma área OSPF.
-13:00
-A seguir: roteadores com interfaces em múltiplas áreas são chamados de "roteadores de borda de área" (ABRs),
-13:05
-porque constituem a fronteira entre diferentes áreas OSPF. Nesta rede, quais roteadores são ABRs?
-13:13
-Este roteador, conectado à área 0 e à área 1, é um ABR. Este roteador, conectado à área 0 e à área 2, também é um ABR.
-13:22
-E este roteador, conectado à área 0 e à área 3, é um ABR. Lembre-se de que os ABRs (Area Border Routers — Roteadores de Fronteira de Área) são roteadores com interfaces em múltiplas áreas OSPF.
-13:33
-Mais uma informação sobre os ABRs: eles mantêm um LSDB separado para cada área à qual estão conectados.
-13:41
-Recomenda-se conectar um ABR a, no máximo, duas áreas. Conectar um ABR a três ou mais áreas pode sobrecarregar o roteador.
-13:49
-Portanto, um projeto como o que mostro aqui representa um bom design de rede OSPF, com cada ABR conectado apenas
-13:55
-a duas áreas. A seguir, os roteadores conectados à área de backbone — que, como mencionei anteriormente, é a área 0 — são chamados de
-14:03
-roteadores de backbone. Isso inclui os roteadores de fronteira de área (ABRs), aliás. Então, quais roteadores nesta rede são roteadores de backbone?
-14:12
-É claro que este roteador está conectado apenas à área 0; portanto, é um roteador de backbone.
-14:17
-Ele é um roteador de backbone e também um roteador interno — interno à área 0.
-14:22
-Este roteador também é um roteador de backbone, além de ser um ABR. O mesmo vale para este roteador e para este outro.
-14:30
-Ambos são roteadores de backbone e roteadores de fronteira de área (ABRs).
-14:35
-Próximo termo: uma "rota intra-área" é uma rota para um destino dentro da mesma área OSPF.
-14:41
-Por exemplo, de um roteador na área 1 para um destino que também está na área 1.
-14:46
-Vamos ver um exemplo. Se este roteador aprender uma rota para esta sub-rede, ela será considerada uma rota
-14:54
-intra-área, porque o destino está na mesma área que o roteador. Aqui está o último termo.
-15:00
-Uma "rota interáreas" é uma rota para um destino em uma área OSPF diferente. 15:06
-Por exemplo, se um roteador na área 1 aprende uma rota para um destino na área 2, essa é
-15:11
-uma rota interárea. Vamos ver mais um exemplo. Se este roteador na área 1 aprende uma rota para esta sub-rede na área 2, ela é considerada uma
-15:21
-rota interárea. O roteador e o destino estão em duas áreas OSPF diferentes.
-15:26
-Então, esses são alguns termos importantes do OSPF relacionados às áreas OSPF.
-15:32
-Certifique-se de aprender e entender esses termos, e use os flashcards para memorizá-los. Área, área backbone, roteador interno, roteador de borda de área (ABR), roteador backbone, intra-área
-15:43
-rota e rota interárea — lembre-se desses termos. A seguir, vamos abordar algumas regras adicionais sobre áreas OSPF.
-Regras de Área OSPF
-15:52
+Deixe-me resumir o processo. No OSPF, existem três etapas principais no processo de compartilhamento de LSAs e determinação da melhor rota para cada destino na rede. 
+
+- A Etapa 1 consiste em estabelecer uma relação de vizinhança com outros roteadores conectados ao mesmo segmento. Na rede da imagem anterior, por exemplo, o R4 era vizinho OSPF do R2 e do R3.
+- A Etapa 2 consiste em trocar LSAs com os roteadores vizinhos, algo que você viu na imagem anterior.
+- Em seguida, cada roteador calcula de forma independente suas melhores rotas para cada destino e as insere na tabela de roteamento.
+
+Abordarei essas etapas detalhadamente no próximo arquivo. Apenas tenha em mente esse processo básico do OSPF. Vamos passar para outro conceito fundamental do OSPF, que não existe no RIP ou no EIGRP: áreas OSPF.
+
+### Áreas OSPF
+
+O OSPF utiliza áreas para dividir a rede. No entanto, redes pequenas podem operar com uma única área sem efeitos negativos no desempenho da rede. Por exemplo, esta rede com quatro roteadores é uma rede pequena. 
+
+![](../../../../../../z_imgs/074923.png)
+
+Ao configurar o OSPF em uma rede como essa, podemos utilizar apenas uma única "área" OSPF e não haverá degradação do desempenho da rede. Em redes maiores, contudo, um projeto de área única pode acarretar alguns efeitos negativos. Por exemplo, se a rede OSPF tivesse 500 roteadores com mais de 1000 sub-redes, em vez de 4 roteadores e apenas algumas sub-redes, usar uma única área OSPF seria uma má ideia. Você deve dividir uma rede grande como essa em várias áreas menores. Agora, quais são alguns dos efeitos negativos de usar um design de área única em uma rede grande?
+
+Bem, por exemplo, o algoritmo SPF leva mais tempo para calcular rotas em uma rede grande. Ele também exige exponencialmente mais poder de processamento em cada roteador para realizar os cálculos. O fato de cada roteador compartilhar um único e enorme banco de dados de estado de enlace também consome mais memória nos roteadores. Além disso, qualquer pequena alteração na rede — por exemplo, uma nova interface sendo ativada — faria com que LSAs fossem propagados (flooded) para todos os 500 roteadores, e todos eles teriam que refazer o cálculo SPF. Ao dividir uma rede OSPF grande em várias áreas menores, você pode evitar esses efeitos negativos. 
+
+Não vou criar um diagrama com 500 roteadores, mas aqui está um exemplo de uma rede maior do que a anterior. 
+
+![](../../../../../../z_imgs/073824.png)
+
+É possível transformar esta em uma rede grande de área única. Todas as interfaces de todos os roteadores são atribuídas à área 0, também conhecida como área backbone. Você verá em breve que a área 0 tem importância especial no OSPF, sendo chamada de "backbone area". Agora, em vez de uma única área grande, vou mostrar como a rede pode ser dividida em áreas separadas. Veja como isso é feito.
+
+![](../../../../../../z_imgs/075308.png)
+
+Existem algumas regras e terminologias sobre áreas OSPF que você precisa conhecer; vou explicá-las agora. 
+
+Primeiramente, o que é uma área? É um conjunto de roteadores e links que compartilham o mesmo LSDB — banco de dados de estado de link. Olhando para este diagrama mais uma vez: quantas áreas existem? Área 0, Área 1, Área 2 e Área 3. Portanto, existem quatro áreas. Cada uma dessas áreas mantém um LSDB exclusivo.
+
+Em seguida, a área de backbone (que é a área 0) é uma área — uma área especial — à qual todas as outras áreas devem se conectar. Vamos verificar aquele diagrama de rede novamente. Observe que a área 1, a área 2 e a área 3 se conectam à área 0, a área de backbone.
+
+A seguir: roteadores com todas as interfaces na mesma área são chamados de "roteadores internos". Então, neste diagrama, quais são os roteadores internos? Se todas as interfaces do roteador estiverem na mesma área, ele é um roteador interno. Os roteadores destacados em vermelho são "Internal Routers".
+
+![](../../../../../../z_imgs/122030.png)
+
+A seguir: roteadores com interfaces em múltiplas áreas são chamados de "roteadores de borda de área" (ABRs), porque constituem a fronteira entre diferentes áreas OSPF. Nesta rede, quais roteadores são ABRs? Lembre-se de que os ABRs (Area Border Routers — Roteadores de Fronteira de Área) são roteadores com interfaces em múltiplas áreas OSPF. Os roteadores destacados em vermelho são "Area Border Routers".
+
+![](../../../../../../z_imgs/122152.png)
+
+Mais uma informação sobre os ABRs: eles mantêm um LSDB separado para cada área à qual estão conectados. Recomenda-se conectar um ABR a, no máximo, duas áreas. Conectar um ABR a três ou mais áreas pode sobrecarregar o roteador. Portanto, um projeto como o que mostro aqui representa um bom design de rede OSPF, com cada ABR conectado apenas a duas áreas. 
+
+A seguir, os roteadores conectados à área de backbone — que, como mencionei anteriormente, é a área 0 — são chamados de roteadores de backbone. Isso inclui os roteadores de fronteira de área (ABRs), aliás. Então, quais roteadores nesta rede são roteadores de backbone? Os roteadores destacados em vermelho são "Backbone Routers".
+
+![](../../../../../../z_imgs/122521.png)
+
+Próximo termo: uma "rota intra-área" é uma rota para um destino dentro da mesma área OSPF. Por exemplo, de um roteador na área 1 para um destino que também está na área 1. Vamos ver um exemplo.
+
+![](../../../../../../z_imgs/122746.png)
+
+Se o roteador aprender uma rota para esta sub-rede na área 1, ela será considerada uma rota intra-área, porque o destino está na mesma área que o roteador.
+
+Aqui está o último termo. Uma "rota interáreas" é uma rota para um destino em uma área OSPF diferente. Por exemplo, se um roteador na área 1 aprende uma rota para um destino na área 2, essa é uma rota interárea. Vamos ver mais um exemplo.
+
+![](../../../../../../z_imgs/123023.png)
+
+Se o roteador na área 1 aprende uma rota para a sub-rede na área 2, ela é considerada uma rota interárea. O roteador e o destino estão em duas áreas OSPF diferentes. Então, esses são alguns termos importantes do OSPF relacionados às áreas OSPF. Area, backbone area, internal routers, area border routers (ABR), backbone routers, intra-area route e inter-area route. A seguir, vamos abordar algumas regras adicionais sobre áreas OSPF.
+
+### Regras de Área OSPF
+
 Primeiro, as áreas OSPF devem ser "contíguas". O que isso significa? Significa que cada área individual deve ser conectada, e não dividida.
 16:01
 É mais fácil demonstrar com o diagrama de rede. Então, esta rede satisfaz essa regra.
