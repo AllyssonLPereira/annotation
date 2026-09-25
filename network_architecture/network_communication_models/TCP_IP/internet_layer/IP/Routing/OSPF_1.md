@@ -17,18 +17,16 @@ Agora, e quanto a uma interface Gigabit Ethernet, com velocidade de 1000 megabit
 
 Bem, no OSPF, todos os valores menores que 1 são convertidos para 1. Portanto, FastEthernet, Gigabit Ethernet, Ethernet de 10 Gigabits, etc., são equivalentes e todas têm custo 1 por padrão. Vou mostrar na CLI. Aqui está a mesma topologia de rede de antes. 
 
-112511
+![](../../../../../../z_imgs/112511.png)
 
-Vamos verificar o custo da interface F2/0 do R3. Usei o comando SHOW IP OSPF INTERFACE F2/0.
-3:25
-Consegue encontrar o custo? Na verdade, ele aparece em dois lugares: aqui e aqui. 3:31
-Como eu disse, o custo padrão de uma interface FastEthernet é 1, pois ela possui uma velocidade de 100 megabits por segundo e a largura de banda de referência padrão é de 100 megabits por segundo.
-3:43
-Agora, vamos verificar o custo OSPF padrão na interface G0/0 do R3. Digitei `SHOW IP OSPF INTERFACE G0/0` e, como você pode ver, o custo aqui também é 1.
-3:56
-Claramente, a situação padrão não é a ideal. Felizmente, é possível alterar isso.
-Alterando a largura de banda de referência
-4:01
+Vamos verificar o custo da interface F2/0 do R3. Usei o comando `show ip ospf interface f2/0`.  O custo aparece em dois lugares. Como eu disse, o custo padrão de uma interface FastEthernet é 1, pois ela possui uma velocidade de 100 megabits por segundo e a largura de banda de referência padrão é de 100 megabits por segundo. Agora, vamos verificar o custo OSPF padrão na interface G0/0 do R3.
+
+![](../../../../../../z_imgs/112755.png)
+
+Digitei `show ip ospf interface g0/0` e, como você pode ver, o custo aqui também é 1. Claramente, a situação padrão não é a ideal. Felizmente, é possível alterar isso.
+
+### Alterando a largura de banda de referência
+
 Você pode — e deve — alterar a largura de banda de referência usando este comando, a partir do modo de configuração do OSPF:
 4:07
 `AUTO-COST REFERENCE-BANDWIDTH`, seguido pelo valor da largura de banda de referência em megabits por segundo.
