@@ -234,8 +234,6 @@ A seguir, o número de áreas neste roteador é 1: 1 normal, 0 stub, 0 nssa. Em 
 A seção "routing for networks" mostra os comandos de rede que utilizamos. Vale ressaltar que isso determina apenas em quais interfaces o OSPF será ativado; não instrui o OSPF a propagar (flood) LSAs para essas redes específicas.
 
 Observe os IDs do roteador; eu configurei essas interfaces de loopback nos roteadores R2, R3 e R4 e seus endereços IP tornaram-se os IDs de roteador. Por fim, aqui embaixo é exibida a AD (Distância Administrativa) do OSPF; o padrão é 110, como vocês sabem. Se quiser alterá-la, o comando é o mesmo usado para RIP e EIGRP. No modo de configuração do OSPF, basta usar o comando `distance`.
-29:50
-A maioria delas era igual à do RIP e do EIGRP, com algumas pequenas diferenças.
 
 
 
