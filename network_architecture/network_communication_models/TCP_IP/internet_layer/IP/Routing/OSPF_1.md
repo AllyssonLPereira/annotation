@@ -1,17 +1,20 @@
 # OSPF
 
 ## Tópicos que abordaremos
+
 Vamos ver o que abordaremos neste arquivo. Trataremos de três tópicos principais.
 
-Primeiro, a métrica do OSPF, que, como você sabe, é chamada de "custo". O próximo tópico será como os roteadores se tornam vizinhos OSPF. Já mencionei vizinhos OSPF anteriormente, mas ainda não mostrei o processo em si. Vamos detalhá-lo neste arquivo. Por fim, apresentarei mais algumas configurações do OSPF.
+- Primeiro, a métrica do OSPF, que, como você sabe, é chamada de "custo";
+- O próximo tópico será como os roteadores se tornam vizinhos OSPF. Já mencionei vizinhos OSPF anteriormente, mas ainda não mostrei o processo em si. Vamos detalhá-lo neste arquivo; e
+- Por fim, apresentarei mais algumas configurações do OSPF.
 
 Vamos falar sobre a métrica do OSPF.
 
 ## Custo OSPF
 
-Como você já sabe, a métrica do OSPF é chamada de "custo". Ela é calculada automaticamente com base na largura de banda — ou seja, a velocidade — da interface. Você também pode configurar manualmente o custo de cada interface, mas mostrarei isso mais adiante. O custo da interface é calculado dividindo-se um valor chamado "largura de banda de referência" pela largura de banda da interface.
+Como você já sabe, a métrica do OSPF é chamada de "custo". Ela é calculada automaticamente com base na largura de banda — ou seja, a velocidade — da interface. Você também pode configurar manualmente o custo de cada interface, mas mostrarei isso mais adiante. O custo da interface é calculado dividindo-se um valor chamado "largura de banda de referência" pela largura de banda da interface. A largura de banda de referência padrão do OSPF é de 100 megabits por segundo.
 
-A largura de banda de referência padrão do OSPF é de 100 megabits por segundo. Então, por exemplo, uma interface Ethernet comum com velocidade de 10 megabits por segundo tem um custo OSPF de 10, pois 100 dividido por 10 é igual a 10. Uma interface FastEthernet, com velocidade de 100 megabits por segundo, tem um custo OSPF de 1, pois 100 dividido por 100 é 1. 
+Então, por exemplo, uma interface Ethernet comum com velocidade de 10 megabits por segundo tem um custo OSPF de 10, pois 100 dividido por 10 é igual a 10. Uma interface FastEthernet, com velocidade de 100 megabits por segundo, tem um custo OSPF de 1, pois 100 dividido por 100 é 1. 
 
 Agora, e quanto a uma interface Gigabit Ethernet, com velocidade de 1000 megabits por segundo? Ela tem custo 1, embora 100 dividido por 1000 seja igual a 0,1. E quanto a uma interface Ethernet de 10 Gigabits, com velocidade de 10.000 megabits por segundo? Ela também tem custo 1, embora 100 dividido por 10.000 seja igual a 0,01. Por que isso acontece?
 
@@ -27,65 +30,43 @@ Digitei `show ip ospf interface g0/0` e, como você pode ver, o custo aqui tamb�
 
 ### Alterando a largura de banda de referência
 
-Você pode — e deve — alterar a largura de banda de referência usando este comando, a partir do modo de configuração do OSPF:
-4:07
-`AUTO-COST REFERENCE-BANDWIDTH`, seguido pelo valor da largura de banda de referência em megabits por segundo.
-4:14
-Vamos analisar esse comando. Como mostrei no slide anterior, a largura de banda de referência é configurada em megabits por segundo.
-4:23
-Configurei o valor como 100.000; então, qual será o custo das interfaces FastEthernet e Gigabit Ethernet?
-4:29
-100.000 dividido por 100 resulta em 1.000; esse é, portanto, o custo de uma interface FastEthernet.
-4:36
-E quanto à Gigabit Ethernet? 100.000 dividido por 1.000 resulta em 100; esse é o custo de uma interface Gigabit Ethernet.
-4:46
-Por que configurar um valor tão alto para a largura de banda de referência? Bem, você deve configurar uma largura de banda de referência superior à velocidade dos links mais rápidos da sua rede,
-4:54
-para permitir futuras atualizações. Os 100 (*100.000) megabits por segundo que configurei como largura de banda de referência equivalem a uma interface de 100
-5:03
-gigabits por segundo, o que é 100 vezes mais rápido do que as interfaces mais velozes desta rede: a Gigabit Ethernet padrão.
-5:11
-Por fim, observe a mensagem exibida ao configurar a largura de banda de referência: "Certifique-se de que a largura de banda de referência seja consistente em todos os roteadores".
-5:20
-Portanto, para garantir um custo consistente para a largura de banda de cada interface em toda a rede, você
-5:25
-deve configurar a mesma largura de banda de referência em todos os roteadores OSPF da rede. Certo, defini a mesma largura de banda de referência OSPF de 100 gigabits por segundo em todos os roteadores.
-Custo OSPF (cont.)
-5:38
-O custo OSPF até um destino é a soma dos custos das interfaces de "saída" (ou *outgoing*).
-5:44
-Isso funciona exatamente como o custo do Spanning Tree. Por exemplo: qual é o custo para o R1 alcançar a rede 192.168.4.0/24?
-5:54
-Para chegar a 192.168.4.0, um pacote sairia pelas interfaces G0/0 do R1, G1/0 do R2 e G1/0 do R4.
-6:05
-Ou seja: 100 mais 100 mais 100, resultando em um custo total de 300.
-6:10
-Verificaremos a tabela de roteamento do R1 em breve, mas há mais um detalhe: interfaces Loopback têm custo 1.
-6:17
-Então, qual é o custo para o R1 alcançar o endereço 2.2.2.2, que corresponde à interface Loopback0 do R2? 6:25
-Para chegar a 2.2.2.2, o pacote deve sair pela interface G0/0 do R1 e pela interface loopback0 do R2.
-6:32
-Agora, isso não acontece.
+Você pode — e deve — alterar a largura de banda de referência usando este comando, a partir do modo de configuração do OSPF: `auto-cost reference-bandwidth`, seguido pelo valor da largura de banda de referência em megabits por segundo. Vamos analisar esse comando.
+
+![](../../../../../../z_imgs/074223.png)
+
+Como mostrei na imagem anterior, a largura de banda de referência é configurada em megabits por segundo. Configurei o valor como 100.000; então, qual será o custo das interfaces FastEthernet e Gigabit Ethernet? 100.000 dividido por 100 resulta em 1.000; esse é, portanto, o custo de uma interface FastEthernet. E quanto à Gigabit Ethernet? 100.000 dividido por 1.000 resulta em 100; esse é o custo de uma interface Gigabit Ethernet.
+
+Por que configurar um valor tão alto para a largura de banda de referência? Bem, você deve configurar uma largura de banda de referência superior à velocidade dos links mais rápidos da sua rede, para permitir futuras atualizações. Os 100.000 megabits por segundo que configurei como largura de banda de referência equivalem a uma interface de 100 gigabits por segundo, o que é 100 vezes mais rápido do que as interfaces mais velozes desta rede: a Gigabit Ethernet padrão.
+
+Por fim, observe a mensagem exibida ao configurar a largura de banda de referência: "Certifique-se de que a largura de banda de referência seja consistente em todos os roteadores". Portanto, para garantir um custo consistente para a largura de banda de cada interface em toda a rede, você deve configurar a mesma largura de banda de referência em todos os roteadores OSPF da rede. 
+
+Certo, defini a mesma largura de banda de referência OSPF de 100 gigabits por segundo em todos os roteadores.
+
+## Custo OSPF (continuação)
+
+O custo OSPF até um destino é a soma dos custos das interfaces de "saída" (ou *outgoing*). Isso funciona exatamente como o custo do Spanning Tree. Por exemplo: qual é o custo para o R1 alcançar a rede 192.168.4.0/24? 
+
+![](../../../../../../z_imgs/074851.png)
+
+Para chegar a 192.168.4.0, um pacote sairia pelas interfaces G0/0 do R1, G1/0 do R2 e G1/0 do R4. Ou seja: 100 mais 100 mais 100, resultando em um custo total de 300. Verificaremos a tabela de roteamento do R1 em breve, mas há mais um detalhe: interfaces Loopback têm custo 1. Então, qual é o custo para o R1 alcançar o endereço 2.2.2.2, que corresponde à interface Loopback0 do R2? 
+
+![](../../../../../../z_imgs/075206.png)
+
+Para chegar a 2.2.2.2, o pacote deve sair pela interface G0/0 do R1 e pela interface loopback0 do R2. Agora, ele não chega a sair por nenhuma interface física para alcançar a interface de loopback virtual, mas um custo de 1 é adicionado à métrica. Portanto, o custo do R1 para alcançar 2.2.2.2 é 101. Aqui está a tabela de roteamento do R1 antes de alterar a largura de banda de referência em todos os roteadores, de modo que todos mantêm a largura de banda de referência padrão de 100 megabits por segundo. 
+
+![](../../../../../../z_imgs/075416.png)
+
+Observe que existem duas rotas para 192.168.4.0: uma via R2 e outra via R3. Embora a conexão entre R3 e R4 seja uma conexão FastEthernet mais lenta, ela possui o mesmo custo de 1 que as interfaces Gigabit Ethernet. E aqui está a tabela de roteamento do R1 após alterar a largura de banda de referência de cada roteador para 100.000 megabits por segundo.
+
+![](../../../../../../z_imgs/075755.png)
+
+Agora, o R1 insere apenas uma rota para 192.168.4.0 na tabela de roteamento, e o custo é 300, conforme calculamos anteriormente. Observe que o custo para 2.2.2.2 é 101, como também calculamos antes. 
 
 
 
 
-...não chega a sair por nenhuma interface física para alcançar a interface de loopback virtual,
-6:38
-mas um custo de 1 é adicionado à métrica. Portanto, o custo do R1 para alcançar 2.2.2.2 é 101.
-6:47
-Aqui está a tabela de roteamento do R1 antes de alterar a largura de banda de referência em todos os roteadores,
-6:52
-de modo que todos mantêm a largura de banda de referência padrão de 100 megabits por segundo. Observe que existem duas rotas para 192.168.4.0: uma via R2 e outra via R3.
-7:04
-Embora a conexão entre R3 e R4 seja uma conexão FastEthernet mais lenta, ela possui o mesmo custo de 1 que as interfaces Gigabit Ethernet.
-7:14
-E aqui está a tabela de roteamento do R1 após alterar a largura de banda de referência de cada roteador para 100.000 megabits por segundo.
-7:22
-Agora, o R1 insere apenas uma rota para 192.168.4.0 na tabela de roteamento, e o custo é 300,
-7:29
-conforme calculamos anteriormente. Observe que o custo para 2.2.2.2 é 101, como também calculamos antes.
-7:38
+
+
 Agora, vou mostrar como configurar manualmente o custo OSPF de uma interface. O comando é `ip ospf cost`, seguido pelo valor de custo que você deseja definir.
 7:49
 Você configura isso diretamente na interface, e esse custo terá prioridade sobre o custo calculado automaticamente. 7:55
