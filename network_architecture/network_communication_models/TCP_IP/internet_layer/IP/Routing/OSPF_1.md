@@ -60,83 +60,45 @@ Observe que existem duas rotas para 192.168.4.0: uma via R2 e outra via R3. Embo
 
 ![](../../../../../../z_imgs/075755.png)
 
-Agora, o R1 insere apenas uma rota para 192.168.4.0 na tabela de roteamento, e o custo é 300, conforme calculamos anteriormente. Observe que o custo para 2.2.2.2 é 101, como também calculamos antes. 
+Agora, o R1 insere apenas uma rota para 192.168.4.0 na tabela de roteamento, e o custo é 300, conforme calculamos anteriormente. Observe que o custo para 2.2.2.2 é 101, como também calculamos antes.
+
+Agora, vou mostrar como configurar manualmente o custo OSPF de uma interface. O comando é `ip ospf cost`, seguido pelo valor de custo que você deseja definir. Você configura isso diretamente na interface, e esse custo terá prioridade sobre o custo calculado automaticamente. Por exemplo, configurei o custo da interface G0/0 do R1 como 10.000 e agora você pode ver que o custo é 10.000 em vez de 100. 
+
+![](../../../../../../z_imgs/123817.png)
+
+Outra opção para alterar o custo OSPF de uma interface é modificar a largura de banda da interface usando o comando `bandwidth`. Relembrando: a fórmula para calcular o custo OSPF é a largura de banda de referência dividida pela largura de banda da interface. Mostrei como alterar a largura de banda de referência, mas você também pode alterar a largura de banda da interface. Agora, preciso esclarecer a diferença entre "velocidade" e "largura de banda" da interface.
+
+Embora a largura de banda corresponda à velocidade da interface por padrão, alterar a largura de banda da interface não altera, de fato, a velocidade de operação da interface. A largura de banda é apenas um valor utilizado para calcular o custo OSPF, a métrica EIGRP, etc. Para alterar a velocidade de operação da interface, utilize o comando `speed`. É assim que você realmente altera a velocidade com que a interface transmite dados fisicamente. Se você alterar a largura de banda de uma interface Gigabit Ethernet para 100 megabits por segundo, ela continuará operando a 1 gigabit por segundo. No entanto, para fins de cálculo de custo OSPF, será utilizada a largura de banda de 100 megabits por segundo.
+
+Como o valor da largura de banda é usado em outros cálculos, e não apenas no custo OSPF, não é recomendável alterar esse valor para modificar o custo OSPF da interface. Recomenda-se alterar a largura de banda de referência e, em seguida, utilizar o comando `ip ospf cost` para modificar o custo de interfaces individuais, se desejar. No entanto, se você quiser alterar a largura de banda da interface, aqui está o comando: `bandwidth`, seguido pela largura de banda em kilobits por segundo.
+
+![](../../../../../../z_imgs/124322.png)
+
+Observe que isso é diferente da largura de banda de referência, que é inserida em megabits por segundo. O comando de largura de banda da interface é inserido em kilobits por segundo. Antes de inserir qualquer comando desse tipo, recomendo fortemente usar o ponto de interrogação para verificar as unidades em que o comando deve ser inserido. Por exemplo, em comandos que envolvem tempo, alguns são inseridos em segundos, outros em minutos. Para comandos que envolvem velocidade, alguns são inseridos em kilobits, outros em megabits, etc. Sempre verifique se você está inserindo as unidades corretas. Vamos resumir.
+
+## Resumo do custo OSPF
+
+Existem três maneiras de modificar o custo OSPF. 
+
+1. A primeira é alterar a largura de banda de referência. O comando é `auto-cost reference-bandwidth` seguido pela largura de banda de referência em megabits por segundo, inserido no modo de configuração OSPF.
+2. A próxima forma é configurar manualmente o custo OSPF da interface com o comando `ip ospf cost`, inserido no modo de configuração da interface.
+3. Por fim, você também pode alterar a largura de banda da interface, embora isso não seja recomendado. O comando é `bandwidth`, seguido pela largura de banda em kilobits por segundo, inserido no modo de configuração da interface.
+
+Já mostrei o comando `show ip ospf interface`, mas aqui está uma maneira mais rápida de verificar o custo OSPF de cada interface. O comando `show ip ospf interface brief` fornece uma visão geral conveniente de cada interface com OSPF habilitado no roteador. 
+
+![](../../../../../../z_imgs/124842.png)
+
+Certo, vamos passar para o próximo tópico. Este é outro tópico muito importante no OSPF: vizinhos OSPF.
+
+## Vizinhos OSPF
+
+Garantir que os roteadores se tornem vizinhos OSPF com sucesso é a tarefa principal na configuração e na resolução de problemas do OSPF. Assim que os roteadores se tornam vizinhos, eles realizam automaticamente o trabalho de compartilhar informações de rede, calcular rotas, etc. Portanto, basta garantir que o OSPF esteja ativado nas interfaces corretas e que as condições adequadas sejam atendidas para permitir que os roteadores se tornem vizinhos. Claro, existem configurações OSPF mais avançadas que você pode realizar, mas para a operação básica do OSPF elas não são necessárias. No entanto, se os roteadores não conseguirem se tornar vizinhos OSPF, o OSPF não consegue operar de forma alguma, então isso é muito importante. Então, como os roteadores se tornam vizinhos OSPF?
 
 
 
 
 
 
-Agora, vou mostrar como configurar manualmente o custo OSPF de uma interface. O comando é `ip ospf cost`, seguido pelo valor de custo que você deseja definir.
-7:49
-Você configura isso diretamente na interface, e esse custo terá prioridade sobre o custo calculado automaticamente. 7:55
-Por exemplo, configurei o custo da interface G0/0 do R1 como 10.000 e agora você pode
-8:01
-ver que o custo é 10.000 em vez de 100. Outra opção para alterar o custo OSPF de uma interface é modificar a largura de banda
-8:10
-da interface usando o comando BANDWIDTH. Relembrando: a fórmula para calcular o custo OSPF é a largura de banda de referência dividida pela largura de banda
-8:19
-da interface. Mostrei como alterar a largura de banda de referência, mas você também pode alterar a largura de banda da interface.
-8:25
-Agora, preciso esclarecer a diferença entre "velocidade" e "largura de banda" da interface.
-8:31
-Embora a largura de banda corresponda à velocidade da interface por padrão, alterar a largura de banda da interface não altera, de fato, a velocidade de operação da interface.
-8:40
-A largura de banda é apenas um valor utilizado para calcular o custo OSPF, a métrica EIGRP, etc.
-8:47
-Para alterar a velocidade de operação da interface, utilize o comando SPEED. É assim que você realmente altera a velocidade com que a interface transmite dados fisicamente.
-8:57
-Se você alterar a largura de banda de uma interface Gigabit Ethernet para 100 megabits por segundo, ela continuará operando a 1 gigabit por segundo.
-9:04
-No entanto, para fins de cálculo de custo OSPF, será utilizada a largura de banda de 100 megabits
-9:09
-por segundo. Como o valor da largura de banda é usado em outros cálculos, e não apenas no custo OSPF,
-9:17
-não é recomendável alterar esse valor para modificar o custo OSPF da interface.
-9:22
-Recomenda-se alterar a largura de banda de referência e, em seguida, utilizar o comando `ip ospf cost` para modificar o custo de interfaces individuais, se desejar. 9:31
-No entanto, se você quiser alterar a largura de banda da interface, aqui está o comando: `bandwidth`, seguido pela largura de banda em kilobits por segundo.
-9:40
-Observe que isso é diferente da largura de banda de referência, que é inserida em megabits por segundo. O comando de largura de banda da interface é inserido em kilobits por segundo.
-9:49
-Antes de inserir qualquer comando desse tipo, recomendo fortemente usar o ponto de interrogação para verificar as unidades em que o comando deve ser inserido.
-9:55
-Por exemplo, em comandos que envolvem tempo, alguns são inseridos em segundos, outros em minutos.
-10:02
-Para comandos que envolvem velocidade, alguns são inseridos em kilobits, outros em megabits,
-10:07
-etc. Sempre verifique se você está inserindo as unidades corretas. Vamos resumir.
-Resumo do custo OSPF
-10:13
-Existem três maneiras de modificar o custo OSPF. A primeira é alterar a largura de banda de referência.
-10:19
-O comando é `auto-cost reference-bandwidth` seguido pela largura de banda de referência em megabits por segundo, inserido no modo de configuração OSPF.
-10:28
-A próxima forma é configurar manualmente o custo OSPF da interface com o comando `ip ospf cost`, inserido no modo de configuração da interface.
-10:37
-Por fim, você também pode alterar a largura de banda da interface, embora isso não seja recomendado. O comando é `bandwidth`, seguido pela largura de banda em kilobits por segundo, inserido
-10:46
-no modo de configuração da interface. Já mostrei o comando `show ip ospf interface`, mas aqui está uma maneira mais rápida de verificar
-10:53
-o custo OSPF de cada interface. O comando `show ip ospf interface brief` fornece uma visão geral conveniente de cada interface com OSPF habilitado
-11:02
-no roteador. Certo, vamos passar para o próximo tópico. Este é outro tópico muito importante no OSPF: vizinhos OSPF. Vizinhos OSPF
-11:12
-Garantir que os roteadores se tornem vizinhos OSPF com sucesso é a tarefa principal na configuração e na resolução de problemas do OSPF.
-11:20
-Assim que os roteadores se tornam vizinhos, eles realizam automaticamente o trabalho de compartilhar informações de rede, calcular rotas, etc.
-11:26
-Portanto, basta garantir que o OSPF esteja ativado nas interfaces corretas e que
-11:31
-as condições adequadas sejam atendidas para permitir que os roteadores se tornem vizinhos. Claro, existem configurações OSPF mais avançadas que você pode realizar, mas para a operação básica do OSPF elas
-11:42
-não são necessárias. No entanto, se os roteadores não conseguirem se tornar vizinhos OSPF...
-
-
-vizinhos, o OSPF não consegue operar de forma alguma, então isso é muito
-11:49
-importante. Então, como os roteadores se tornam vizinhos OSPF?
-11:54
 Quando o OSPF é ativado em uma interface, o roteador começa a enviar mensagens "hello" do OSPF
 12:00
 a partir da interface em intervalos regulares (determinados pelo temporizador "hello"). Elas são usadas para apresentar o roteador a possíveis vizinhos OSPF.
