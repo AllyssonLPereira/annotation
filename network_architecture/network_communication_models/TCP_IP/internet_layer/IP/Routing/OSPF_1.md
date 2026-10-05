@@ -94,80 +94,40 @@ Certo, vamos passar para o próximo tópico. Este é outro tópico muito importa
 
 Garantir que os roteadores se tornem vizinhos OSPF com sucesso é a tarefa principal na configuração e na resolução de problemas do OSPF. Assim que os roteadores se tornam vizinhos, eles realizam automaticamente o trabalho de compartilhar informações de rede, calcular rotas, etc. Portanto, basta garantir que o OSPF esteja ativado nas interfaces corretas e que as condições adequadas sejam atendidas para permitir que os roteadores se tornem vizinhos. Claro, existem configurações OSPF mais avançadas que você pode realizar, mas para a operação básica do OSPF elas não são necessárias. No entanto, se os roteadores não conseguirem se tornar vizinhos OSPF, o OSPF não consegue operar de forma alguma, então isso é muito importante. Então, como os roteadores se tornam vizinhos OSPF?
 
+Quando o OSPF é ativado em uma interface, o roteador começa a enviar mensagens "hello" do OSPF a partir da interface em intervalos regulares (determinados pelo temporizador "hello"). Elas são usadas para apresentar o roteador a possíveis vizinhos OSPF. Ao trocar mensagens "hello", eles verificam se são compatíveis para se tornarem vizinhos OSPF, e então negociam seu relacionamento de vizinhança. A propósito, o temporizador "hello" padrão é de 10 segundos em uma conexão Ethernet. As mensagens "hello" do OSPF são enviadas via multicast para o endereço IP 224.0.0.5, que é o endereço multicast para todos os roteadores OSPF. Você se lembra do endereço multicast do RIP? É 224.0.0.9. E o EIGRP? 224.0.0.10. Além disso, as mensagens OSPF são encapsuladas em um cabeçalho IP, e o campo "protocol" (protocolo) do cabeçalho IP tem o valor 89 para indicar o OSPF.
 
+### Estados de vizinhança - Down
 
+Certo, para que os roteadores OSPF se tornem vizinhos, eles precisam passar por vários estados de vizinhança. Vou dar uma visão geral básica de cada um dos estados de vizinhança. Embora seja apenas uma visão geral básica, vou fornecer muitas informações nas próximas imagens.
 
+![](../../../../../../z_imgs/074613.png)
 
+Então, vamos supor que o OSPF já esteja ativado na interface G0/0 do R2. Em seguida, o OSPF é ativado na interface G0/0 do R1. Ele envia uma mensagem Hello do OSPF para o endereço 224.0.0.5. Há mais campos na mensagem Hello, mas dois importantes são o Router ID do R1 e o Router ID do vizinho. No entanto, o R1 ainda não conhece o R2, portanto, o campo de Router ID do vizinho é 0.0.0.0. O R1 ainda não conhece nenhum vizinho OSPF, então o estado atual do vizinho é Down. Este é o primeiro estado de vizinho OSPF: "Down". Quando o R2 receber o pacote Hello, ele adicionará uma entrada para o R1 em sua tabela de vizinhos OSPF.
 
-Quando o OSPF é ativado em uma interface, o roteador começa a enviar mensagens "hello" do OSPF
-12:00
-a partir da interface em intervalos regulares (determinados pelo temporizador "hello"). Elas são usadas para apresentar o roteador a possíveis vizinhos OSPF.
-12:09
-Ao trocar mensagens "hello", eles verificam se são compatíveis para se tornarem vizinhos OSPF,
-12:14
-e então negociam seu relacionamento de vizinhança. A propósito, o temporizador "hello" padrão é de 10 segundos em uma conexão Ethernet.
-12:21
-Lembre-se deste número! As mensagens "hello" do OSPF são enviadas via multicast para o endereço IP 224.0.0.5, que é o endereço multicast
-12:30
-para todos os roteadores OSPF. Você se lembra do endereço multicast do RIP?
-12:36
-É 224.0.0.9. E o EIGRP? 224.0.0.10.
-12:43
-Além disso, as mensagens OSPF são encapsuladas em um cabeçalho IP, e o campo "protocol" (protocolo) do
-12:49
-cabeçalho IP tem o valor 89 para indicar o OSPF. Se você precisar de uma revisão sobre o cabeçalho IP, volte e assista novamente ao Dia 10 do curso.
-Estados de vizinhança - Down
-12:59
-Certo, para que os roteadores OSPF se tornem vizinhos, eles precisam passar por vários estados de vizinhança.
-13:04
-Vou dar uma visão geral básica de cada um dos estados de vizinhança. Recomendo fazer anotações nesta seção.
-13:11
-Embora seja apenas uma visão geral básica, vou fornecer muitas informações nos próximos slides.
-13:17
-Então, vamos supor que o OSPF já esteja ativado na interface G0/0 do R2. 13:23
-Em seguida, o OSPF é ativado na interface G0/0 do R1. Ele envia uma mensagem Hello do OSPF para o endereço 224.0.0.5.
-13:33
-Há mais campos na mensagem Hello, mas dois importantes são o Router ID do R1
-13:38
-e o Router ID do vizinho. No entanto, o R1 ainda não conhece o R2, portanto, o campo de Router ID do vizinho é 0.0.0.0.
-13:45
-O R1 ainda não conhece nenhum vizinho OSPF, então o estado atual do vizinho é Down.
-13:52
-Este é o primeiro estado de vizinho OSPF: "Down". Quando o R2 receber o pacote Hello, ele adicionará uma entrada para o R1 em sua tabela de vizinhos OSPF.
-Estados de vizinho – Init
-14:03
+### Estados de vizinho – Init
+
 Na tabela de vizinhos do R2, o relacionamento com o R1 está agora no estado Init.
-14:09
-Observe que o R1 ainda não conhece o R2, portanto, não terá entradas em sua tabela de vizinhos OSPF.
-14:15
-Basicamente, o estado Init significa que um pacote Hello foi recebido, mas o Router ID do próprio R2
-14:20
-não está no pacote Hello. O Router ID do R2 é 2.2.2.2, mas o Router ID do vizinho no pacote Hello do R1 é 0.0.0.0.
-14:30
-Então, esse é o estado Init. O próximo estado é o estado 2-way.
-Estados de vizinho – 2-way
-14:37
-O R2 enviará um pacote Hello contendo o RID de ambos os roteadores. O R1 inserirá o R2 em sua tabela de vizinhos OSPF no estado 2-way.
-14:46
-Em seguida, o R1 enviará outra mensagem Hello, desta vez contendo o RID do R2. 14:53
-Agora, ambos os roteadores estão no estado "2-way". O estado "2-way" significa que o roteador recebeu um pacote Hello contendo o seu próprio RID.
-15:03
-Se ambos os roteadores atingirem o estado "2-way", isso significa que todas as condições foram atendidas para que se tornem vizinhos OSPF.
-15:10
-Eles estão agora prontos para compartilhar LSAs e construir uma LSDB comum. Por outro lado, se não conseguirem atingir esse estado "2-way", você sabe que precisa realizar a solução de problemas
-15:19
-e descobrir o que os impede de alcançá-lo. Em alguns tipos de rede, um DR (Designated Router) e um BDR (Backup Designated Router) serão
-15:29
-eleitos neste momento. Falarei sobre tipos de rede OSPF e eleições de DR/BDR no Dia 28, então não se preocupe com
-15:37
-eles por enquanto. Eu só queria apresentar os termos DR e BDR.
-15:42
-Neste ponto, os roteadores já são vizinhos OSPF. Nos próximos estados de vizinhança, eles compartilharão LSAs e formarão uma adjacência OSPF completa.
-15:52
-Vamos para o próximo estado de vizinhança. Após o estado "2-way", os dois roteadores se prepararão para trocar informações sobre
+
+![](../../../../../../z_imgs/075230.png)
+
+Observe que o R1 ainda não conhece o R2, portanto, não terá entradas em sua tabela de vizinhos OSPF. Basicamente, o estado Init significa que um pacote Hello foi recebido, mas o Router ID do próprio R2 não está no pacote Hello. O Router ID do R2 é 2.2.2.2, mas o Router ID do vizinho no pacote Hello do R1 é 0.0.0.0. Então, esse é o estado Init. O próximo estado é o estado 2-way.
+
+### Estados de vizinho – 2-way
+
+![](../../../../../../z_imgs/075800.png)
+
+O R2 enviará um pacote Hello contendo o RID de ambos os roteadores. O R1 inserirá o R2 em sua tabela de vizinhos OSPF no estado 2-way. Em seguida, o R1 enviará outra mensagem Hello, desta vez contendo o RID do R2. Agora, ambos os roteadores estão no estado "2-way". O estado "2-way" significa que o roteador recebeu um pacote Hello contendo o seu próprio RID.
+
+Se ambos os roteadores atingirem o estado "2-way", isso significa que todas as condições foram atendidas para que se tornem vizinhos OSPF. Eles estão agora prontos para compartilhar LSAs e construir uma LSDB comum. Por outro lado, se não conseguirem atingir esse estado "2-way", você sabe que precisa realizar a solução de problemas e descobrir o que os impede de alcançá-lo. Em alguns tipos de rede, um DR (Designated Router) e um BDR (Backup Designated Router) serão eleitos neste momento. Falarei sobre tipos de rede OSPF e eleições de DR/BDR posteriormente, então não se preocupe com eles por enquanto. Eu só queria apresentar os termos DR e BDR.
+
+Neste ponto, os roteadores já são vizinhos OSPF. Nos próximos estados de vizinhança, eles compartilharão LSAs e formarão uma adjacência OSPF completa. Vamos para o próximo estado de vizinhança. Após o estado "2-way", os dois roteadores se prepararão para trocar informações sobre suas LSDBs.
+
+
+
+
 Estados de vizinhança - Exstart
 16:00
-suas LSDBs. Antes disso, eles precisam escolher qual deles iniciará a troca.
+ Antes disso, eles precisam escolher qual deles iniciará a troca.
 16:06
 Assim, eles decidirão qual será o roteador Master (mestre) e qual será o roteador Slave
 16:11
