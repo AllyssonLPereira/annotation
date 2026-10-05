@@ -175,109 +175,45 @@ As LSAs são enviadas em pacotes LSU (Link State Update – Atualização de Est
 
 7. Por fim, os roteadores atingem o estado Full (Completo) e estabelecem uma adjacência OSPF completa.
 
-As três etapas principais no processo de compartilhamento de LSAs e determinação das melhores rotas para cada destino são: 1) tornar-se vizinho, 2) trocar LSAs e 3) calcular as melhores rotas.
+As três etapas principais no processo de compartilhamento de LSAs e determinação das melhores rotas para cada destino são: 
 
-Analisando esse processo novamente: estes três primeiros estados envolvem tornar-se vizinho; estes três envolvem a troca de LSAs para sincronizar a LSDB; e, então, os roteadores usam a métrica
-22:03
-que ensinei para calcular a melhor rota para cada destino. Essa é uma visão geral básica de como o OSPF funciona.
-22:10
-Além disso, aqui está um quadro-resumo rápido dos 5 tipos diferentes de mensagens OSPF. Tabela de tipos de mensagens OSPF
-22:16
-Observe que elas são numeradas de 1 a 5: 1 é Hello, 2 é DBD, etc.
-22:23
-Já descrevi a finalidade básica de cada uma dessas mensagens; portanto, você pode pausar o vídeo aqui ou tirar uma captura de tela se quiser usar esta tabela para revisar.
-22:34
-Após essa visão geral, vamos analisar novamente alguns comandos "show" do OSPF; agora você deve compreender melhor a saída desses comandos.
-Comandos "show" do OSPF
-22:42
-Aqui está o comando SHOW IP OSPF NEIGHBOR; eu o executei no R1.
-22:47
-Observe o estado "Full" com ambos os vizinhos
+1) tornar-se vizinho;
+2) trocar LSAs; e
+3) calcular as melhores rotas.
 
+Essa é uma visão geral básica de como o OSPF funciona. Agoara, vamos analisar novamente alguns comandos "show" do OSPF; agora você deve compreender melhor a saída desses comandos.
 
+## Comandos "show" do OSPF
 
-...R2 e R3. Além disso, tanto R2 quanto R3 são DRs.
-22:54
-Novamente, explicarei o que são DRs no próximo vídeo. Observe também o *dead time* (tempo de inatividade).
-23:00
-Ele faz uma contagem regressiva a partir de 40, mas reinicia assim que o R1 recebe um pacote Hello do vizinho.
-23:06
-Então, supondo que um pacote Hello seja recebido a cada 10 segundos, a contagem deve ir até 30, reiniciar
-23:12
-para 40, contar até 30, reiniciar para 40, etc. Agora, vamos dar outra olhada no comando `SHOW IP OSPF INTERFACE`, focando na interface G0/0 do R1.
-23:25
-Aqui você pode ver os temporizadores padrão de Hello e Dead: 10 e 40.
-23:30
-"Hello due in 7 seconds" (Hello previsto para daqui a 7 segundos) significa que o R1 enviará uma mensagem Hello por essa interface em 7 segundos, como ele faz a cada 10 segundos.
-23:40
-A contagem de vizinhos é 1, e a contagem de vizinhos adjacentes é 1. O R1 tem apenas um vizinho conectado à sua interface G0/0: o R2.
-23:49
-No próximo vídeo, explicarei a diferença entre um vizinho e um vizinho adjacente.
-23:54
-Por fim, vizinho adjacente 2.2.2.2, roteador designado (*Designated Router*).
-24:00
-Como vimos anteriormente no comando `SHOW IP OSPF NEIGHBOR`, o R2 é um roteador designado. Novamente, falarei sobre isso no Dia 28, mas sinta-se à vontade para pesquisar no Google se tiver curiosidade
-24:11
-sobre o assunto. Certo, por hoje é só sobre vizinhos OSPF; abordaremos mais alguns detalhes no
-24:17
-Dia 28. Vamos prosseguir e ver um pouco mais sobre a configuração do OSPF. Configuração do OSPF (continuação)
-24:23
-Já mostrei algumas novas configurações do OSPF quando falamos sobre a métrica do OSPF, especificamente
-24:30
-os comandos `auto-cost reference-bandwidth` e `ip ospf cost`. Então, vamos analisar mais algumas configurações adicionais.
-24:40
-Primeiro, você se lembra da finalidade do comando `network`? Ele funciona da mesma forma para RIP, EIGRP e OSPF.
-24:48
-Ele simplesmente indica ao roteador em quais interfaces o protocolo de roteamento deve ser ativado. Bem, na verdade, você pode habilitar o OSPF diretamente em uma interface, sem usar o comando
-24:58
-`network`. Por exemplo, vamos supor que o R1 ainda não tenha nenhuma configuração de OSPF.
-25:05
-Veja como habilitar o OSPF nas interfaces. Você pode ativar o OSPF diretamente em uma interface com este comando: `ip ospf`, seguido pelo
-25:15
-ID do processo, depois `area` e o ID da área. Observe que isso é feito no modo de configuração de interface.
-25:24
-Agora o OSPF está habilitado nessas interfaces, e eu nem precisei entrar no modo de configuração do OSPF.
-25:30
-A seguir, outro método para configurar interfaces passivas. Consegue perceber a diferença?
-25:37
-Você pode configurar todas as interfaces do roteador como interfaces passivas do OSPF por padrão com
-25:42
-o comando `passive-interface default`. Depois, pode usar o comando `no passive-interface` para remover essa configuração apenas de interfaces específicas.
-25:52
-Essa é simplesmente outra maneira de configurar interfaces passivas. Dependendo da quantidade de interfaces passivas que você precisa configurar, esse método pode ser
-26:00
-mais rápido, ou talvez o método convencional seja mais rápido. De qualquer forma, o resultado é o mesmo.
-26:07
-Se você configurar o OSPF diretamente nas interfaces, verá uma saída ligeiramente diferente no comando `show ip protocols`. 26:14
-A seção "routing for networks" (roteamento para redes) está vazia; em vez disso, são exibidas aqui as interfaces nas quais você ativou o OSPF, sob o título "routing on interfaces configured explicitly" (roteamento em interfaces configuradas explicitamente).
-26:25
-No entanto, o restante da saída é o mesmo. Antes de passarmos para o quiz de hoje, vamos recapitular o que vimos.
-Tópicos abordados
-26:33
-Primeiro, mostrei a métrica do OSPF, chamada de "custo" (cost). Por padrão, ela é calculada automaticamente dividindo-se a largura de banda de referência pela
-26:41
-largura de banda real da interface. No entanto, se o resultado for um valor menor que 1, ele é convertido para 1.
-26:49
-A largura de banda de referência padrão é 100; portanto, qualquer interface com velocidade igual ou superior a 100 megabits por segundo terá um custo igual a 1.
-26:58
-Você pode modificar a largura de banda de referência com o comando `AUTO-COST REFERENCE-BANDWIDTH`.
-27:04
-Também é possível configurar manualmente o custo de uma interface usando o comando `IP OSPF COST`.
-27:11
-Outra opção para modificar o custo de uma interface é alterar a largura de banda com o comando `BANDWIDTH`, embora esse não seja o método recomendado.
-27:19
-Por fim, a métrica de uma rota é o custo total das interfaces de saída que compõem essa rota.
-27:25
-Em seguida, estudamos o processo que os roteadores utilizam para se tornarem vizinhos OSPF. Aqui está o diagrama de resumo.
-27:32
-Esta é, provavelmente, a parte mais difícil desta aula. Recomendo assisti-la algumas vezes e, talvez, pesquisar no Google por "ospf neighbor
-27:40
-states" (estados de vizinhança OSPF) para saber mais sobre o processo. Por último, apresentei mais algumas configurações do OSPF.
-27:48
-Em vez de usar o comando `NETWORK`, você pode ativar o OSPF diretamente em uma interface usando este comando. 27:55
-Como um método alternativo para configurar interfaces passivas, você pode configurar todas as interfaces como passivas usando o comando PASSIVE-INTERFACE DEFAULT e, em seguida, tornar ativas apenas interfaces específicas
-28:05
-posteriormente.
+Aqui está o comando `show ip ospf neighbor`; eu o executei no R1. 
+
+![](../../../../../../z_imgs/172611.png)
+
+Observe o estado "Full" com ambos os vizinhos R2 e R3. Além disso, tanto R2 quanto R3 são DRs. Novamente, explicarei o que são DRs no próximo arquivo. Observe também o *dead time* (tempo de inatividade). Ele faz uma contagem regressiva a partir de 40, mas reinicia assim que o R1 recebe um pacote Hello do vizinho. Então, supondo que um pacote Hello seja recebido a cada 10 segundos, a contagem deve ir até 30, reiniciar para 40, contar até 30, reiniciar para 40, etc. Agora, vamos dar outra olhada no comando `show ip ospf interface`, focando na interface G0/0 do R1.
+
+Nele você pode ver os temporizadores padrão de Hello e Dead: 10 e 40. "Hello due in 7 seconds" (Hello previsto para daqui a 7 segundos) significa que o R1 enviará uma mensagem Hello por essa interface em 7 segundos, como ele faz a cada 10 segundos. A contagem de vizinhos é 1, e a contagem de vizinhos adjacentes é 1. O R1 tem apenas um vizinho conectado à sua interface G0/0: o R2. No próximo arquivo, explicarei a diferença entre um vizinho e um vizinho adjacente.
+
+Por fim, vizinho adjacente 2.2.2.2, roteador designado (*Designated Router*). Como vimos anteriormente no comando `show ip ospf neighbor`, o R2 é um roteador designado. Certo, vamos prosseguir e ver um pouco mais sobre a configuração do OSPF. 
+
+## Configuração do OSPF (continuação)
+
+Já mostrei algumas novas configurações do OSPF quando falamos sobre a métrica do OSPF, especificamente os comandos `auto-cost reference-bandwidth` e `ip ospf cost`. Então, vamos analisar mais algumas configurações adicionais.
+
+Primeiro, você se lembra da finalidade do comando `network`? Ele funciona da mesma forma para RIP, EIGRP e OSPF. Ele simplesmente indica ao roteador em quais interfaces o protocolo de roteamento deve ser ativado. Bem, na verdade, você pode habilitar o OSPF diretamente em uma interface, sem usar o comando `network`. Por exemplo, vamos supor que o R1 ainda não tenha nenhuma configuração de OSPF. Veja como habilitar o OSPF nas interfaces. Você pode ativar o OSPF diretamente em uma interface com este comando: `ip ospf`, seguido pelo ID do processo, depois `area` e o ID da área. Observe que isso é feito no modo de configuração de interface.
+
+![](../../../../../../z_imgs/173315.png)
+
+Agora o OSPF está habilitado nessas interfaces, e eu nem precisei entrar no modo de configuração do OSPF. A seguir, outro método para configurar interfaces passivas. Consegue perceber a diferença?
+
+![](../../../../../../z_imgs/173417.png)
+
+Você pode configurar todas as interfaces do roteador como interfaces passivas do OSPF por padrão com o comando `passive-interface default`. Depois, pode usar o comando `no passive-interface` para remover essa configuração apenas de interfaces específicas. Essa é simplesmente outra maneira de configurar interfaces passivas. Dependendo da quantidade de interfaces passivas que você precisa configurar, esse método pode ser mais rápido, ou talvez o método convencional seja mais rápido. De qualquer forma, o resultado é o mesmo.
+
+Se você configurar o OSPF diretamente nas interfaces, verá uma saída ligeiramente diferente no comando `show ip protocols`. 
+
+![](../../../../../../z_imgs/173552.png)
+
+A seção "routing for networks" (roteamento para redes) está vazia; em vez disso, são exibidas aqui as interfaces nas quais você ativou o OSPF, sob o título "routing on interfaces configured explicitly" (roteamento em interfaces configuradas explicitamente). No entanto, o restante da saída é o mesmo.
 
 
 
