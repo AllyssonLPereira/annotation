@@ -54,7 +54,7 @@ Para chegar a 192.168.4.0, um pacote sairia pelas interfaces G0/0 do R1, G1/0 do
 
 Para chegar a 2.2.2.2, o pacote deve sair pela interface G0/0 do R1 e pela interface loopback0 do R2. Agora, ele não chega a sair por nenhuma interface física para alcançar a interface de loopback virtual, mas um custo de 1 é adicionado à métrica. Portanto, o custo do R1 para alcançar 2.2.2.2 é 101. Aqui está a tabela de roteamento do R1 antes de alterar a largura de banda de referência em todos os roteadores, de modo que todos mantêm a largura de banda de referência padrão de 100 megabits por segundo. 
 
-![](../../../../../../z_imgs/075416.png)
+![](../../../../../../z_imgs/174007.png)
 
 Observe que existem duas rotas para 192.168.4.0: uma via R2 e outra via R3. Embora a conexão entre R3 e R4 seja uma conexão FastEthernet mais lenta, ela possui o mesmo custo de 1 que as interfaces Gigabit Ethernet. E aqui está a tabela de roteamento do R1 após alterar a largura de banda de referência de cada roteador para 100.000 megabits por segundo.
 
