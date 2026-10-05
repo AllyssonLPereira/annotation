@@ -120,116 +120,63 @@ O R2 enviará um pacote Hello contendo o RID de ambos os roteadores. O R1 inseri
 
 Se ambos os roteadores atingirem o estado "2-way", isso significa que todas as condições foram atendidas para que se tornem vizinhos OSPF. Eles estão agora prontos para compartilhar LSAs e construir uma LSDB comum. Por outro lado, se não conseguirem atingir esse estado "2-way", você sabe que precisa realizar a solução de problemas e descobrir o que os impede de alcançá-lo. Em alguns tipos de rede, um DR (Designated Router) e um BDR (Backup Designated Router) serão eleitos neste momento. Falarei sobre tipos de rede OSPF e eleições de DR/BDR posteriormente, então não se preocupe com eles por enquanto. Eu só queria apresentar os termos DR e BDR.
 
-Neste ponto, os roteadores já são vizinhos OSPF. Nos próximos estados de vizinhança, eles compartilharão LSAs e formarão uma adjacência OSPF completa. Vamos para o próximo estado de vizinhança. Após o estado "2-way", os dois roteadores se prepararão para trocar informações sobre suas LSDBs.
+Neste ponto, os roteadores já são vizinhos OSPF. Nos próximos estados de vizinhança, eles compartilharão LSAs e formarão uma adjacência OSPF completa. Vamos para o próximo estado de vizinhança.
 
+### Estados de vizinhança - Exstart
 
+![](../../../../../../z_imgs/123026.png)
 
+Após o estado "2-way", os dois roteadores se prepararão para trocar informações sobre suas LSDBs. Antes disso, eles precisam escolher qual deles iniciará a troca. Assim, eles decidirão qual será o roteador Master (mestre) e qual será o roteador Slave (escravo). Observe que esses papéis são diferentes do DR e do BDR que mencionei anteriormente. Essa relação Master/Slave é necessária apenas para essa troca inicial de informações da LSDB. Eles decidem qual será o Master e qual será o Slave durante o estado Exstart.
 
-Estados de vizinhança - Exstart
-16:00
- Antes disso, eles precisam escolher qual deles iniciará a troca.
-16:06
-Assim, eles decidirão qual será o roteador Master (mestre) e qual será o roteador Slave
-16:11
-(escravo). Observe que esses papéis são diferentes do DR e do BDR que mencionei no slide anterior.
-16:17
-Essa relação Master/Slave é necessária apenas para essa troca inicial de informações da LSDB.
-16:24
-Eles decidem qual será o Master e qual será o Slave durante o estado Exstart. 16:29
-O roteador com o RID mais alto se tornará o Master e iniciará a troca.
-16:35
-O roteador com o RID mais baixo se tornará o Slave. Portanto, neste caso, o R2 será o master e o R1 será o slave.
-16:43
-Para definir quem é Master e quem é Slave, eles trocam pacotes DBD (Database Description).
-16:50
-Os pacotes DBD também são importantes no próximo estado; por isso, falarei mais sobre eles no próximo slide.
-16:55
-Basicamente, o estado Exstart serve apenas para preparar o próximo estado. O R1 envia um pacote DBD alegando ser o master.
-17:04
-No entanto, o R2 corrige o R1. O R2 possui o Router ID mais alto e afirma que ele será o master.
-Estados de vizinhança – Exchange
-17:13
-No próximo estado, o estado Exchange, os roteadores trocam pacotes DBD que...
+O roteador com o RID mais alto se tornará o Master e iniciará a troca. O roteador com o RID mais baixo se tornará o Slave. Portanto, neste caso, o R2 será o master e o R1 será o slave. Para definir quem é Master e quem é Slave, eles trocam pacotes DBD (Database Description). Os pacotes DBD também são importantes no próximo estado; por isso, falarei mais sobre eles depois.
 
+Basicamente, o estado Exstart serve apenas para preparar o próximo estado. O R1 envia um pacote DBD alegando ser o master. No entanto, o R2 corrige o R1. O R2 possui o Router ID mais alto e afirma que ele será o master.
 
+### Estados de vizinhança – Exchange
 
-...contêm uma lista
-17:18
-das LSAs em seus LSDBs. Esses DBDs não incluem informações detalhadas sobre as LSAs, apenas informações básicas indicando
-17:27
-ao vizinho quais LSAs eles possuem. Basicamente, os roteadores informam uns aos outros: "Eu tenho estas LSAs", mas não estão
-17:35
-enviando as LSAs propriamente ditas ainda. Os roteadores comparam as informações do DBD recebido com as informações de seus
-17:42
-próprios LSDBs para determinar quais LSAs precisam receber do vizinho.
-17:48
-Após a troca de DBDs, eles passam para o próximo estado.
-Estados de vizinhança – Loading (Carregamento)
-17:53
-O próximo estado é o estado de Loading. Nesse estado, os roteadores enviam mensagens LSR (Link State Request) para solicitar que seus
-18:02
-vizinhos enviem quaisquer LSAs que eles não possuam. No estado de Exchange (Troca), eles trocaram pacotes DBD, então sabem quais LSAs seus vizinhos
-18:10
-possuem. Assim, essas mensagens LSR são usadas para solicitar quaisquer LSAs ausentes, garantindo que cada roteador tenha as mesmas
-18:17
-LSAs. Vou mostrar apenas um lado da troca, mas o R2 também enviará mensagens LSR ao R1 para quaisquer
-18:24
-LSAs ausentes. Em seguida, as próprias LSAs são enviadas em mensagens LSU (Link State Update).
-18:32
-O R2 envia ao R1 as LSAs solicitadas em uma mensagem LSU como esta. O R1 também fará o mesmo para o R2.
-18:39
-Finalmente, os roteadores enviam mensagens LSAck — outro tipo de mensagem OSPF — para confirmar
-18:45
-o recebimento das LSAs. Agora, o estado de Loading está concluído e os roteadores possuem o mesmo LSDB.
-18:52
-Chegamos ao estado final do OSPF. No estado Full, os roteadores possuem uma adjacência OSPF completa e LSDBs idênticos. Estados de vizinhança – Full
-19:03
-Mas isso não significa que o processo esteja concluído. Eles continuam enviando e aguardando pacotes Hello — por padrão, a cada 10 segundos —
-19:10
-para manter a adjacência de vizinhança. Para manter essa adjacência, utiliza-se outro temporizador, chamado de temporizador "Dead" (ou de inatividade).
-19:17
-Sempre que um pacote Hello é recebido, o temporizador "Dead" — cujo padrão é de 40 segundos —
-19:23
-é reiniciado. No entanto, se a contagem regressiva do temporizador "Dead" chegar a zero sem que nenhuma mensagem Hello seja recebida, o vizinho
-19:29
-é removido. Se a vizinhança permanecer ativa, os roteadores continuarão compartilhando LSAs à medida que a rede sofrer alterações,
-19:37
-garantindo que cada roteador possua um mapa completo e preciso da rede. Essa é a principal vantagem dos protocolos de roteamento dinâmico: os roteadores reagem automaticamente
-19:45
-a mudanças na rede, adicionando, removendo ou alterando rotas conforme necessário.
-Resumo sobre vizinhos OSPF
-19:51
-Vamos resumir esse processo. Primeiramente, a conexão entre R1 e R2 é estabelecida, ou o OSPF é ativado nas interfaces,
-20:00
-iniciando o processo. O primeiro estado é o estado "Down" (Inativo); R1 e R2 ainda não se conhecem, mas
-20:08
-enviam pacotes Hello por meio de suas interfaces. Vamos supor que R1 envie o primeiro pacote Hello.
-20:15
-O estado "Init" (Inicialização) ocorre quando R2 recebe esse primeiro pacote Hello de R1, mas o próprio Router ID de R2
-20:21
-ainda não consta no pacote. No estado "2-way" (Bidirecional), os roteadores trocam mais pacotes Hello, mas o Router ID de R1 é incluído
-20:30
-nos pacotes Hello de R2, e o Router ID de R2 é incluído nos pacotes Hello de R1. 20:37
-Em alguns tipos de conexões OSPF, ocorre uma eleição para o roteador designado e o roteador designado de backup.
-20:42
-Falarei mais sobre isso no Dia 28.
-20:48
-A seguir, temos o estado Exstart. Os roteadores trocam pacotes DBD para determinar qual será o Master (Mestre) e qual será
-20:55
-o Slave (Escravo). O Master é o roteador que inicia a troca de DBD no próximo estado, o estado Exchange (Troca).
-21:03
-Eles trocam pacotes DBD para informar um ao outro sobre o conteúdo de suas LSDBs. O próximo estado é o estado Loading (Carregamento).
-21:11
-Eles usam LSRs (Link State Requests – Solicitações de Estado de Link) para solicitar LSAs uns aos outros.
-21:18
+![](../../../../../../z_imgs/123738.png)
+
+No próximo estado, o estado Exchange, os roteadores trocam pacotes DBD que contêm uma lista das LSAs em seus LSDBs. Esses DBDs não incluem informações detalhadas sobre as LSAs, apenas informações básicas indicando ao vizinho quais LSAs eles possuem. Basicamente, os roteadores informam uns aos outros: "Eu tenho estas LSAs", mas não estão enviando as LSAs propriamente ditas ainda. Os roteadores comparam as informações do DBD recebido com as informações de seus próprios LSDBs para determinar quais LSAs precisam receber do vizinho. Após a troca de DBDs, eles passam para o próximo estado.
+
+### Estados de vizinhança – Loading
+
+![](../../../../../../z_imgs/124214.png)
+
+O próximo estado é o estado de Loading. Nesse estado, os roteadores enviam mensagens LSR (Link State Request) para solicitar que seus vizinhos enviem quaisquer LSAs que eles não possuam. No estado de Exchange (Troca), eles trocaram pacotes DBD, então sabem quais LSAs seus vizinhos possuem. Assim, essas mensagens LSR são usadas para solicitar quaisquer LSAs ausentes, garantindo que cada roteador tenha as mesmas LSAs. A imagem mostra apenas um lado da troca, mas o R2 também enviará mensagens LSR ao R1 para quaisquer LSAs ausentes. 
+
+Em seguida, as próprias LSAs são enviadas em mensagens LSU (Link State Update). O R2 envia ao R1 as LSAs solicitadas em uma mensagem LSU. O R1 também fará o mesmo para o R2. Finalmente, os roteadores enviam mensagens LSAck — outro tipo de mensagem OSPF — para confirmar o recebimento das LSAs. Agora, o estado de Loading está concluído e os roteadores possuem o mesmo LSDB.
+
+### Estados de vizinhança – Full
+
+![](../../../../../../z_imgs/124722.png)
+
+Chegamos ao estado final do OSPF. No estado Full, os roteadores possuem uma adjacência OSPF completa e LSDBs idênticos.  Mas isso não significa que o processo esteja concluído. Eles continuam enviando e aguardando pacotes Hello — por padrão, a cada 10 segundos — para manter a adjacência de vizinhança. Para manter essa adjacência, utiliza-se outro temporizador, chamado de temporizador "Dead" (ou de inatividade).
+
+Sempre que um pacote Hello é recebido, o temporizador "Dead" — cujo padrão é de 40 segundos — é reiniciado. No entanto, se a contagem regressiva do temporizador "Dead" chegar a zero sem que nenhuma mensagem Hello seja recebida, o vizinho é removido. Se a vizinhança permanecer ativa, os roteadores continuarão compartilhando LSAs à medida que a rede sofrer alterações, garantindo que cada roteador possua um mapa completo e preciso da rede. Essa é a principal vantagem dos protocolos de roteamento dinâmico: os roteadores reagem automaticamente a mudanças na rede, adicionando, removendo ou alterando rotas conforme necessário.
+
+## Resumo sobre vizinhos OSPF
+
+Vamos resumir esse processo.
+
+![](../../../../../../z_imgs/125438.png)
+
+1. Primeiramente, a conexão entre R1 e R2 é estabelecida, ou o OSPF é ativado nas interfaces, iniciando o processo. O primeiro estado é o estado "Down" (Inativo); R1 e R2 ainda não se conhecem, mas enviam pacotes Hello por meio de suas interfaces. Vamos supor que R1 envie o primeiro pacote Hello.
+
+2. O estado "Init" (Inicialização) ocorre quando R2 recebe esse primeiro pacote Hello de R1, mas o próprio Router ID de R2 ainda não consta no pacote. 
+
+3. No estado "2-way" (Bidirecional), os roteadores trocam mais pacotes Hello, mas o Router ID de R1 é incluído nos pacotes Hello de R2, e o Router ID de R2 é incluído nos pacotes Hello de R1. Em alguns tipos de conexões OSPF, ocorre uma eleição para o roteador designado e o roteador designado de backup. Falarei mais sobre isso no último arquivo sobre OSPF.
+
+4. A seguir, temos o estado Exstart. Os roteadores trocam pacotes DBD para determinar qual será o Master (Mestre) e qual será o Slave (Escravo). 
+
+5. O Master é o roteador que inicia a troca de DBD no próximo estado, o estado Exchange (Troca). Eles trocam pacotes DBD para informar um ao outro sobre o conteúdo de suas LSDBs.
+
+6. O próximo estado é o estado Loading (Carregamento). Eles usam LSRs (Link State Requests – Solicitações de Estado de Link) para solicitar LSAs uns aos outros. 
 As LSAs são enviadas em pacotes LSU (Link State Update – Atualização de Estado de Link). Finalmente, pacotes LSAck são enviados para confirmar o recebimento das LSAs solicitadas.
-21:29
-Por fim, os roteadores atingem o estado Full (Completo) e estabelecem uma adjacência OSPF completa.
-21:36
-Você se lembra deste slide do Dia 26? As três etapas principais no processo de compartilhamento de LSAs e determinação das melhores rotas para cada
-21:43
-destino são: 1) tornar-se vizinho, 2) trocar LSAs e 3) calcular as melhores rotas.
-21:53
+
+7. Por fim, os roteadores atingem o estado Full (Completo) e estabelecem uma adjacência OSPF completa.
+
+As três etapas principais no processo de compartilhamento de LSAs e determinação das melhores rotas para cada destino são: 1) tornar-se vizinho, 2) trocar LSAs e 3) calcular as melhores rotas.
+
 Analisando esse processo novamente: estes três primeiros estados envolvem tornar-se vizinho; estes três envolvem a troca de LSAs para sincronizar a LSDB; e, então, os roteadores usam a métrica
 22:03
 que ensinei para calcular a melhor rota para cada destino. Essa é uma visão geral básica de como o OSPF funciona.
