@@ -30,59 +30,23 @@ Primeiro, o tipo de rede *broadcast*. Como acabei de mencionar, esse tipo de red
 
 ![](../../../../../../z_imgs/125829.png)
 
-Nos arquivos anteriores, todas as conexões OSPF que analisamos utilizaram o tipo de rede *Broadcast*, pois são todas conexões Ethernet. No diagrama de rede acima, todas são conexões Ethernet; lembre-se de que "G" significa "Gigabit Ethernet",
-5:36
-e, portanto, essas conexões entre os roteadores utilizam o tipo de rede *Broadcast*. Agora, vamos abordar algumas características do tipo de rede *Broadcast*. Primeiro, os roteadores
-5:46
-descobrem vizinhos dinamicamente enviando e escutando mensagens "Hello" do OSPF, utilizando
-5:51
-o endereço multicast 224.0.0.5. Você já sabe disso pelo vídeo anterior, quando mostrei
-5:58
-como os roteadores OSPF se tornam vizinhos. No entanto, nem todos os tipos de rede descobrem vizinhos
-6:04
-dinamicamente dessa forma. Não abordaremos esse tipo de rede aqui, mas, no caso do tipo de rede
-6:09
-"Non-broadcast" (não broadcast), é necessário configurar os vizinhos manualmente. Certo, próximo ponto. Um DR, ou roteador designado,
+Nos arquivos anteriores, todas as conexões OSPF que analisamos utilizaram o tipo de rede *Broadcast*, pois são todas conexões Ethernet. No diagrama de rede acima, todas são conexões Ethernet; lembre-se de que "G" significa "Gigabit Ethernet", e, portanto, essas conexões entre os roteadores utilizam o tipo de rede *Broadcast*. Agora, vamos abordar algumas características do tipo de rede *Broadcast*. 
 
+Primeiro, os roteadores descobrem vizinhos dinamicamente enviando e escutando mensagens "Hello" do OSPF, utilizando o endereço multicast 224.0.0.5. Você já sabe disso pelo arquivo passado, quando mostrei como os roteadores OSPF se tornam vizinhos. No entanto, nem todos os tipos de rede descobrem vizinhos dinamicamente dessa forma. Não abordaremos esse tipo de rede aqui, mas, no caso do tipo de rede "Non-broadcast" (não broadcast), é necessário configurar os vizinhos manualmente.
 
+Certo, próximo ponto. Um DR, ou roteador designado, e um BDR (Backup Designated Router) deve ser eleito em cada sub-rede. No entanto, em casos como a interface G1/0 dos roteadores R1, R3, R4 e R5, onde não há vizinhos OSPF, existe apenas um DR, sem BDR. Roteadores que não são o DR ou o BDR da sub-rede tornam-se "DROther". Então, vamos analisar a rede acima. Cada sub-rede precisa de um DR. Nas sub-redes da interface G1/0 dos roteadores R1, R3, R4 e R5 é simples: não há vizinhos OSPF, então cada roteador se torna o DR da sub-rede. 
 
+E quanto à sub-rede 192.168.1.0/30 entre R1 e R2? Mais adiante, mostrarei como o DR é eleito, mas vamos supor que R2 seja o DR. 
 
-6:17
-e um BDR (Backup Designated Router) deve ser eleito em cada sub-rede. No entanto, em casos como
-6:24
-a interface G1/0 dos roteadores R1, R3, R4 e R5, onde não há vizinhos OSPF, existe apenas
-6:32
-um DR, sem BDR. Roteadores que não são o DR ou o BDR da sub-rede tornam-se "DROther".
-6:39
-Já ouvi algumas formas de pronunciar isso, mas eu digo "D R Other". Então, vamos analisar
-6:45
-a rede acima. Cada sub-rede precisa de um DR. Nestas sub-redes é simples: não há vizinhos
-6:53
-OSPF, então cada roteador se torna o DR da sub-rede. E quanto à sub-rede 192.168.1.0/30
-7:00
-entre R1 e R2? No próximo slide, mostrarei como o DR é eleito, mas vamos
-7:07
-supor que R2 seja o DR. Assim, R1 torna-se o BDR do segmento. E quanto à sub-rede 192.168.2.0/29
-7:17
-à qual R2, R3, R4 e R5 se conectam? Por exemplo, R5 poderia ser o DR, R4 o BDR,
-7:27
-e então R2 e R3 tornam-se DROthers. Você provavelmente está se perguntando como essas eleições funcionam
-7:33
-e qual é a finalidade do DR e do BDR. Bem, vamos abordar isso.
-Broadcast - Eleição de DR/BDR
-7:38
-Então, é assim que o DR e o BDR são eleitos. Existe uma ordem de prioridade. Primeiramente,
-7:46
-o roteador com a maior prioridade de interface OSPF na sub-rede torna-se o DR do segmento. 7:51
-No entanto, todas as interfaces têm a mesma prioridade por padrão; portanto, os roteadores comparam seus
-7:57
-IDs de roteador OSPF. O roteador com o maior ID de roteador OSPF vence. O "primeiro lugar" na
-8:04
-eleição torna-se o DR da sub-rede, e o "segundo lugar" torna-se o BDR. A
-8:10
-prioridade padrão da interface OSPF é 1 em todas as interfaces. Então, como eu disse, por padrão, o roteador
-8:16
-com o maior ID de roteador se tornará o DR do segmento. Aqui está uma saída parcial do comando SHOW IP OSPF INTERFACE G0/0 no R5. Observe o ID
+![](../../../../../../z_imgs/174324.png)
+
+Assim, R1 torna-se o BDR do segmento. E quanto à sub-rede 192.168.2.0/29 à qual R2, R3, R4 e R5 se conectam? Por exemplo, R5 poderia ser o DR, R4 o BDR, e então R2 e R3 tornam-se DROthers. Você provavelmente está se perguntando como essas eleições funcionam e qual é a finalidade do DR e do BDR. Bem, vamos abordar isso.
+
+### Broadcast - Eleição de DR/BDR
+
+Então, é assim que o DR e o BDR são eleitos. Existe uma ordem de prioridade. 
+
+Primeiramente, o roteador com a maior prioridade de interface OSPF na sub-rede torna-se o DR do segmento. No entanto, todas as interfaces têm a mesma prioridade por padrão; portanto, os roteadores comparam seus IDs de roteador OSPF. O roteador com o maior ID de roteador OSPF vence. O "primeiro lugar" na eleição torna-se o DR da sub-rede, e o "segundo lugar" torna-se o BDR. A prioridade padrão da interface OSPF é 1 em todas as interfaces. Então, como eu disse, por padrão, o roteador com o maior ID de roteador se tornará o DR do segmento. Aqui está uma saída parcial do comando SHOW IP OSPF INTERFACE G0/0 no R5. Observe o ID
 8:29
 do roteador. Configurei uma interface loopback em cada roteador, e o endereço IP da interface
 8:35
