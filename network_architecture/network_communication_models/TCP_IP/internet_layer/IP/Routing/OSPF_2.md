@@ -10,61 +10,27 @@ Antes de entrarmos nesses tópicos, quero dedicar um momento para explicar um po
 
 Assim, ela fornece um endereço IP consistente que pode ser usado para acessar e identificar o roteador. Às vezes, é necessário enviar tráfego diretamente para um roteador.
 
+![](../../../../../../z_imgs/074923.png)
 
+Digamos que o R1 não tenha uma interface loopback no momento, e o R4 receba um pacote destinado ao R1 no endereço IP 10.0.13.1, que é o endereço da sua interface G1/0. Ele poderia encaminhá-lo para o R1 via sua interface f2/0. E se a interface G1/0 do R1 cair por algum motivo? Se o R4 receber um pacote destinado ao R1 no endereço 10.0.13.1, ele não conseguirá enviar o pacote para o R1.
 
-Digamos que o R1 não tenha uma interface loopback
-2:33
-no momento, e o R4 receba um pacote destinado ao R1 no endereço IP 10.0.13.1,
-2:41
-que é o endereço da sua interface G1/0. Ele poderia encaminhá-lo para o R1 dessa forma.
-2:47
-E se a interface G1/0 do R1 cair por algum motivo? Se o R4 receber um pacote destinado
-2:53
-ao R1 no endereço 10.0.13.1, ele não conseguirá enviar o pacote para o R1.
-3:00
-Que tal se o R1 tiver uma interface loopback, 1.1.1.1, e ela for usada para identificar o R1 em vez
-3:07
-do endereço 10.0.13.1? Mesmo que uma interface física falhe, quando o R4 receber um pacote destinado
-3:14
-à interface loopback do R1, ele ainda conseguirá enviar o pacote para o R1. Então, é por isso
-3:20
-que é uma boa ideia configurar uma interface loopback em um roteador. Ela fornece uma interface com um endereço IP que está sempre ativo e pode ser usada de forma consistente para identificar e alcançar
-3:30
-o roteador. Agora, vamos analisar os diferentes tipos de rede OSPF. O tipo de rede OSPF
-Tipos de Rede OSPF
-3:38
-refere-se ao tipo de conexão entre vizinhos OSPF, e esse tipo influencia a maneira como o OSPF
-3:44
-se comporta em alguns aspectos. O tipo de conexão mais comum em redes modernas é o Ethernet,
-3:49
-é claro. Existem três tipos principais de rede OSPF. O primeiro é o tipo de rede Broadcast,
-3:56
-que é habilitado por padrão em interfaces Ethernet e FDDI. O FDDI é uma tecnologia antiga
-4:04
-e você não precisa perder tempo aprendendo sobre ela. No entanto, vou incluí-lo nos flashcards sobre tipos de rede OSPF; é bom lembrar deste fato para
-4:13
-o exame: o tipo de rede OSPF *broadcast* é utilizado por padrão. O próximo é o tipo de rede
-4:21
-Ponto a Ponto (*Point-to-Point*), que é habilitado por padrão em interfaces PPP e HDLC. Você não precisa
-4:28
-aprender PPP e HDLC a fundo para o exame CCNA atual, mas vou mencioná-los brevemente
-4:34
-mais adiante neste vídeo. O último tipo de rede principal é o *Non-broadcast* (não broadcast). Ele é habilitado por padrão
-4:40
-em interfaces Frame Relay e X.25. Novamente, você não precisa estudar esses tipos de interface
-4:46
-para o exame, mas vou incluí-los nos flashcards deste vídeo sobre tipos de rede OSPF. Dê uma olhada novamente nos tópicos do exame OSPF. O item 3.4b menciona o tipo de rede
-4:59
-Ponto a Ponto, e o 3.4c menciona o tipo de rede *Broadcast*. Portanto, esses são os tipos de rede
-5:05
-nos quais vamos focar agora. Primeiro, o tipo de rede *broadcast*. Como acabei de mencionar, esse tipo de rede é habilitado
-Tipo de rede Broadcast
-5:14
-em interfaces Ethernet e FDDI por padrão. Neste curso, nosso foco principal é Ethernet,
-5:21
-e, nos vídeos anteriores, todas as conexões OSPF que analisamos utilizaram o tipo de rede *Broadcast*, pois são todas conexões Ethernet. No diagrama de rede
-5:31
-acima, todas são conexões Ethernet; lembre-se de que "G" significa "Gigabit Ethernet",
+Que tal se o R1 tiver uma interface loopback, 1.1.1.1, e ela for usada para identificar o R1 em vez do endereço 10.0.13.1? Mesmo que uma interface física falhe, quando o R4 receber um pacote destinado à interface loopback do R1, ele ainda conseguirá enviar o pacote para o R1. Então, é por isso que é uma boa ideia configurar uma interface loopback em um roteador. Ela fornece uma interface com um endereço IP que está sempre ativo e pode ser usada de forma consistente para identificar e alcançar o roteador. Agora, vamos analisar os diferentes tipos de rede OSPF. 
+
+## Tipos de Rede OSPF
+
+O tipo de rede OSPF refere-se ao tipo de conexão entre vizinhos OSPF, e esse tipo influencia a maneira como o OSPF se comporta em alguns aspectos. O tipo de conexão mais comum em redes modernas é o Ethernet, é claro. Existem três tipos principais de rede OSPF. 
+
+- O primeiro é o tipo de rede ***Broadcast***, que é habilitado por padrão em interfaces Ethernet e FDDI. O FDDI é uma tecnologia antiga e você não precisa perder tempo aprendendo sobre ela. O tipo de rede OSPF *broadcast* é utilizado por padrão;
+- O próximo é o tipo de rede ***Ponto a Ponto*** (*Point-to-Point*), que é habilitado por padrão em interfaces PPP e HDLC; e
+- O último tipo de rede principal é o ***Non-broadcast*** (não broadcast). Ele é habilitado por padrão em interfaces Frame Relay e X.25.
+
+### Tipo de rede Broadcast
+
+Primeiro, o tipo de rede *broadcast*. Como acabei de mencionar, esse tipo de rede é habilitado em interfaces Ethernet e FDDI por padrão.
+
+![](../../../../../../z_imgs/125829.png)
+
+Nos arquivos anteriores, todas as conexões OSPF que analisamos utilizaram o tipo de rede *Broadcast*, pois são todas conexões Ethernet. No diagrama de rede acima, todas são conexões Ethernet; lembre-se de que "G" significa "Gigabit Ethernet",
 5:36
 e, portanto, essas conexões entre os roteadores utilizam o tipo de rede *Broadcast*. Agora, vamos abordar algumas características do tipo de rede *Broadcast*. Primeiro, os roteadores
 5:46
