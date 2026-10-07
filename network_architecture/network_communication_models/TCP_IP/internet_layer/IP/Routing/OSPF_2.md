@@ -62,76 +62,25 @@ O comando para alterar a prioridade OSPF de uma interface é `ip ospf priority`,
 
 ![](../../../../../../z_imgs/080001.png)
 
-Uma observação: se você definir a prioridade da interface OSPF como 0, o roteador NÃO poderá ser o DR/BDR
-9:40
-para a sub-rede, em hipótese alguma. Então, vamos verificar se o R2 se tornou o DR do segmento.
-9:46
-Isso é estranho. O estado do R2 ainda é DROTHER, mesmo tendo a maior prioridade. Por que
-9:53
-isso acontece? É porque a eleição de DR/BDR não é "preemptiva". Você aprenderá mais
-9:59
-sobre "preempção" no Dia 29, quando estudarmos Protocolos de Redundância de Primeiro Salto (First-Hop Redundancy Protocols). Mas
-10:05
-o que "não preemptivo" significa é que, uma vez selecionados, o DR e o BDR mantêm suas
-10:11
-funções até que o OSPF seja reiniciado, a interface falhe ou seja desativada, etc. Então, embora seja uma má
-10:18
-ideia fazer isso em uma rede em produção, vou reiniciar o processo OSPF no R5 e vamos ver o que
-10:24
-acontece. Reiniciei o processo OSPF no R5 e você pode ver que todos os seus vizinhos ficaram inativos (estado DOWN).
-10:33
-Depois, o R2 e o R4 retornaram ao estado FULL, mas o R3 não. Há uma razão importante
-10:39
-para isso, que você aprenderá em breve. Em seguida, usei o comando SHOW IP OSPF NEIGHBOR para visualizar
-10:45
-o estado dos vizinhos do R5. Veja aqui: há dois pontos importantes sobre
-10:50
-o OSPF que podemos aprender analisando esta seção. Primeiro, o R4 tornou-se o DR, e não o R2. O R2 tornou-se
-10:59
-o BDR. O que podemos aprender com isso? Podemos aprender que, quando o DR cai, o BDR
-11:06
-assume o papel de novo DR. Em seguida, é realizada uma eleição para o próximo BDR. O R4, que era o BDR, imediatamente
-11:14
-assumiu como o novo DR, e então foi feita uma eleição entre os outros roteadores para o próximo BDR. O R2 tem a maior prioridade, 255, então ele se tornou o BDR. Certo, próximo ponto. O R3
-11:28
-é um DROther e permanece estável no estado 2-way. O R5 também se tornou um DROther, aliás. O que
-11:36
-podemos aprender com isso? Podemos aprender que os DROthers só avançam para o estado FULL
-11:42
-com o DR e o BDR da sub-rede. O estado de vizinhança com outros DROthers será 2-way. Isso
-11:49
-nos dá uma pista sobre a finalidade do DR e do BDR, assunto que abordarei no próximo slide.
-11:55
-Mas lembre-se destes dois pontos: o BDR se torna o DR se o DR atual for removido,
-12:01
-mesmo que não tenha a prioridade mais alta. Além disso, os DROthers não formam adjacências completas
-12:06
-com outros DROthers; eles permanecem no estado 2-way.
-12:12
-Repetindo: no tipo de rede broadcast, os roteadores só formam uma adjacência OSPF completa
-12:17
-com o DR e o BDR do segmento. Portanto, os roteadores só trocam...
+Uma observação: se você definir a prioridade da interface OSPF como 0, o roteador NÃO poderá ser o DR/BDR para a sub-rede, em hipótese alguma. Então, vamos verificar se o R2 se tornou o DR do segmento.
 
+![](../../../../../../z_imgs/113853.png)
 
-...trocam LSAs com o DR e
-12:24
-o BDR. Os DROthers não trocam LSAs entre si. Lembre-se de que, no estado "2-way",
-12:32
-os roteadores ainda não compartilharam LSAs entre si. Todos os roteadores ainda terão o mesmo LSDB, mas isso reduz a quantidade de LSAs inundando a rede. Vamos ver um exemplo.
-12:43
-Se 6 roteadores estiverem conectados ao mesmo segmento e todos compartilharem LSAs entre si,
-12:49
-o resultado será este: uma enorme quantidade de LSAs inundando e congestionando a rede. E se
-12:55
-usarmos um DR e um BDR? Se os roteadores trocarem LSAs apenas com o DR e o BDR, como você pode ver, o número de LSAs
-13:04
-inundando a rede é reduzido. Para ser sincero, em roteadores modernos isso provavelmente
-13:09
-não é um grande problema na maioria dos casos, mas ainda assim ajuda a reduzir o tráfego de rede desnecessário.
-13:15
-Aliás, quando os roteadores precisam enviar mensagens para o DR e o BDR, eles usam o endereço multicast
-13:20
-224.0.0.6. Isso é diferente do endereço multicast OSPF "todos os roteadores" (all routers), que é 224.0.0.5.
+Isso é estranho. O estado do R2 ainda é DROTHER, mesmo tendo a maior prioridade. Por que isso acontece? É porque a eleição de DR/BDR não é "preemptiva". O que "não preemptivo" significa é que, uma vez selecionados, o DR e o BDR mantêm suas funções até que o OSPF seja reiniciado, a interface falhe ou seja desativada, etc. Então, embora seja uma má ideia fazer isso em uma rede em produção, vou reiniciar o processo OSPF no R5 e vamos ver o que acontece. Reiniciei o processo OSPF no R5 e você pode ver que todos os seus vizinhos ficaram inativos (estado DOWN).
+
+![](../../../../../../z_imgs/114250.png)
+
+Depois, o R2 e o R4 retornaram ao estado FULL, mas o R3 não. Há uma razão importante para isso, que você aprenderá em breve. Em seguida, usei o comando `show ip ospf neighbor` para visualizar o estado dos vizinhos do R5. Veja aqui: há dois pontos importantes sobre o OSPF que podemos aprender analisando esta seção. 
+
+- Primeiro, o R4 tornou-se o DR, e não o R2. O R2 tornou-se o BDR. O que podemos aprender com isso? Podemos aprender que, quando o DR cai, o BDR assume o papel de novo DR. Em seguida, é realizada uma eleição para o próximo BDR. O R4, que era o BDR, imediatamente assumiu como o novo DR, e então foi feita uma eleição entre os outros roteadores para o próximo BDR. O R2 tem a maior prioridade, 255, então ele se tornou o BDR.
+
+- Certo, próximo ponto. O R3 é um DROther e permanece estável no estado 2-way. O R5 também se tornou um DROther, aliás. O que podemos aprender com isso? Podemos aprender que os DROthers só avançam para o estado FULL com o DR e o BDR da sub-rede. O estado de vizinhança com outros DROthers será 2-way. Isso nos dá uma pista sobre a finalidade do DR e do BDR, assunto que abordarei em seguida.
+
+Mas lembre-se destes dois pontos: o BDR se torna o DR se o DR atual for removido, mesmo que não tenha a prioridade mais alta. Além disso, os DROthers não formam adjacências completas com outros DROthers; eles permanecem no estado 2-way. Repetindo: no tipo de rede broadcast, os roteadores só formam uma adjacência OSPF completa com o DR e o BDR do segmento. Portanto, os roteadores só trocam LSAs com o DR e o BDR. Os DROthers não trocam LSAs entre si. Lembre-se de que, no estado "2-way", os roteadores ainda não compartilharam LSAs entre si. Todos os roteadores ainda terão o mesmo LSDB, mas isso reduz a quantidade de LSAs inundando a rede. Vamos ver um exemplo.
+
+Se 6 roteadores estiverem conectados ao mesmo segmento e todos compartilharem LSAs entre si, o resultado será este: uma enorme quantidade de LSAs inundando e congestionando a rede. E se usarmos um DR e um BDR? Se os roteadores trocarem LSAs apenas com o DR e o BDR, como você pode ver, o número de LSAs inundando a rede é reduzido. Para ser sincero, em roteadores modernos isso provavelmente não é um grande problema na maioria dos casos, mas ainda assim ajuda a reduzir o tráfego de rede desnecessário.
+
+Aliás, quando os roteadores precisam enviar mensagens para o DR e o BDR, eles usam o endereço multicast 224.0.0.6. Isso é diferente do endereço multicast OSPF "todos os roteadores" (all routers), que é 224.0.0.5.
 13:29
 Aqui está uma rápida revisão do processo de vizinhança do OSPF. Lembra que eu disse que esses primeiros
 13:36
