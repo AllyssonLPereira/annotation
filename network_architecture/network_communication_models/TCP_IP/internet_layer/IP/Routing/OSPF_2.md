@@ -46,24 +46,22 @@ Assim, R1 torna-se o BDR do segmento. E quanto à sub-rede 192.168.2.0/29 à qua
 
 Então, é assim que o DR e o BDR são eleitos. Existe uma ordem de prioridade. 
 
-Primeiramente, o roteador com a maior prioridade de interface OSPF na sub-rede torna-se o DR do segmento. No entanto, todas as interfaces têm a mesma prioridade por padrão; portanto, os roteadores comparam seus IDs de roteador OSPF. O roteador com o maior ID de roteador OSPF vence. O "primeiro lugar" na eleição torna-se o DR da sub-rede, e o "segundo lugar" torna-se o BDR. A prioridade padrão da interface OSPF é 1 em todas as interfaces. Então, como eu disse, por padrão, o roteador com o maior ID de roteador se tornará o DR do segmento. Aqui está uma saída parcial do comando SHOW IP OSPF INTERFACE G0/0 no R5. Observe o ID
-8:29
-do roteador. Configurei uma interface loopback em cada roteador, e o endereço IP da interface
-8:35
-loopback tornou-se o ID do roteador. O estado é DR, e a prioridade é o padrão 1. O R5 tem
-8:43
-o maior ID de roteador entre os roteadores conectados à sub-rede 192.168.2.0/29; por isso, ele se tornou
-8:50
-o DR. Aqui embaixo, o DR (o próprio R5) e o BDR (R4) do segmento estão listados, incluindo
-8:58
-seus IDs de roteador e o endereço IP da interface na sub-rede.
-9:03
-E aqui está a mesma saída para o R2. A principal diferença que quero destacar é o estado DROTHER. Agora, e se eu quiser tornar o R2 o DR do segmento em vez do R5? Vamos
-9:14
-ver como alterar a prioridade da interface OSPF. O comando para alterar a prioridade OSPF de uma interface é IP OSPF PRIORITY, seguido
-Broadcast - Prioridade OSPF
-9:24
-pela prioridade, com uma faixa de 0 a 255. Eu a alterei para o valor máximo, 255, no R2. 9:33
+Primeiramente, o roteador com a maior prioridade de interface OSPF na sub-rede torna-se o DR do segmento. No entanto, todas as interfaces têm a mesma prioridade por padrão; portanto, os roteadores comparam seus IDs de roteador OSPF. O roteador com o maior ID de roteador OSPF vence. O "primeiro lugar" na eleição torna-se o DR da sub-rede, e o "segundo lugar" torna-se o BDR. A prioridade padrão da interface OSPF é 1 em todas as interfaces. Então, como eu disse, por padrão, o roteador com o maior ID de roteador se tornará o DR do segmento. Aqui está uma saída parcial do comando `show ip ospf interface g0/0` no R5. 
+
+![](../../../../../../z_imgs/075127.png)
+
+Observe o ID do roteador. Configurei uma interface loopback em cada roteador, e o endereço IP da interface loopback tornou-se o ID do roteador. O estado é DR, e a prioridade é o padrão 1. O R5 tem o maior ID de roteador entre os roteadores conectados à sub-rede 192.168.2.0/29; por isso, ele se tornou o DR. Aqui embaixo, o DR (o próprio R5) e o BDR (R4) do segmento estão listados, incluindo seus IDs de roteador e o endereço IP da interface na sub-rede. E aqui está a mesma saída para o R2. 
+
+![](../../../../../../z_imgs/075746.png)
+
+A principal diferença que quero destacar é o estado DROTHER. Agora, e se eu quiser tornar o R2 o DR do segmento em vez do R5? Vamos ver como alterar a prioridade da interface OSPF. 
+
+### Broadcast - Prioridade OSPF
+
+O comando para alterar a prioridade OSPF de uma interface é `ip ospf priority`, seguido pela prioridade, com uma faixa de 0 a 255. Eu a alterei para o valor máximo, 255, no R2. 
+
+![](../../../../../../z_imgs/080001.png)
+
 Uma observação: se você definir a prioridade da interface OSPF como 0, o roteador NÃO poderá ser o DR/BDR
 9:40
 para a sub-rede, em hipótese alguma. Então, vamos verificar se o R2 se tornou o DR do segmento.
