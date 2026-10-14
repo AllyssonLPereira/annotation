@@ -104,50 +104,30 @@ Ele fornece a mesma informação aqui: "Neighbor Count is 3" (Contagem de vizinh
 
 ## Tipo de rede ponto a ponto
 
-Observe que alterei a conexão entre o R1 e o R2 para uma conexão "serial". Farei uma breve apresentação sobre conexões seriais a seguir, mas, antes, deixe-me apresentar os conceitos básicos do tipo de conexão ponto a ponto. Esse tipo de rede é habilitado em interfaces seriais que utilizam encapsulamento
-15:34
-PPP ou HDLC por padrão. Tanto o PPP quanto o HDLC são encapsulamentos de Camada 2, semelhantes ao Ethernet,
-15:41
-exceto pelo fato de serem usados ​​em conexões seriais. Assim como no tipo de rede Broadcast, os roteadores
-15:47
-descobrem vizinhos dinamicamente enviando e escutando mensagens Hello do OSPF, utilizando o endereço multicast
-15:53
-224.0.0.5. No entanto, há uma diferença: não são eleitos DR nem BDR. Por que isso acontece?
-16:02
-Como o nome do tipo de rede sugere, esses encapsulamentos são usados ​​para conexões "ponto a ponto" entre dois roteadores. Portanto, não faz sentido eleger um DR e um BDR. Os dois roteadores
-16:14
-estabelecerão uma adjacência completa (*Full adjacency*) entre si, sem a necessidade de eleger um DR e um BDR.
-Interfaces Seriais
-16:19
-Certo, deixe-me fazer uma breve apresentação sobre conexões seriais. Digo "breve" porque
-16:25
-as conexões seriais são uma tecnologia antiga que já não é muito comum. Elas ainda existem,
-16:31
-mas o Ethernet é muito mais predominante. Na verdade, as conexões seriais foram removidas dos tópicos do exame, exceto pelo tipo de rede OSPF "ponto a ponto". Portanto, embora você não vá ser
-16:42
-avaliado diretamente sobre o conhecimento de interfaces seriais, é importante ter uma noção básica sobre elas.
-16:48
-Esta foto mostra algumas interfaces e cabos seriais. Observe que tanto as portas quanto os cabos são diferentes dos cabos Ethernet.
-16:57
-Para explicar as conexões seriais, vou mostrar como configuro a interface S2/0 do roteador R1.
-17:03
-Você não precisa de um conhecimento profundo sobre esse assunto, mas deve, pelo menos, conhecer os conceitos básicos que apresento aqui. Primeiramente, um lado de uma conexão serial funciona como DCE, que significa *Data Communications*
-17:14
-*Equipment* (Equipamento de Comunicação de Dados). O outro lado funciona como DTE, que significa *Data Terminal Equipment*
-17:20
-(Equipamento Terminal de Dados). Por que isso é importante? Bem, em conexões seriais, o lado DCE precisa especificar a taxa de clock,
-17:29
-ou seja, a velocidade da conexão. Portanto, neste caso, o R1 está conectado à extremidade DCE do cabo
-17:35
-e, por isso, precisa informar ao R2 em qual velocidade a conexão irá operar. O comando
-17:40
-é `clock rate`, e você pode ver alguns valores padrão que podem ser utilizados. Todos eles são expressos em bits por segundo, aliás. Configurei uma taxa de clock de 64.000 bits por
-17:51
-segundo — ou seja, 64 kilobits por segundo — e adicionei um endereço IP...
+Observe que alterei a conexão entre o R1 e o R2 para uma conexão "serial". Farei uma breve apresentação sobre conexões seriais a seguir, mas, antes, deixe-me apresentar os conceitos básicos do tipo de conexão ponto a ponto.
+
+![](../../../../../../z_imgs/174609.png)
+
+Esse tipo de rede é habilitado em interfaces seriais que utilizam encapsulamento PPP ou HDLC por padrão. Tanto o PPP quanto o HDLC são encapsulamentos de Camada 2, semelhantes ao Ethernet, exceto pelo fato de serem usados ​​em conexões seriais. Assim como no tipo de rede Broadcast, os roteadores descobrem vizinhos dinamicamente enviando e escutando mensagens Hello do OSPF, utilizando o endereço multicast 224.0.0.5. No entanto, há uma diferença: não são eleitos DR nem BDR. Por que isso acontece?
+
+Como o nome do tipo de rede sugere, esses encapsulamentos são usados ​​para conexões "ponto a ponto" entre dois roteadores. Portanto, não faz sentido eleger um DR e um BDR. Os dois roteadores estabelecerão uma adjacência completa (*Full adjacency*) entre si, sem a necessidade de eleger um DR e um BDR.
+
+### Interfaces Seriais
+
+Certo, deixe-me fazer uma breve apresentação sobre conexões seriais. Digo "breve" porque as conexões seriais são uma tecnologia antiga que já não é muito comum. Elas ainda existem, mas o Ethernet é muito mais predominante. 
+
+![](../../../../../../z_imgs/175235.png)
+
+Esta foto mostra algumas interfaces e cabos seriais. Observe que tanto as portas quanto os cabos são diferentes dos cabos Ethernet. Para explicar as conexões seriais, vou mostrar como configuro a interface S2/0 do roteador R1. Primeiramente, um lado de uma conexão serial funciona como DCE, que significa *Data Communications Equipment* (Equipamento de Comunicação de Dados). O outro lado funciona como DTE, que significa *Data Terminal Equipment* (Equipamento Terminal de Dados). Por que isso é importante? 
+
+![](../../../../../../z_imgs/175359.png)
+
+Bem, em conexões seriais, o lado DCE precisa especificar a taxa de clock, ou seja, a velocidade da conexão. Portanto, neste caso, o R1 está conectado à extremidade DCE do cabo e, por isso, precisa informar ao R2 em qual velocidade a conexão irá operar. O comando é `clock rate`, e você pode ver alguns valores padrão que podem ser utilizados. Todos eles são expressos em bits por segundo, aliás. Configurei uma taxa de clock de 64.000 bits por segundo — ou seja, 64 kilobits por segundo — e adicionei um endereço IP e usei o comando `no shutdown`. 
 
 
 
-...e usei o comando `no shutdown`. Aqui está
+
+Aqui está
 17:58
 um ponto importante. Interfaces Ethernet usam o comando `speed` para configurar a
 18:04
