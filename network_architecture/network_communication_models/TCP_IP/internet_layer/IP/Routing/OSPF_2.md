@@ -78,43 +78,33 @@ Depois, o R2 e o R4 retornaram ao estado FULL, mas o R3 não. Há uma razão imp
 
 Mas lembre-se destes dois pontos: o BDR se torna o DR se o DR atual for removido, mesmo que não tenha a prioridade mais alta. Além disso, os DROthers não formam adjacências completas com outros DROthers; eles permanecem no estado 2-way. Repetindo: no tipo de rede broadcast, os roteadores só formam uma adjacência OSPF completa com o DR e o BDR do segmento. Portanto, os roteadores só trocam LSAs com o DR e o BDR. Os DROthers não trocam LSAs entre si. Lembre-se de que, no estado "2-way", os roteadores ainda não compartilharam LSAs entre si. Todos os roteadores ainda terão o mesmo LSDB, mas isso reduz a quantidade de LSAs inundando a rede. Vamos ver um exemplo.
 
-Se 6 roteadores estiverem conectados ao mesmo segmento e todos compartilharem LSAs entre si, o resultado será este: uma enorme quantidade de LSAs inundando e congestionando a rede. E se usarmos um DR e um BDR? Se os roteadores trocarem LSAs apenas com o DR e o BDR, como você pode ver, o número de LSAs inundando a rede é reduzido. Para ser sincero, em roteadores modernos isso provavelmente não é um grande problema na maioria dos casos, mas ainda assim ajuda a reduzir o tráfego de rede desnecessário.
+![](../../../../../../z_imgs/075739.png)
 
-Aliás, quando os roteadores precisam enviar mensagens para o DR e o BDR, eles usam o endereço multicast 224.0.0.6. Isso é diferente do endereço multicast OSPF "todos os roteadores" (all routers), que é 224.0.0.5.
-13:29
-Aqui está uma rápida revisão do processo de vizinhança do OSPF. Lembra que eu disse que esses primeiros
-13:36
-passos envolvem tornar-se vizinho? Então, quando os roteadores chegam a esse ponto do processo, eles
-13:41
-já são vizinhos OSPF. As conexões entre dois DROthers param nesse ponto. Os roteadores
-13:47
-só prosseguirão para trocar LSAs e formar uma adjacência OSPF completa com o DR e o BDR. 13:54
-Então, resumindo, isso significa que o DR e o BDR estabelecem uma adjacência completa com TODOS os roteadores
-14:00
-na sub-rede, incluindo os DROthers. E os DROthers estabelecerão uma adjacência completa apenas com
-14:06
-o DR/BDR. Eu mostrei esse comando, `SHOW IP OSPF INTERFACE BRIEF`, anteriormente. Aqui, executei-o no R3, que
-14:15
-é um DROther. Observe a contagem de vizinhos na interface G0/0 dele. "F" indica o número
-14:23
-de adjacências completas, e "C" indica a contagem total de vizinhos. Portanto, o R3 tem duas adjacências completas,
-14:31
-com o R2 e o R4. Mas ele tem um total de três vizinhos: R2, R4 e R5.
-14:39
-Para mais detalhes, aqui está o comando `SHOW IP OSPF INTERFACE G0/0` no R3. Ele fornece a mesma informação
-14:46
-aqui: "Neighbor Count is 3" (Contagem de vizinhos é 3); esse é o número total de vizinhos OSPF do R3. "Adjacent
-14:52
-neighbor count is 2" (Contagem de vizinhos adjacentes é 2); esses são os vizinhos com os quais o R3 estabeleceu uma adjacência completa. E abaixo
-14:58
-disso, seus dois vizinhos adjacentes estão listados: R2, o BDR, e R4, o DR. Certo, isso
-15:06
-é suficiente por enquanto para o tipo de rede Broadcast; vamos seguir em frente. Agora, vamos analisar o tipo de rede "ponto a ponto". Observe que alterei a conexão
-Tipo de rede ponto a ponto
-15:15
-entre o R1 e o R2 para uma conexão "serial". Farei uma breve apresentação sobre conexões seriais
-15:22
-no próximo slide, mas, antes, deixe-me apresentar os conceitos básicos do tipo de conexão ponto a ponto. Esse tipo de rede é habilitado em interfaces seriais que utilizam encapsulamento
+Se 6 roteadores estiverem conectados ao mesmo segmento e todos compartilharem LSAs entre si, o resultado será este: uma enorme quantidade de LSAs inundando e congestionando a rede. E se usarmos um DR e um BDR? Se os roteadores trocarem LSAs apenas com o DR e o BDR, como você pode ver, o número de LSAs inundando a rede é reduzido. 
+
+![](../../../../../../z_imgs/075940.png)
+
+Para ser sincero, em roteadores modernos isso provavelmente não é um grande problema na maioria dos casos, mas ainda assim ajuda a reduzir o tráfego de rede desnecessário. Aliás, quando os roteadores precisam enviar mensagens para o DR e o BDR, eles usam o endereço multicast 224.0.0.6. Isso é diferente do endereço multicast OSPF "todos os roteadores" (all routers), que é 224.0.0.5.
+
+Aqui está uma rápida revisão do processo de vizinhança do OSPF.
+
+![](../../../../../../z_imgs/114119.png)
+
+Lembra que eu disse que esses primeiros passos envolvem tornar-se vizinho? Então, quando os roteadores chegam a esse ponto do processo, eles já são vizinhos OSPF. As conexões entre dois DROthers param nesse ponto. Os roteadores só prosseguirão para trocar LSAs e formar uma adjacência OSPF completa com o DR e o BDR. Então, resumindo, isso significa que o DR e o BDR estabelecem uma adjacência completa com TODOS os roteadores na sub-rede, incluindo os DROthers. E os DROthers estabelecerão uma adjacência completa apenas com o DR/BDR. 
+
+Eu mostrei esse comando, `show ip ospf interface brief`, anteriormente. 
+
+![](../../../../../../z_imgs/114303.png)
+
+Aqui, executei-o no R3, que é um DROther. Observe a contagem de vizinhos na interface G0/0 dele. "F" indica o número de adjacências completas, e "C" indica a contagem total de vizinhos. Portanto, o R3 tem duas adjacências completas, com o R2 e o R4. Mas ele tem um total de três vizinhos: R2, R4 e R5. Para mais detalhes, aqui está o comando `show ip ospg interface g0/0` no R3.
+
+![](../../../../../../z_imgs/114539.png)
+
+Ele fornece a mesma informação aqui: "Neighbor Count is 3" (Contagem de vizinhos é 3); esse é o número total de vizinhos OSPF do R3. "Adjacent neighbor count is 2" (Contagem de vizinhos adjacentes é 2); esses são os vizinhos com os quais o R3 estabeleceu uma adjacência completa. E abaixo disso, seus dois vizinhos adjacentes estão listados: R2, o BDR, e R4, o DR. Certo, isso é suficiente por enquanto para o tipo de rede Broadcast; vamos seguir em frente. Agora, vamos analisar o tipo de rede "ponto a ponto". 
+
+## Tipo de rede ponto a ponto
+
+Observe que alterei a conexão entre o R1 e o R2 para uma conexão "serial". Farei uma breve apresentação sobre conexões seriais a seguir, mas, antes, deixe-me apresentar os conceitos básicos do tipo de conexão ponto a ponto. Esse tipo de rede é habilitado em interfaces seriais que utilizam encapsulamento
 15:34
 PPP ou HDLC por padrão. Tanto o PPP quanto o HDLC são encapsulamentos de Camada 2, semelhantes ao Ethernet,
 15:41
