@@ -180,110 +180,71 @@ Usaremos essa pequena topologia com dois roteadores para demonstrar. Nela, podem
 
 ![](../../../../../../z_imgs/075655.png)
 
-Alterei o comando *network* no R2 para usar a área 0. Como você pode ver, eles conseguiram
-24:04
-se tornar vizinhos OSPF. Então, essa é a primeira regra. Para que dois roteadores se tornem vizinhos OSPF, eles devem estar
-24:12
-na mesma área. Mas já abordamos isso antes. Próxima regra. As interfaces devem estar
-24:18
-na mesma sub-rede para se tornarem vizinhos OSPF. Também já abordamos isso antes, mas deixe-me
-24:24
-demonstrar. Observe que as interfaces G0/0 do R1 e do R2 agora estão em sub-redes diferentes. Ativei
-24:33
-o OSPF em ambas as interfaces. Mas, ao verificar os vizinhos OSPF, eles não aparecem.
-24:41
-Configurei novamente a interface do R2 na mesma sub-rede que a do R1 e também me certifiquei de editar o comando *network* para que o OSPF fosse ativado novamente na G0/0. Agora, R1 e R2
-24:52
-são vizinhos OSPF novamente. A seguir, aqui está um ponto que ainda não abordamos. O processo OSPF não deve estar desativado (shutdown).
-25:01
-Na verdade, você pode desativar ("shutdown") o processo OSPF no roteador, assim como faria com uma interface. Isso interrompe
-25:06
-a operação do OSPF, sem remover as configurações do OSPF. Vamos ver como isso funciona.
-25:12
-Veja como fazer. A partir do modo de configuração do OSPF no R2, usei o comando SHUTDOWN. Então,
-25:20
-uma mensagem é exibida indicando que o vizinho R1 passou de FULL para DOWN, e
-25:25
-nenhum vizinho aparece no comando SHOW IP OSPF NEIGHBOR. Em seguida, reativo o OSPF com o comando NO
-25:32
-SHUTDOWN. Uma mensagem indica que o vizinho está ativo novamente, e é possível vê-lo no comando SHOW IP OSPF NEIGHBOR.
-25:39
-Isso não será um problema, a menos que você desative manualmente o processo OSPF; portanto, geralmente não é uma questão crítica. O próximo requisito é que os Router IDs do OSPF sejam únicos.
-25:50
-Vamos ver como isso funciona. Eu não configurei os Router IDs de R1 e R2 e também não
-25:56
-configurei nenhuma interface loopback; assim, cada roteador selecionou seu endereço IP da interface G0/0 como
-26:01
-seu Router ID: 192.168.1.1 para o R1 e 192.168.1.2 para o R2. Então, configurei 192.168.1.1 como o Router ID
-26:13
-do R2, o mesmo do R1. Como mostrei anteriormente, é necessário reiniciar o roteador
-26:18
-ou usar o comando CLEAR IP OSPF PROCESS para que o novo Router ID entre em vigor. Então, usei o comando CLEAR IP OSPF
-26:27
-PROCESS. Imediatamente, a adjacência com o vizinho cai, pois limpei o processo OSPF. Mas então,
-26:32
-em vez de o vizinho voltar a ficar ativo, esta mensagem é exibida: "OSPF detectou um router-id duplicado
-26:37
-192.168.1.1 vindo de 192.168.1.1 na interface GigabitEthernet0/0", e então o
-26:46
-vizinho permanece inativo. Então, vamos corrigir isso. Removi o router ID configurado manualmente
-26:52
-com o comando `no router-id`. Observe que não é necessário especificar o router ID ao remover
-26:58
-o comando. `no router-id` tem o mesmo efeito que `no router-id 192.168.1.1`; ambos removem o
-27:06
-comando. Desta vez, sem precisar reiniciar o processo OSPF, o router ID do R2 retorna
-27:12
-para 192.168.1.2 e o vizinho volta a ficar ativo. Por que não precisei usar o comando `clear ip ospf process`?
-27:21
-Na verdade, eu não esperava isso, mas percebi que foi porque o R2 não tinha outros vizinhos OSPF
-27:26
-naquele momento; assim, o roteador estava livre para alterar o router ID do R2 sem se preocupar com impactos em outros vizinhos.
-27:33
-Portanto, fique atento a router IDs duplicados. Próximo requisito: os temporizadores Hello e Dead devem
-27:40
-coincidir. Em ambos os tipos de rede que analisamos hoje — Broadcast e Ponto a Ponto —, os
-27:46
-valores padrão são 10 segundos e 40 segundos. Mas você pode alterar essas configurações manualmente.
-27:52
-Os temporizadores Hello e Dead são configurados diretamente na interface. Veja como configurar o temporizador Hello: `ip ospf hello-interval`, seguido pelo intervalo em segundos. Eu defini para 5.
-28:05
-Depois, o temporizador Dead. `ip ospf dead-interval`, e defini para 20. Como você pode ver, o vizinho
-28:12
-fica inativo. Note que alterei ambos os valores, o temporizador Hello e o Dead, mas mesmo
-28:18
-se você alterar apenas um, o vizinho ainda ficará inativo. Então, vamos corrigir isso. Usei `no ip`
-28:24
-`ospf hello-interval` e `no ip ospf dead-interval` para retornar os temporizadores aos seus valores padrão.
-28:32
-Observe o método que usei para retorná-los aos padrões; é o mesmo usado para o Router ID. Não precisei especificar `no ip ospf hello-interval 5` ou `dead-interval`
-28:42
-`20` para remover os comandos. De qualquer forma, agora que os temporizadores Hello e Dead coincidem novamente, o
-28:48
-vizinho está ativo novamente. Portanto, lembre-se de verificar os intervalos Hello e Dead se estiver tendo problemas com adjacências OSPF.
-28:56
-A seguir, as configurações de autenticação devem coincidir. O que isso significa? Bem, você pode configurar
+Alterei o comando *network* no R2 para usar a área 0. Como você pode ver, eles conseguiram se tornar vizinhos OSPF. Então, essa é a primeira regra. Para que dois roteadores se tornem vizinhos OSPF, eles devem estar na mesma área. Mas já abordamos isso antes. Próxima regra.
+
+### Interfaces na mesma subrede
+
+As interfaces devem estar na mesma sub-rede para se tornarem vizinhos OSPF. Também já abordamos isso antes, mas deixe-me demonstrar. Observe que as interfaces G0/0 do R1 e do R2 agora estão em sub-redes diferentes.
+
+![](../../../../../../z_imgs/123052.png)
+
+Ativei o OSPF em ambas as interfaces. Mas, ao verificar os vizinhos OSPF, eles não aparecem. Configurei novamente a interface do R2 na mesma sub-rede que a do R1 e também me certifiquei de editar o comando *network* para que o OSPF fosse ativado novamente na G0/0. Agora, R1 e R2 são vizinhos OSPF novamente.
+
+![](../../../../../../z_imgs/123214.png)
+
+A seguir, aqui está um ponto que ainda não abordamos. 
+
+### Processo OSPF deve estar ativado
+
+O processo OSPF não deve estar desativado (shutdown). Na verdade, você pode desativar ("shutdown") o processo OSPF no roteador, assim como faria com uma interface. Isso interrompe a operação do OSPF, sem remover as configurações do OSPF. Vamos ver como isso funciona. Veja como fazer. 
+
+![](../../../../../../z_imgs/123436.png)
+
+A partir do modo de configuração do OSPF no R2, usei o comando `shutdown`. Então, uma mensagem é exibida indicando que o vizinho R1 passou de FULL para DOWN, e nenhum vizinho aparece no comando `show ip ospf neighbor`. Em seguida, reativo o OSPF com o comando `no shutdown`. 
+
+![](../../../../../../z_imgs/123643.png)
+
+Uma mensagem indica que o vizinho está ativo novamente, e é possível vê-lo no comando `show ip ospf neighbor`. Isso não será um problema, a menos que você desative manualmente o processo OSPF; portanto, geralmente não é uma questão crítica. 
+
+### Router IDs devem ser únicos
+
+O próximo requisito é que os Router IDs do OSPF sejam únicos. Vamos ver como isso funciona. 
+
+![](../../../../../../z_imgs/124002.png)
+
+Eu não configurei os Router IDs de R1 e R2 e também não configurei nenhuma interface loopback; assim, cada roteador selecionou seu endereço IP da interface G0/0 como seu Router ID: 192.168.1.1 para o R1 e 192.168.1.2 para o R2. Então, configurei 192.168.1.1 como o Router ID do R2, o mesmo do R1. Como mostrei anteriormente, é necessário reiniciar o roteador ou usar o comando `clear ip ospf process` para que o novo Router ID entre em vigor. Então, usei o comando `clear ip ospf process`. 
+
+Imediatamente, a adjacência com o vizinho cai, pois limpei o processo OSPF. Mas então, em vez de o vizinho voltar a ficar ativo, esta mensagem é exibida: "OSPF detectou um router-id duplicado 192.168.1.1 vindo de 192.168.1.1 na interface GigabitEthernet0/0", e então o vizinho permanece inativo. Então, vamos corrigir isso. Removi o router ID configurado manualmente com o comando `no router-id`. Observe que não é necessário especificar o router ID ao remover o comando. `no router-id` tem o mesmo efeito que `no router-id 192.168.1.1`; ambos removem o comando. 
+
+Desta vez, sem precisar reiniciar o processo OSPF, o router ID do R2 retorna para 192.168.1.2 e o vizinho volta a ficar ativo. Por que não precisei usar o comando `clear ip ospf process`? Na verdade, eu não esperava isso, mas percebi que foi porque o R2 não tinha outros vizinhos OSPF naquele momento; assim, o roteador estava livre para alterar o router ID do R2 sem se preocupar com impactos em outros vizinhos.
+
+Portanto, fique atento a router IDs duplicados. Próximo requisito. 
+
+### Os temporizadores Hello e Dead devem coincidir
+
+Em ambos os tipos de rede que analisamos hoje — Broadcast e Ponto a Ponto —, os valores padrão são 10 segundos e 40 segundos. Mas você pode alterar essas configurações manualmente. Os temporizadores Hello e Dead são configurados diretamente na interface. Veja como configurar o temporizador Hello: `ip ospf hello-interval`, seguido pelo intervalo em segundos. Eu defini para 5. Depois, o temporizador Dead. `ip ospf dead-interval`, e defini para 20. 
+
+![](../../../../../../z_imgs/125035.png)
+
+Como você pode ver, o vizinho fica inativo. Note que alterei ambos os valores, o temporizador Hello e o Dead, mas mesmo se você alterar apenas um, o vizinho ainda ficará inativo. Então, vamos corrigir isso. Usei `no ip ospf hello-interval` e `no ip ospf dead-interval` para retornar os temporizadores aos seus valores padrão. Observe o método que usei para retorná-los aos padrões; é o mesmo usado para o Router ID. Não precisei especificar `no ip ospf hello-interval 5` ou `dead-interval 20` para remover os comandos. De qualquer forma, agora que os temporizadores Hello e Dead coincidem novamente, o vizinho está ativo novamente.
+
+Portanto, lembre-se de verificar os intervalos Hello e Dead se estiver tendo problemas com adjacências OSPF. 
+
+### As configurações de autenticação devem coincidir.
+
+O que isso significa? Bem, você pode configurar uma senha OSPF; assim, o roteador só estabelecerá adjacência com roteadores que possuam uma senha OSPF correspondente. Vamos dar uma olhada.
+
+![](../../../../../../z_imgs/125536.png)
+
+A senha OSPF também é configurada diretamente na interface. Usei o comando `ip ospf authentication-key`, seguido pela senha 'allysson'. Observe que isso não habilita, de fato, a autenticação OSPF na interface. A senha está configurada, mas precisamos habilitar a autenticação OSPF. Então, usei o comando `ip ospf authentication` para habilitá-la na interface. Em seguida, a adjacência cai, porque o R1 não está fornecendo ao R2 uma senha correspondente. Na verdade, ainda não configurei a autenticação OSPF no R1, então ele não está fornecendo nenhuma senha OSPF ao R2. 
+
+Portanto, para resolver isso, poderíamos configurar as mesmas definições de autenticação no R1 ou remover a autenticação do R2. Eu as removi do R2 e, agora, a adjacência foi restabelecida. Certo, há mais duas coisas a mencionar.
 
 
 
-29:02
-uma senha OSPF; assim, o roteador só estabelecerá adjacência com roteadores que possuam uma senha OSPF correspondente. Vamos dar uma olhada.
-29:11
-A senha OSPF também é configurada diretamente na interface. Usei o comando `ip ospf authentication-key`,
-29:18
-seguido pela senha 'jeremy'. Observe que isso não habilita, de fato, a autenticação OSPF
-29:24
-na interface. A senha está configurada, mas precisamos habilitar a autenticação OSPF.
-29:29
-Então, usei o comando `ip ospf authentication` para habilitá-la na interface. Em seguida, a adjacência cai,
-29:36
-porque o R1 não está fornecendo ao R2 uma senha correspondente. Na verdade, ainda não configurei
-29:42
-a autenticação OSPF no R1, então ele não está fornecendo nenhuma senha OSPF ao R2. Portanto, para
-29:49
-resolver isso, poderíamos configurar as mesmas definições de autenticação no R1 ou remover a autenticação do R2. Eu as removi do R2 e, agora, a adjacência foi restabelecida.
-30:01
-Certo, há mais duas coisas a mencionar. O ponto número 7 é que as configurações de IP MTU nas
+
+
+O ponto número 7 é que as configurações de IP MTU nas
 30:07
 interfaces devem ser compatíveis. O IP MTU é o tamanho máximo de um pacote IP que será enviado
 30:14
