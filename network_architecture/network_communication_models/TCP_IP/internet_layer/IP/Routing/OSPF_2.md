@@ -124,116 +124,62 @@ Esta foto mostra algumas interfaces e cabos seriais. Observe que tanto as portas
 
 Bem, em conexões seriais, o lado DCE precisa especificar a taxa de clock, ou seja, a velocidade da conexão. Portanto, neste caso, o R1 está conectado à extremidade DCE do cabo e, por isso, precisa informar ao R2 em qual velocidade a conexão irá operar. O comando é `clock rate`, e você pode ver alguns valores padrão que podem ser utilizados. Todos eles são expressos em bits por segundo, aliás. Configurei uma taxa de clock de 64.000 bits por segundo — ou seja, 64 kilobits por segundo — e adicionei um endereço IP e usei o comando `no shutdown`. 
 
+> Aqui está um ponto importante. Interfaces Ethernet usam o comando `speed` para configurar a velocidade de operação da interface. Interfaces seriais usam o comando `clock rate`. Vamos continuar. 
 
+Verifiquei a interface com `show interface s2/0`. Observe que o encapsulamento é HDLC.
 
+![](../../../../../../z_imgs/072840.png)
 
-Aqui está
-17:58
-um ponto importante. Interfaces Ethernet usam o comando `speed` para configurar a
-18:04
-velocidade de operação da interface. Interfaces seriais usam o comando `clock rate`. Vamos continuar. Verifiquei a interface com `show interface s2/0`. Observe que o
-18:17
-encapsulamento é HDLC. Em roteadores Cisco, o encapsulamento padrão em uma interface serial
-18:24
-é HDLC. Na verdade, é a versão da própria Cisco chamada "cHDLC" (Cisco HDLC), mas ela aparece
-18:32
-apenas como "HDLC" na CLI. Mais uma vez, trata-se de um encapsulamento de Camada 2, assim como o Ethernet,
-18:39
-exceto pelo fato de ser usado em conexões seriais. Aqui está a estrutura de um quadro HDLC, extraída
-18:45
-da Wikipedia. Você não precisa decorar isso, mas pause o vídeo se quiser dar uma olhada. Um detalhe importante é que não existe campo para endereço MAC. Portanto, endereços MAC, na verdade,
-18:55
-não são utilizados. Mencionei também o encapsulamento PPP; vamos ver como configurar o roteador
-19:01
-para usar esse encapsulamento. Basta usar o comando `encapsulation ppp` na interface.
-19:10
-Observe que, se você alterar o encapsulamento, ele deve ser compatível em ambas as extremidades; caso contrário, a interface ficará inativa (*down*). Se utilizarem encapsulamentos diferentes, é como se estivessem falando dois
-19:19
-idiomas distintos: não conseguirão se comunicar. Executei o comando `show interface s2/0` novamente e você pode
-19:26
-ver que o encapsulamento mudou para PPP. Fiz o mesmo no R2, aliás, então a interface
-19:32
-está ativa (*up*). Aqui está a configuração que realizei no R1. O comando `SERIAL RESTART-DELAY 0` já estava lá por
-19:41
-padrão, então configurei apenas a *clock rate* (taxa de clock), o encapsulamento e o endereço IP. E aqui está
-19:47
-no R2, sem o comando `CLOCK RATE`, pois ele é a extremidade DTE.
-19:53
-Agora você deve estar se perguntando: como saber qual lado é DCE e qual é DTE? Bem, para mostrar isso, tive que recriar essa conexão no Packet Tracer. O GNS3, que uso para fazer
-20:05
-estas aulas, não lida bem com aspectos físicos — da Camada 1 — como esse; por isso, ambos os lados aparecem como DCE. De qualquer forma, o comando para verificar isso é `SHOW CONTROLLERS`, seguido pelo ID
-20:17
-da interface. Como você pode ver, o R1 é o lado DCE e possui a *clock rate* de 64.000 bits que configurei.
-20:26
-Usei o mesmo comando no R2; você pode ver que ele é o lado DTE e detectou
-20:31
-os clocks de Tx (transmissão) e Rx (recepção) vindos do R1. Então, essa é uma visão geral bem básica sobre conexões seriais. Aqui está um resumo do que você
-Resumo de Interfaces Seriais
-20:42
-precisa saber. O encapsulamento padrão em uma interface serial é o HDLC. Você pode configurá-las
-20:49
-para usar encapsulamento PPP com este comando: `ENCAPSULATION PPP`. Se você alterar
-20:56
-o encapsulamento de um lado, lembre-se de alterá-lo também no outro! Um lado da
-21:01
-conexão é DCE e o outro é DTE. Você pode identificar qual lado é DCE e qual é
-21:08
-DTE com este comando: `SHOW CONTROLLERS`, seguido pelo ID da interface. Por fim, lembre-se de
-21:15
-configurar a taxa de clock — a velocidade da conexão — no lado DCE com este comando:
-21:20
-CLOCK RATE, seguido pela taxa de clock em bits por segundo. Vamos voltar ao tipo de rede OSPF ponto a ponto. Aqui está a saída do comando SHOW
-Ponto a ponto (cont.)
-21:30
-IP OSPF NEIGHBOR no R2. Observe que o R2 tem uma adjacência completa com o R1, mas, em vez de DR,
-21:38
-BDR ou DROTHER, é exibido um traço. Isso ocorre porque o tipo de rede ponto a ponto
-21:43
-não utiliza DRs nem BDRs, como mencionei anteriormente. Um último ponto sobre este tópico: você pode configurar manualmente o tipo de rede utilizado por uma interface.
-Configurar manualmente o tipo de rede OSPF
-21:53
-O comando é IP OSPF NETWORK, seguido pelo tipo de rede. Você talvez note mais um
-22:00
-tipo que não mencionei: o tipo de rede "ponto a multiponto". Ele é
-22:05
-mais um "subtipo". Você não precisa aprender sobre ele para o CCNA, mas sinta-se à vontade para pesquisar no Google se tiver curiosidade. Então, por que você alteraria o tipo de rede OSPF?
-22:15
-Por exemplo, se dois roteadores estiverem conectados diretamente por um link Ethernet, como no
-22:20
-diagrama abaixo, não há necessidade de DR/BDR. Você pode configurar o tipo de rede ponto a ponto
-22:26
-nesse caso, embora não seja obrigatório. Observe que nem todos os tipos de rede funcionam em
-22:31
-todos os tipos de link. Por exemplo, um link serial não pode utilizar o tipo de rede broadcast. Isso
-22:37
-acontece porque links seriais não suportam quadros de broadcast de Camada 2, o que é necessário para o tipo de rede broadcast.
-22:43
-Certo, aqui está uma tabela para uma revisão rápida. Uma coisa que ainda não mencionei neste vídeo
-Tabela: Broadcast vs. Ponto a Ponto
-22:50
-é que redes ponto a ponto utilizam os mesmos temporizadores padrão que as redes broadcast. O
-22:56
-temporizador Hello padrão é de 10 segundos e o temporizador Dead padrão é de 40 segundos. Você não
-23:01
-precisa aprender esse tipo de rede, mas, a título de informação, o tipo de rede não broadcast utiliza um temporizador Hello padrão de 30 segundos e um temporizador Dead de 120 segundos. Certo, vamos
-23:12
-seguir em frente. Agora, vamos analisar alguns requisitos para o estabelecimento de relações de vizinhança OSPF. Normalmente, roteadores
-Requisitos de Vizinhança OSPF
+Em roteadores Cisco, o encapsulamento padrão em uma interface serial é HDLC. Na verdade, é a versão da própria Cisco chamada "cHDLC" (Cisco HDLC), mas ela aparece apenas como "HDLC" na CLI. Mais uma vez, trata-se de um encapsulamento de Camada 2, assim como o Ethernet, exceto pelo fato de ser usado em conexões seriais. Aqui está a estrutura de um quadro HDLC, extraída da Wikipedia. 
 
+![](../../../../../../z_imgs/073054.png)
 
+Um detalhe importante é que não existe campo para endereço MAC. Portanto, endereços MAC, na verdade, não são utilizados. Mencionei também o encapsulamento PPP; vamos ver como configurar o roteador para usar esse encapsulamento. Basta usar o comando `encapsulation ppp` na interface.
 
-requisitos
-23:20
-...se tornarão vizinhos OSPF sem problemas, mas vou apresentar alguns dos problemas que podem ocorrer. Já mencionei alguns deles em vídeos anteriores, mas vamos recapitular.
-23:30
-Primeiro requisito: o número da área deve coincidir para que dois roteadores se tornem vizinhos OSPF.
-23:36
-Usaremos esta pequena topologia com dois roteadores para demonstrar. Aqui está a configuração OSPF do R1.
-23:43
-O OSPF está habilitado na interface G0/0 na área 0. No entanto, a interface G0/0 do R2 está na área 1. Quando executo o comando SHOW
-23:52
-IP OSPF NEIGHBOR em ambos os dispositivos, eles não apresentam vizinhos OSPF. Vamos corrigir o problema.
-23:59
+![](../../../../../../z_imgs/073204.png)
+
+Observe que, se você alterar o encapsulamento, ele deve ser compatível em ambas as extremidades; caso contrário, a interface ficará inativa (*down*). Se utilizarem encapsulamentos diferentes, é como se estivessem falando dois idiomas distintos: não conseguirão se comunicar. Executei o comando `show interface s2/0` novamente e você pode ver que o encapsulamento mudou para PPP. Fiz o mesmo no R2, aliás, então a interface está ativa (*up*). Aqui está a configuração que realizei no R1. 
+
+![](../../../../../../z_imgs/073755.png)
+
+O comando `serial restart-delay 0` já estava lá por padrão, então configurei apenas a *clock rate* (taxa de clock), o encapsulamento e o endereço IP. Na imagem também está ilustre a configuração no R2, sem o comando `clock rate`, pois ele é a extremidade DTE. Agora você deve estar se perguntando: como saber qual lado é DCE e qual é DTE? O comando para verificar isso é `show controllers`, seguido pelo ID da interface.
+
+![](../../../../../../z_imgs/074106.png)
+
+Como você pode ver, o R1 é o lado DCE e possui a *clock rate* de 64.000 bits que configurei. Usei o mesmo comando no R2; você pode ver que ele é o lado DTE e detectou os clocks de Tx (transmissão) e Rx (recepção) vindos do R1. Então, essa é uma visão geral bem básica sobre conexões seriais. Vamos voltar ao tipo de rede OSPF ponto a ponto.
+
+## Ponto a ponto (cont.)
+
+Aqui está a saída do comando `show ip ospf neighbor` no R2. 
+
+![](../../../../../../z_imgs/074410.png)
+
+Observe que o R2 tem uma adjacência completa com o R1, mas, em vez de DR, BDR ou DROTHER, é exibido um traço. Isso ocorre porque o tipo de rede ponto a ponto não utiliza DRs nem BDRs, como mencionei anteriormente. 
+
+Um último ponto sobre este tópico: você pode configurar manualmente o tipo de rede utilizado por uma interface. O comando é `ip ospf network`, seguido pelo tipo de rede.
+
+![](../../../../../../z_imgs/074658.png)
+
+Você talvez note mais um tipo que não mencionei: o tipo de rede "ponto a multiponto". Ele é mais um "subtipo". Então, por que você alteraria o tipo de rede OSPF? Por exemplo, se dois roteadores estiverem conectados diretamente por um link Ethernet, como no diagrama abaixo, não há necessidade de DR/BDR. Você pode configurar o tipo de rede ponto a ponto nesse caso, embora não seja obrigatório. Observe que nem todos os tipos de rede funcionam em todos os tipos de link. Por exemplo, um link serial não pode utilizar o tipo de rede broadcast. Isso acontece porque links seriais não suportam quadros de broadcast de Camada 2, o que é necessário para o tipo de rede broadcast.
+
+Uma coisa que ainda não mencionei é que redes ponto a ponto utilizam os mesmos temporizadores padrão que as redes broadcast. O temporizador Hello padrão é de 10 segundos e o temporizador Dead padrão é de 40 segundos. A título de informação, o tipo de rede não broadcast utiliza um temporizador Hello padrão de 30 segundos e um temporizador Dead de 120 segundos.
+
+Certo, vamos seguir em frente. Agora, vamos analisar alguns requisitos para o estabelecimento de relações de vizinhança OSPF. 
+
+## Requisitos de Vizinhança OSPF
+
+Normalmente, roteadores se tornarão vizinhos OSPF sem problemas, mas vou apresentar alguns dos problemas que podem ocorrer. Já mencionei alguns deles em arquivos anteriores, mas vamos recapitular.
+
+### Número da área deve coincidir
+
+Primeiro requisito: o número da área deve coincidir para que dois roteadores se tornem vizinhos OSPF. 
+
+![](../../../../../../z_imgs/075355.png)
+
+Usaremos essa pequena topologia com dois roteadores para demonstrar. Nela, podemos ver a configuração OSPF do R1. O OSPF está habilitado na interface G0/0 na área 0. No entanto, a interface G0/0 do R2 está na área 1. Quando executo o comando `show ip ospf neighbor` em ambos os dispositivos, eles não apresentam vizinhos OSPF. Vamos corrigir o problema.
+
+![](../../../../../../z_imgs/075655.png)
+
 Alterei o comando *network* no R2 para usar a área 0. Como você pode ver, eles conseguiram
 24:04
 se tornar vizinhos OSPF. Então, essa é a primeira regra. Para que dois roteadores se tornem vizinhos OSPF, eles devem estar
@@ -432,23 +378,7 @@ está conectado a essas interfaces; portanto, nenhum LSA Tipo 2 é gerado. Final
 35:37
 LSA AS-External (Tipo 5) é gerado pelo R4. Ele está compartilhando sua rota padrão para a Internet
 35:44
-com os outros roteadores. Certo, isso é tudo sobre LSAs. Mais uma vez, eles não estão explicitamente
-35:49
-listados nos tópicos do exame, mas eu queria apenas dar uma introdução básica a alguns dos tipos fundamentais de LSA que você encontrará.
-O que abordamos
-35:57
-Eu disse que abordaríamos o OSPF com muito mais detalhes do que o RIP e o EIGRP e, ao longo
-36:04
-destes últimos três dias, foi exatamente isso que fizemos. O OSPF é um tópico importante no exame, portanto, certifique-se
-36:10
-de compreender o conteúdo destes vídeos. Assista a eles várias vezes, se necessário, e sinta-se à vontade para fazer perguntas na seção de comentários. Agora, vamos recapitular o que
-36:19
-abordamos no vídeo de hoje e passar para o quiz. Primeiro, tratamos dos tipos de rede OSPF,
-36:25
-concentrando-nos nos dois que você precisa conhecer para o CCNA: Broadcast e Ponto a Ponto.
-36:32
-Como as conexões Ethernet predominam nas redes modernas, na maioria das vezes você utilizará o tipo de rede Broadcast. Mas familiarize-se também com o tipo Ponto a Ponto
-36:41
+com os outros roteadores. Certo, isso é tudo sobre LSAs.
 e com os conceitos básicos de interfaces seriais que apresentei neste vídeo. Em seguida, apresentei
 36:46
 alguns requisitos para vizinhos e adjacências OSPF. Você não precisa memorizar a lista completa,
