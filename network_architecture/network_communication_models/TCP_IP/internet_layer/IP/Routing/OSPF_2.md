@@ -240,64 +240,35 @@ A senha OSPF também é configurada diretamente na interface. Usei o comando `ip
 
 Portanto, para resolver isso, poderíamos configurar as mesmas definições de autenticação no R1 ou remover a autenticação do R2. Eu as removi do R2 e, agora, a adjacência foi restabelecida. Certo, há mais duas coisas a mencionar.
 
+### Configurações de IP MTU devem ser compatíveis.
 
+O IP MTU é o tamanho máximo de um pacote IP que será enviado pela interface. O padrão geralmente é 1500 bytes, mas pode ser configurado. Observe que este requisito e o próximo são especiais: mesmo que as configurações não coincidam, os roteadores podem estabelecer adjacência OSPF, mas o OSPF não funcionará corretamente. Vamos ver.
 
+![](../../../../../../z_imgs/173959.png)
 
+Você pode configurar o IP MTU de uma interface com este comando: `ip mtu`, seguido pelo valor do MTU em bytes. Alterei para 1400 na interface G0/0 do R2, então não coincide com o valor padrão de 1500 na interface G0/0 do R1. Esperei um minuto e verifiquei a tabela de vizinhos; o R1 e o R2 na verdade continuaram sendo vizinhos. Então, reiniciei o processo OSPF no R2. Esperei um minuto, mas não surgiu nenhuma mensagem indicando que os vizinhos haviam atingido o estado FULL. 
 
-O ponto número 7 é que as configurações de IP MTU nas
-30:07
-interfaces devem ser compatíveis. O IP MTU é o tamanho máximo de um pacote IP que será enviado
-30:14
-pela interface. O padrão geralmente é 1500 bytes, mas pode ser configurado. Observe que
-30:21
-este requisito e o próximo são especiais: mesmo que as configurações não coincidam, os roteadores podem estabelecer adjacência OSPF, mas o OSPF não funcionará corretamente. Vamos ver.
-30:32
-Você pode configurar o IP MTU de uma interface com este comando: `ip mtu`, seguido pelo
-30:39
-valor do MTU em bytes. Alterei para 1400 na interface G0/0 do R2, então não coincide com o valor padrão
-30:46
-de 1500 na interface G0/0 do R1. Esperei um minuto e verifiquei a tabela de vizinhos; o R1 e o R2
-30:53
-na verdade continuaram sendo vizinhos. Então, reiniciei o processo OSPF no R2. Esperei um minuto,
-31:00
-mas não surgiu nenhuma mensagem indicando que os vizinhos haviam atingido o estado FULL. Verifiquei a tabela de vizinhos novamente e ela estava travada no estado EXSTART. Após alguns minutos de espera,
-31:11
-mais algumas mensagens foram exibidas — e elas continuavam se repetindo, aliás. Portanto, fica claro que o OSPF não está funcionando corretamente. Usei o comando NO IP MTU para retornar o MTU ao valor padrão
-31:22
-e, finalmente, o R1 e o R2 atingiram o estado FULL. Então, se seus vizinhos OSPF estiverem com dificuldade para atingir o estado FULL, não deixe de verificar
-31:32
-as configurações de MTU. Certo, o último ponto. O tipo de rede OSPF deve coincidir. Vamos ver o que
-31:38
-acontece se não coincidirem. Para demonstrar esse problema, configurei uma interface loopback no R2 com um endereço IP
-31:45
-e a anunciei para o R1. Em seguida, alterei o tipo de rede na interface G0/0 do R2 para ponto a ponto.
-31:51
-A interface G0/0 do R1 continua usando o tipo de rede padrão *broadcast*. Uma mensagem é exibida informando
-31:59
-que a conexão com o vizinho caiu, mas logo em seguida ela voltou para o estado FULL. O R1 chega a exibir o estado
-32:04
-FULL no comando SHOW IP OSPF NEIGHBOR. Então, qual é o problema? Vamos ver no R1.
-32:10
-Aqui está o R1. O R2 aparece na tabela de vizinhos com o estado FULL, então você pode pensar que o OSPF
-32:17
-está funcionando corretamente. Mas observe a tabela de roteamento. O endereço de loopback do R2 deveria estar na tabela de roteamento do R1,
-32:23
-mas não está. É isso que acontece quando os tipos de rede OSPF não
-32:29
-coincidem. Pode ser difícil diagnosticar o problema porque o estado do vizinho é Full, dando a impressão de que tudo está funcionando bem. Fique atento a isso ao solucionar problemas
-32:37
-no OSPF. Certo, vou encerrar por aqui. Claro que há mais coisas que poderíamos abordar, mas já forneci
-32:44
-informações suficientes para o CCNA. Lembre-se desses requisitos. Você não precisa memorizá-los
-32:50
-como uma lista, mas certifique-se de que, se encontrar esses problemas em um roteador, saiba identificá-los e corrigi-los.
-Tipos de LSA do OSPF
-32:58
-O último tópico do vídeo de hoje são os tipos de LSA. Eles não são mencionados especificamente
-33:03
-na lista de tópicos do exame, então vou dedicar apenas alguns minutos para dar uma breve visão geral de alguns tipos básicos de LSA. Para isso, peguei a topologia anterior e
-33:12
-a modifiquei, adicionando um link de Internet no R4. O R4 possui uma rota padrão para a Internet e
+Verifiquei a tabela de vizinhos novamente e ela estava travada no estado EXSTART. Após alguns minutos de espera, mais algumas mensagens foram exibidas — e elas continuavam se repetindo, aliás. Portanto, fica claro que o OSPF não está funcionando corretamente. Usei o comando `no ip mtu` para retornar o MTU ao valor padrão e, finalmente, o R1 e o R2 atingiram o estado FULL. Então, se seus vizinhos OSPF estiverem com dificuldade para atingir o estado FULL, não deixe de verificar as configurações de MTU. 
+
+Certo, o último ponto. 
+
+### Os tipos de rede OSPF devem coincidir
+
+O tipo de rede OSPF deve coincidir. Vamos ver o que acontece se não coincidirem. Para demonstrar esse problema, configurei uma interface loopback no R2 com um endereço IP e a anunciei para o R1. 
+
+![](../../../../../../z_imgs/174436.png)
+
+Em seguida, alterei o tipo de rede na interface G0/0 do R2 para ponto a ponto. A interface G0/0 do R1 continua usando o tipo de rede padrão *broadcast*. Uma mensagem é exibida informando que a conexão com o vizinho caiu, mas logo em seguida ela voltou para o estado FULL. O R1 chega a exibir o estado FULL no comando `show ip ospf neighbor`. Então, qual é o problema? Vamos ver no R1.
+
+![](../../../../../../z_imgs/174634.png)
+
+O R2 aparece na tabela de vizinhos com o estado FULL, então você pode pensar que o OSPF está funcionando corretamente. Mas observe a tabela de roteamento. O endereço de loopback do R2 deveria estar na tabela de roteamento do R1, mas não está. É isso que acontece quando os tipos de rede OSPF não coincidem. Pode ser difícil diagnosticar o problema porque o estado do vizinho é Full, dando a impressão de que tudo está funcionando bem. Fique atento a isso ao solucionar problemas no OSPF. Certo, vou encerrar por aqui. 
+
+O último tópico do arquivo são os tipos de LSA.
+
+## Tipos de LSA do OSPF
+
+Peguei a topologia anterior e a modifiquei, adicionando um link de Internet no R4. O R4 possui uma rota padrão para a Internet e
 33:18
 uso o comando DEFAULT-INFORMATION ORIGINATE para fazê-lo anunciar essa rota aos outros roteadores. Então, vamos falar sobre LSAs. Como você já sabe, o LSDB do OSPF é composto por LSAs. Todos os roteadores
 33:31
