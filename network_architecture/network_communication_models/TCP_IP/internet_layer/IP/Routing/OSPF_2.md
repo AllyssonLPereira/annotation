@@ -268,53 +268,22 @@ O último tópico do arquivo são os tipos de LSA.
 
 ## Tipos de LSA do OSPF
 
-Peguei a topologia anterior e a modifiquei, adicionando um link de Internet no R4. O R4 possui uma rota padrão para a Internet e
-33:18
-uso o comando DEFAULT-INFORMATION ORIGINATE para fazê-lo anunciar essa rota aos outros roteadores. Então, vamos falar sobre LSAs. Como você já sabe, o LSDB do OSPF é composto por LSAs. Todos os roteadores
-33:31
-na mesma área OSPF compartilham o mesmo LSDB. Existem 11 tipos de LSA, mas há apenas
-33:38
-3 que você precisa conhecer para o CCNA. Esses são do tipo 1, o "router LSA". O tipo 2, o
-33:46
-"network LSA". E o tipo 5, o "AS external LSA". Vamos dar uma breve olhada em cada
-33:52
-tipo. Primeiro, o tipo 1, o router LSA. Todo roteador que executa o OSPF gera esse tipo de
-34:00
-LSA. O router LSA identifica o roteador usando seu Router ID. O router LSA também lista
-34:07
-as redes conectadas às interfaces do roteador que estão com o OSPF ativado. Em seguida, o tipo 2, ou seja, o network
-34:14
-LSA. Ele é gerado pelo DR de cada rede de "acesso múltiplo" (multi-access). Um exemplo de rede de acesso múltiplo
-34:22
-é uma rede Ethernet que utiliza o tipo de rede broadcast. Esse tipo de LSA lista os roteadores
-34:28
-que estão conectados à rede de acesso múltiplo. O último tipo de hoje,
+Peguei a topologia anterior e a modifiquei, adicionando um link de Internet no R4. O R4 possui uma rota padrão para a Internet e uso o comando `default-information orignate` para fazê-lo anunciar essa rota aos outros roteadores. Então, vamos falar sobre LSAs. 
 
+![](../../../../../../z_imgs/175026.png)
 
+Como você já sabe, o LSDB do OSPF é composto por LSAs. Todos os roteadores na mesma área OSPF compartilham o mesmo LSDB. Existem 11 tipos de LSA, mas vou falar apenas de 3 tipos nesse arquivo. Esses são do tipo 1, o "router LSA". O tipo 2, o "network LSA". E o tipo 5, o "AS external LSA". Vamos dar uma breve olhada em cada tipo. 
 
-o tipo 5, também conhecido como AS-external
-34:35
-LSA. Esse tipo de LSA é gerado por ASBRs para descrever rotas para destinos fora
-34:42
-do sistema autônomo, ou seja, do domínio OSPF. Vamos dar uma olhada na LSDB do R1, usando o comando SHOW IP OSPF DATABASE. Observe que
-34:53
-não importa realmente em qual roteador eu executo o comando; a saída será a mesma, pois todos os roteadores da área possuem a mesma LSDB. Note que cada roteador gerou
-35:03
-um LSA de Roteador (Tipo 1) que o identifica. Essa visualização não mostra o conteúdo de cada LSA,
-35:10
-mas cada um desses LSAs de roteador contém informações sobre as redes às quais o roteador está conectado. Observe que existe apenas um LSA de Rede (Tipo 2), gerado pelo R4 para a sub-rede
-35:23
-192.168.2.0/29. Embora R1, R3 e R5 sejam DRs em suas interfaces G1/0, nenhum outro roteador
-35:31
-está conectado a essas interfaces; portanto, nenhum LSA Tipo 2 é gerado. Finalmente, note que um
-35:37
-LSA AS-External (Tipo 5) é gerado pelo R4. Ele está compartilhando sua rota padrão para a Internet
-35:44
-com os outros roteadores. Certo, isso é tudo sobre LSAs.
-e com os conceitos básicos de interfaces seriais que apresentei neste vídeo. Em seguida, apresentei
-36:46
-alguns requisitos para vizinhos e adjacências OSPF. Você não precisa memorizar a lista completa,
-36:52
-mas certifique-se de conseguir identificar todos eles e solucionar eventuais problemas. Por fim, apresentei brevemente
-36:58
-os três tipos mais básicos de LSA do OSPF: Tipo 1, o Router LSA; Tipo 2, o Network LSA.
+Primeiro, o tipo 1, o router LSA. Todo roteador que executa o OSPF gera esse tipo de LSA. O router LSA identifica o roteador usando seu Router ID. O router LSA também lista as redes conectadas às interfaces do roteador que estão com o OSPF ativado.
+
+Em seguida, o tipo 2, ou seja, o network LSA. Ele é gerado pelo DR de cada rede de "acesso múltiplo" (multi-access). Um exemplo de rede de acesso múltiplo é uma rede Ethernet que utiliza o tipo de rede broadcast. Esse tipo de LSA lista os roteadores que estão conectados à rede de acesso múltiplo.
+
+O último tipo de hoje, o tipo 5, também conhecido como AS-external LSA. Esse tipo de LSA é gerado por ASBRs para descrever rotas para destinos fora do sistema autônomo, ou seja, do domínio OSPF.
+
+Vamos dar uma olhada na LSDB do R1, usando o comando SHOW IP OSPF DATABASE.
+
+![](../../../../../../z_imgs/072104.png)
+
+Observe que não importa realmente em qual roteador eu executo o comando; a saída será a mesma, pois todos os roteadores da área possuem a mesma LSDB. Note que cada roteador gerou um LSA de Roteador (Tipo 1) que o identifica. Essa visualização não mostra o conteúdo de cada LSA, mas cada um desses LSAs de roteador contém informações sobre as redes às quais o roteador está conectado.
+
+Observe que existe apenas um LSA de Rede (Tipo 2), gerado pelo R4 para a sub-rede 192.168.2.0/29. Embora R1, R3 e R5 sejam DRs em suas interfaces G1/0, nenhum outro roteador está conectado a essas interfaces; portanto, nenhum LSA Tipo 2 é gerado. Finalmente, note que um LSA AS-External (Tipo 5) é gerado pelo R4. Ele está compartilhando sua rota padrão para a Internet com os outros roteadores.  Certo, isso é tudo sobre LSAs.
