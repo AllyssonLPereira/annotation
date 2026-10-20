@@ -34,167 +34,60 @@ Certo, então quais papéis eles negociaram? Bem, um deles — digamos, o R1 —
 
 Se o R1 falhar, o R2 assumirá automaticamente o papel de gateway padrão. Então, digamos que configuramos nosso FHRP nesta rede; agora, o PC1 precisa enviar tráfego para um destino em outra rede. Eis o que o PC1 "pensa": "Preciso enviar tráfego para um destino em outra rede. Meu gateway padrão é 172.16.0.252, mas ainda não sei qual é o endereço MAC dele. Vou enviar uma solicitação ARP para descobrir o endereço MAC de 172.16.0.252." 
 
-Para que o PC1 possa encapsular o pacote em um quadro (frame) destinado ao gateway padrão, ele precisa conhecer o endereço MAC desse gateway. Portanto, o PC1 fará uma solicitação ARP, mais ou menos assim: "Olá, 172.16.0.252." 7:01
-"Aqui é o 172.16.0.1. Qual é o seu endereço MAC?"
-7:06
-Lembre-se de que a mensagem de solicitação ARP é um *broadcast*. Portanto, ela será enviada pela rede dessa forma, alcançando todos os *hosts*.
-7:13
-Felizmente, o *Spanning Tree* evita uma tempestade de *broadcast* ao desativar algumas das interfaces do *switch*.
-7:19
-Assim, tanto o R1 quanto o R2 recebem a solicitação ARP, e ambos compartilham o mesmo endereço IP virtual,
-7:27
-172.16.0.252 — o endereço que consta na solicitação ARP. O que acontece agora? Qual deles enviará a resposta ARP?
-7:33
-O R1 é o roteador ativo e o R2 é o roteador em espera (*standby*); logo, você provavelmente pode deduzir que o R1
-7:40
-enviará a resposta ARP. E isso está correto. O R1 enviará uma resposta ARP do tipo *unicast*, da seguinte forma:
-7:47
-"Olá, 172.16.0.1. Aqui é o 172.16.0.252. Meu endereço MAC é..." — e, em seguida, ele informará ao PC1 qual é o endereço MAC virtual.
-7:57
-Exatamente; não é utilizado apenas um endereço IP virtual, mas também um endereço MAC virtual.
-8:04
-Cada protocolo FHRP utiliza um endereço MAC virtual diferente — falarei sobre eles mais adiante. Portanto, a resposta ARP é enviada ao PC1.
-8:14
-Agora, o PC1 conhece o endereço MAC do seu *gateway* padrão. Suponhamos, então, que o PC1 precise enviar tráfego para o endereço IP 8.8.8.8 — que, aliás, é um servidor do Google.
-8:23
-Quais serão os campos de origem e destino no quadro (*frame*) e no pacote?
-8:30
-O IP de origem será o do PC1: 172.16.0.1. 8:35
-O IP de destino será o do servidor do Google, 8.8.8.8. O MAC de origem será o endereço MAC do PC1.
-8:43
-E o endereço MAC de destino será o endereço MAC virtual utilizado pelo FHRP. O quadro (frame) será enviado para o R1 e, em seguida, o pacote será encaminhado pela Internet.
-8:53
-Agora, e se o R1 ficar inativo? Não haverá um gateway padrão para a rede. Mas, após alguns segundos, o R2 perceberá: "Não recebo mensagens 'Hello'
-9:02
-do R1 há algum tempo... vou assumir o papel de roteador ativo!".
-9:07
-Portanto, o R2 passa a ser o roteador ativo. Mas como ele informa aos outros dispositivos que o tráfego deve ser enviado para ele, em vez de para o R1?
-9:14
-Observe que os hosts finais — os PCs — não precisam alterar suas tabelas ARP.
-9:20
-A entrada na tabela ARP do PC está configurada de tal forma que mapeia o endereço IP virtual 172.16.0.252
-9:27
-para o endereço MAC virtual. Então, o que precisa ser atualizado para que o tráfego passe a ser encaminhado pelo R2?
-9:34
-A resposta são os switches. O R2 precisa fazer com que os switches atualizem suas tabelas de endereços MAC.
-9:40
-Lembre-se de como os switches atualizam suas tabelas de endereços MAC: ao receber um quadro, eles verificam o campo de endereço MAC de origem e o utilizam para atualizar
-9:48
-as informações na tabela de endereços MAC. Portanto, o R2 precisa enviar quadros que contenham o endereço MAC virtual como endereço MAC de origem.
-9:56
-Para isso, ele enviará respostas "ARP gratuitas" (gratuitous ARP).
-10:02
-O conceito de "ARP gratuito" provavelmente está fora do escopo do CCNA, mas aqui vai uma breve explicação.
-10:09
-Mensagens de "ARP gratuito" são respostas ARP enviadas sem que tenham sido solicitadas. Normalmente, as respostas ARP são enviadas em resposta a uma solicitação ARP; no entanto, no ARP gratuito (*gratuitous ARP*),
-10:19
-as mensagens de resposta ARP são enviadas sem que tenha havido uma solicitação ARP prévia. Eis outra diferença entre o ARP gratuito e as respostas ARP convencionais:
-10:27
-os quadros são enviados via *broadcast* para o endereço MAC composto apenas por valores "F" (endereço de *broadcast*), enquanto as respostas ARP normais são enviadas via *unicast*.
-10:34
-Como se trata de um *broadcast*, todos os switches recebem esses quadros e atualizam suas tabelas de endereços MAC. Portanto, o R2 enviará mensagens ARP gratuitas da seguinte forma:
-10:43
-elas serão propagadas por toda a rede via *broadcast* e, mais uma vez, o protocolo *Spanning Tree* evitará a ocorrência de uma tempestade de *broadcast* (*broadcast storm*).
-10:49
-Em seguida, os switches atualizarão suas tabelas de endereços MAC. O SW2 aprenderá que agora pode alcançar o endereço MAC virtual por meio desta interface; o SW1 aprenderá
-10:58
-a mesma coisa, e assim por diante.
+Para que o PC1 possa encapsular o pacote em um quadro (frame) destinado ao gateway padrão, ele precisa conhecer o endereço MAC desse gateway. Portanto, o PC1 fará uma solicitação ARP, mais ou menos assim: "Olá, 172.16.0.252. Aqui é o 172.16.0.1. Qual é o seu endereço MAC?" Lembre-se de que a mensagem de solicitação ARP é um *broadcast*. Portanto, ela será enviada pela rede dessa forma, alcançando todos os *hosts*.
 
+![](../../../../z_imgs/123820.png)
 
+Felizmente, o *Spanning Tree* evita uma tempestade de *broadcast* ao desativar algumas das interfaces do *switch*. Assim, tanto o R1 quanto o R2 recebem a solicitação ARP, e ambos compartilham o mesmo endereço IP virtual, 172.16.0.252 — o endereço que consta na solicitação ARP. O que acontece agora? Qual deles enviará a resposta ARP?
 
+O R1 é o roteador ativo e o R2 é o roteador em espera (*standby*); logo, você provavelmente pode deduzir que o R1 enviará a resposta ARP. E isso está correto. O R1 enviará uma resposta ARP do tipo *unicast*, da seguinte forma: "Olá, 172.16.0.1. Aqui é o 172.16.0.252. Meu endereço MAC é..." — e, em seguida, ele informará ao PC1 qual é o endereço MAC virtual. Exatamente; não é utilizado apenas um endereço IP virtual, mas também um endereço MAC virtual. Cada protocolo FHRP utiliza um endereço MAC virtual diferente — falarei sobre eles mais adiante. Portanto, a resposta ARP é enviada ao PC1.
 
-...serão o SW3 e o SW4.
-11:04
-Agora, o R2 é o roteador ativo, e todos os switches atualizaram suas tabelas de endereços MAC. Vamos supor que o PC1 queira enviar tráfego para o mesmo servidor do Google, 8.8.8.8, novamente.
-11:15
-O quadro (frame) e o pacote são exatamente os mesmos de antes. O IP de origem é o do PC1, o IP de destino é o do servidor do Google, o MAC de origem é o do PC1 e...
-11:25
-...o MAC de destino é o MAC virtual. No entanto, desta vez, o quadro será enviado para o R2, que encaminhará o pacote pela...
-11:31
-...Internet. Agora, e se o R1 voltar a ficar online?
-11:36
-Ele se tornará o roteador ativo novamente? Não, ele passará a ser o roteador em espera (standby).
-11:42
-Como mencionei a respeito do DR e do BDR no OSPF, os FHRPs são "não preemptivos" (non-preemptive).
-11:48
-O roteador ativo atual não abrirá mão de sua função automaticamente, mesmo que o roteador que era ativo anteriormente retorne.
-11:54
-Contudo, embora esse seja o comportamento padrão, é possível alterar essa configuração para fazer com que o R1 exerça a preempção sobre o R2, retomando sua função de roteador ativo automaticamente; assim, o R2 voltará a ser o roteador em espera.
-12:05
+Agora, o PC1 conhece o endereço MAC do seu *gateway* padrão. Suponhamos, então, que o PC1 precise enviar tráfego para o endereço IP 8.8.8.8 — que, aliás, é um servidor do Google. Quais serão os campos de origem e destino no quadro (*frame*) e no pacote? 
+
+- O IP de origem será o do PC1: 172.16.0.1;
+- O IP de destino será o do servidor do Google, 8.8.8.8;
+- O MAC de origem será o endereço MAC do PC1; e
+- O endereço MAC de destino será o endereço MAC virtual utilizado pelo FHRP.
+
+O quadro (frame) será enviado para o R1 e, em seguida, o pacote será encaminhado pela Internet. Agora, e se o R1 ficar inativo? Não haverá um gateway padrão para a rede. Mas, após alguns segundos, o R2 perceberá: "Não recebo mensagens 'Hello' do R1 há algum tempo... vou assumir o papel de roteador ativo!". Portanto, o R2 passa a ser o roteador ativo. Mas como ele informa aos outros dispositivos que o tráfego deve ser enviado para ele, em vez de para o R1?
+
+Observe que os hosts finais — os PCs — não precisam alterar suas tabelas ARP. A entrada na tabela ARP do PC está configurada de tal forma que mapeia o endereço IP virtual 172.16.0.252 para o endereço MAC virtual. Então, o que precisa ser atualizado para que o tráfego passe a ser encaminhado pelo R2? A resposta são os switches. O R2 precisa fazer com que os switches atualizem suas tabelas de endereços MAC.
+
+Lembre-se de como os switches atualizam suas tabelas de endereços MAC: ao receber um quadro, eles verificam o campo de endereço MAC de origem e o utilizam para atualizar as informações na tabela de endereços MAC. Portanto, o R2 precisa enviar quadros que contenham o endereço MAC virtual como endereço MAC de origem. Para isso, ele enviará respostas "ARP gratuitas" (gratuitous ARP).
+ 
+Mensagens de "ARP gratuito" são respostas ARP enviadas sem que tenham sido solicitadas. Normalmente, as respostas ARP são enviadas em resposta a uma solicitação ARP; no entanto, no ARP gratuito (*gratuitous ARP*), as mensagens de resposta ARP são enviadas sem que tenha havido uma solicitação ARP prévia. 
+
+Eis outra diferença entre o ARP gratuito e as respostas ARP convencionais: os quadros são enviados via *broadcast* para o endereço MAC composto apenas por valores "F" (endereço de *broadcast*), enquanto as respostas ARP normais são enviadas via *unicast*. Como se trata de um *broadcast*, todos os switches recebem esses quadros e atualizam suas tabelas de endereços MAC. Portanto, o R2 enviará mensagens ARP gratuitas da seguinte forma: elas serão propagadas por toda a rede via *broadcast* e, mais uma vez, o protocolo *Spanning Tree* evitará a ocorrência de uma tempestade de *broadcast* (*broadcast storm*).Em seguida, os switches atualizarão suas tabelas de endereços MAC. 
+
+Agora, o R2 é o roteador ativo, e todos os switches atualizaram suas tabelas de endereços MAC. Vamos supor que o PC1 queira enviar tráfego para o mesmo servidor do Google, 8.8.8.8, novamente. O quadro (frame) e o pacote são exatamente os mesmos de antes. O IP de origem é o do PC1, o IP de destino é o do servidor do Google, o MAC de origem é o do PC1 e o MAC de destino é o MAC virtual. No entanto, desta vez, o quadro será enviado para o R2, que encaminhará o pacote pela Internet. Agora, e se o R1 voltar a ficar online? Ele se tornará o roteador ativo novamente? Não, ele passará a ser o roteador em espera (standby).
+
+Como mencionei a respeito do DR e do BDR no OSPF, os FHRPs são "não preemptivos" (non-preemptive). O roteador ativo atual não abrirá mão de sua função automaticamente, mesmo que o roteador que era ativo anteriormente retorne. Contudo, embora esse seja o comportamento padrão, é possível alterar essa configuração para fazer com que o R1 exerça a preempção sobre o R2, retomando sua função de roteador ativo automaticamente; assim, o R2 voltará a ser o roteador em espera.
+
 Muito bem, essa foi uma visão geral básica de como funcionam os protocolos de redundância de primeiro salto (FHRPs).
-Resumo sobre FHRPs
-12:11
-Ainda não falei sobre nenhum FHRP específico, mas a maior parte dessas informações se aplica...
-12:17
-...a todos eles. Antes de prosseguir para explicar alguns FHRPs específicos, aqui está uma breve revisão.
-12:24
-Um IP virtual é configurado nos dois roteadores, e um MAC virtual é gerado para esse IP...
-12:29
-...virtual. Cada FHRP utiliza um formato diferente para o endereço MAC virtual; abordarei esses endereços MAC
-12:35
-na próxima seção. São eleitos um roteador ativo e um roteador em espera (*standby*).
-12:41
-Vale ressaltar que diferentes FHRPs utilizam terminologias distintas. Alguns suportam uma configuração
-12:46
-do tipo "ativo-ativo", na qual dois roteadores operam como ativos simultaneamente — mas explicarei isso mais adiante. Em seguida, os dispositivos finais (*hosts*) na rede são configurados para utilizar o IP virtual como seu *gateway* padrão.
-12:57
-O roteador ativo responde às solicitações ARP utilizando o endereço MAC virtual; assim, o tráfego destinado a outras redes é encaminhado a ele.
-13:05
-Ele atua como o *gateway* padrão da rede. Caso o roteador ativo falhe, o roteador em espera assume a função de roteador ativo.
-13:13
-O novo roteador ativo envia mensagens ARP gratuitas (*gratuitous ARP*), permitindo que os *switches* atualizem suas tabelas de endereços MAC.
-13:19
-A partir desse momento, ele passa a atuar como o *gateway* padrão da rede. Se o roteador que era ativo anteriormente voltar a ficar *online*, por padrão, ele não reassume sua função
-13:27
-de roteador ativo; ele passa a ser o roteador em espera. Isso é semelhante ao conceito de DR e BDR no protocolo OSPF: eles não abrem mão de suas funções automaticamente,
-13:35
-mesmo que outro roteador seja configurado com uma prioridade mais alta. Contudo, nos FHRPs, é possível configurar a "preempção" (*preemption*), permitindo que o roteador que era ativo anteriormente reassuma
-13:44
-sua função original caso retorne à operação. Bem, peço desculpas pelo excesso de texto.
-13:49
-Antes de prosseguirmos para protocolos FHRP específicos, recomendo assistir novamente à seção anterior para garantir a compreensão dos fundamentos de como os FHRPs funcionam.
-13:58
-Vamos em frente. Agora, apresentarei uma breve visão geral de três dos principais protocolos FHRP. HSRP
-14:05
-A funcionalidade de cada um é bem semelhante, por isso esta seção será bastante breve; no entanto, certifique-se de aprender esses detalhes para o exame.
-14:12
-Começando pelo HSRP (Hot Standby Router Protocol).
-14:18
-O HSRP é proprietário da Cisco, portanto, funciona apenas em dispositivos Cisco.
-14:23
-Você não pode utilizá-lo em roteadores Juniper, por exemplo. No HSRP, são eleitos um roteador ativo (active) e um roteador de espera (standby).
-14:29
-Esses são os dois termos que mencionei anteriormente, mas você verá que o próximo FHRP utiliza termos diferentes.
-14:35
-Existem duas versões do HSRP: a versão 1 e a versão 2.
-14:42
-A versão 2 adiciona suporte a IPv6 e aumenta o número de "grupos" que podem ser configurados.
-14:47
-Você entenderá o que é um grupo quando configurarmos o HSRP mais adiante. No nosso exemplo de hoje, havia apenas uma sub-rede, 172.16.0.0/24, e uma VLAN.
-14:59
-Mas, em situações com múltiplas sub-redes e VLANs, será necessário configurar um endereço IP virtual para cada sub-rede, já que cada uma delas precisa do seu próprio gateway padrão.
-15:09
-Cada um desses IPs virtuais é configurado em um grupo HSRP separado. De qualquer forma, como mencionei, você verá como isso funciona mais adiante.
-15:18
-Lembra quando expliquei que os roteadores se comunicam entre si enviando mensagens "hello" via multicast?
-15:23
-Estes são os endereços utilizados: 224.0.0.2 para a versão 1 e 224.0.0.102 para a versão 2.
-15:32
-Pode não parecer tão importante, mas tente memorizar esses endereços para a prova.
-15:37
-A seguir, veremos os formatos de endereço MAC virtual. Estes são mais difíceis de memorizar, mas certifique-se de lembrá-los para o exame.
-15:45
-Use os flashcards, tente escrevê-los de memória — faça o que for preciso para memorizá-los.
-15:51
-Então, a versão 1 utiliza `0000 0c07 ac`, seguida pelo número do grupo.
-15:58
-Por exemplo, digamos que, no meu exemplo anterior, eu tenha configurado o endereço IP virtual no grupo 1.
-16:05
-Se estiver usando o HSRP versão 1, qual seria o endereço MAC virtual? Seria `0000 0c07 ac01`, já que o número do grupo é 1.
-16:16
-Já o HSRP versão 2 utiliza o formato `0000 0c9F Fxxx`, onde, novamente, `xxx` corresponde ao número do grupo.
-16:28
-Observe que, agora, 3 dígitos hexadecimais estão disponíveis...
+
+### Resumo sobre FHRPs
+
+Ainda não falei sobre nenhum FHRP específico, mas a maior parte dessas informações se aplica a todos eles. Antes de prosseguir para explicar alguns FHRPs específicos, aqui está uma breve revisão.
+
+- Um IP virtual é configurado nos dois roteadores, e um MAC virtual é gerado para esse IP virtual. Cada FHRP utiliza um formato diferente para o endereço MAC virtual; abordarei esses endereços MAC na próxima seção;
+- São eleitos um roteador ativo e um roteador em espera (*standby*). Vale ressaltar que diferentes FHRPs utilizam terminologias distintas. Alguns suportam uma configuração do tipo "ativo-ativo", na qual dois roteadores operam como ativos simultaneamente — mas explicarei isso mais adiante;
+- Em seguida, os dispositivos finais (*hosts*) na rede são configurados para utilizar o IP virtual como seu *gateway* padrão;
+- O roteador ativo responde às solicitações ARP utilizando o endereço MAC virtual; assim, o tráfego destinado a outras redes é encaminhado a ele. Ele atua como o *gateway* padrão da rede;
+- Caso o roteador ativo falhe, o roteador em espera assume a função de roteador ativo. O novo roteador ativo envia mensagens ARP gratuitas (*gratuitous ARP*), permitindo que os *switches* atualizem suas tabelas de endereços MAC. A partir desse momento, ele passa a atuar como o *gateway* padrão da rede. Se o roteador que era ativo anteriormente voltar a ficar *online*, por padrão, ele não reassume sua função de roteador ativo; ele passa a ser o roteador em espera. Isso é semelhante ao conceito de DR e BDR no protocolo OSPF: eles não abrem mão de suas funções automaticamente, mesmo que outro roteador seja configurado com uma prioridade mais alta. Contudo, nos FHRPs, é possível configurar a "preempção" (*preemption*), permitindo que o roteador que era ativo anteriormente reassuma sua função original caso retorne à operação.
+
+Vamos em frente. Agora, apresentarei uma breve visão geral de três dos principais protocolos FHRP. A funcionalidade de cada um é bem semelhante, por isso esta seção será bastante breve, começando pelo HSRP (Hot Standby Router Protocol).
+
+## HSRP
+
+O HSRP é proprietário da Cisco, portanto, funciona apenas em dispositivos Cisco. Você não pode utilizá-lo em roteadores Juniper, por exemplo. No HSRP, são eleitos um roteador ativo (active) e um roteador de espera (standby). Esses são os dois termos que mencionei anteriormente, mas você verá que o próximo FHRP utiliza termos diferentes.
+
+Existem duas versões do HSRP: a versão 1 e a versão 2. A versão 2 adiciona suporte a IPv6 e aumenta o número de "grupos" que podem ser configurados. Você entenderá o que é um grupo quando configurarmos o HSRP mais adiante. No nosso exemplo de hoje, havia apenas uma sub-rede, 172.16.0.0/24, e uma VLAN. Mas, em situações com múltiplas sub-redes e VLANs, será necessário configurar um endereço IP virtual para cada sub-rede, já que cada uma delas precisa do seu próprio gateway padrão. Cada um desses IPs virtuais é configurado em um grupo HSRP separado. De qualquer forma, como mencionei, você verá como isso funciona mais adiante.
+
+Lembra quando expliquei que os roteadores se comunicam entre si enviando mensagens "hello" via multicast? Estes são os endereços utilizados: 224.0.0.2 para a versão 1 e 224.0.0.102 para a versão 2.
+
+A seguir, veremos os formatos de endereço MAC virtual. Estes são mais difíceis de memorizar. Então, a versão 1 utiliza `0000.0c07.ac`, seguida pelo número do grupo. Por exemplo, digamos que, no meu exemplo anterior, eu tenha configurado o endereço IP virtual no grupo 1. Se estiver usando o HSRP versão 1, qual seria o endereço MAC virtual? Seria `0000.0c07.ac01`, já que o número do grupo é 1.
+
+Já o HSRP versão 2 utiliza o formato `0000.0c9F.Fxxx`, onde, novamente, `xxx` corresponde ao número do grupo. Observe que, agora, 3 dígitos hexadecimais estão disponíveis...
 
 
 
