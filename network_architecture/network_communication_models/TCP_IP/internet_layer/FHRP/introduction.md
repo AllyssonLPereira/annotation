@@ -1,0 +1,513 @@
+# First Hop Redundancy Protocols
+
+## Tópicos que abordaremos
+
+Neste arquivo, abordaremos tudo o que você precisa saber sobre os "protocolos de redundância de primeiro salto" (first hop redundancy protocols), ou FHRPs. Este não é o nome de um protocolo específico, mas sim um tipo de protocolo; 
+
+Primeiro, apresentarei o propósito dos protocolos de redundância de primeiro salto (FHRPs). Em seguida, apresentarei três FHRPs diferentes: HSRP (Hot Standby Router Protocol), VRRP (Virtual Router Redundancy Protocol) e GLBP (Gateway Load Balancing Protocol).
+
+## Introdução ao FHRP
+
+
+
+Utilizei este mesmo diagrama no "Dia 20", ao falar sobre o protocolo Spanning Tree, para demonstrar
+2:16
+o conceito e a importância da redundância em redes. Por exemplo, se houver apenas uma conexão com a Internet e ela falhar devido a um problema de hardware
+2:25
+ou qualquer outro motivo, os PCs não conseguirão mais acessar a Internet.
+2:31
+Em sua casa, perder o acesso à Internet por algum tempo seria frustrante, mas provavelmente não chegaria a ser um desastre.
+2:37
+Para a maioria das empresas modernas, no entanto, isso representaria um grande problema. Por isso, podemos utilizar conexões redundantes com a Internet, como mostrado aqui.
+2:45
+Observe que adicionei nomes aos dispositivos e endereços IP na rede 172.16.0.0/24
+2:51
+para facilitar a explicação. Agora, caso esta conexão falhe, o PC1 pode utilizar este caminho alternativo para acessar a Internet.
+2:59
+Pode tratar-se, por exemplo, de uma conexão mais lenta e barata, utilizada apenas até que a conexão principal seja restabelecida.
+3:06
+Mas vamos parar para refletir sobre isso, pois a questão não é tão simples assim. Nesta rede, digamos que o endereço IP do R1, 172.16.0.254, esteja configurado como gateway padrão.
+3:17
+Isso significa que cada PC está configurado com o endereço 172.16.0.254 como seu gateway padrão.
+3:25
+Portanto, sempre que esses PCs precisarem enviar tráfego para fora da sub-rede local, eles o enviarão
+3:31
+para o gateway padrão, o R1. Mas o que acontece se o R1 ficar indisponível por algum motivo, talvez uma falha de hardware?
+3:38
+Felizmente, existe um roteador de backup conectado à Internet: o R2.
+3:43
+Mas há um problema aqui. Você consegue identificar qual é? Pause o vídeo e pense sobre isso por um minuto.
+3:51
+Bem, o problema está aqui: o gateway padrão dos PCs ainda está definido como .254, o endereço do R1.
+3:59
+Embora o R2 esteja disponível como backup, os PCs não sabem que o R1 está indisponível e que deveriam passar a usar o R2 como gateway padrão.
+4:08
+Se um PC precisar enviar tráfego para a Internet, ele continuará tentando enviá-lo para o R1.
+4:13
+Então, como podemos fazer com que o R2 se torne automaticamente o novo gateway padrão, caso o R1 não possa mais
+4:19
+ser utilizado? Essa é a função de um protocolo de redundância de primeiro salto, ou FHRP (First-Hop Redundancy Protocol).
+4:25
+Aqui está uma breve explicação sobre FHRPs, extraída da Wikipedia: "Um protocolo de redundância de primeiro salto (FHRP) é um protocolo de rede de computadores
+4:35
+projetado para proteger o gateway padrão utilizado em uma sub-rede, permitindo que dois ou mais roteadores
+4:40
+forneçam redundância para esse endereço;" Em caso de falha de um roteador ativo, o
+4:46
+roteador de backup assume o endereço, geralmente em poucos segundos.
+4:51
+O termo "protocolo de redundância de primeiro salto" (first-hop redundancy protocol – FHRP) é utilizado porque o gateway padrão é o "primeiro salto" — ou seja, o primeiro roteador no caminho para qualquer destino para o qual o PC esteja enviando
+5:00
+tráfego. É assim que os FHRPs funcionam: os dois roteadores compartilham um VIP (endereço IP virtual), por exemplo, 172.16.0.252.
+5:13
+Você configura os PCs na rede para utilizarem esse IP virtual como gateway padrão, em vez do endereço IP real do R1.
+5:20
+Agora, os roteadores possuem
+
+
+
+
+
+negociar seus papéis entre si. Como eles fazem isso?
+5:26
+Eles enviam mensagens "Hello" (olá) via multicast um para o outro, assim. Certo, então quais papéis eles negociaram?
+5:34
+Bem, um deles — digamos, o R1 — se tornará o roteador ativo. O outro, R2, se tornará o roteador em espera (standby).
+5:43
+Observe que os termos específicos, como "ativo" e "em espera", variam dependendo de qual FHRP está sendo
+5:49
+utilizado, pois, como mostrei anteriormente, existem diferentes tipos de FHRP. Portanto, o R1 é o ativo, o que significa que ele atuará como o gateway padrão da rede.
+5:59
+O R2 está em espera, o que significa que ele não funcionará como gateway padrão, a menos que o R1 falhe.
+6:06
+Se o R1 falhar, o R2 assumirá automaticamente o papel de gateway padrão. Então, digamos que configuramos nosso FHRP nesta rede; agora, o PC1 precisa enviar
+6:16
+tráfego para um destino em outra rede. Eis o que o PC1 "pensa": "Preciso enviar tráfego para um destino em outra rede."
+6:25
+"Meu gateway padrão é 172.16.0.252, mas ainda não sei qual é o endereço MAC dele."
+6:31
+"Vou enviar uma solicitação ARP para descobrir o endereço MAC de 172.16.0.252." Faz tempo que não menciono o ARP neste curso, mas lembre-se de que ele é usado para descobrir
+6:42
+o endereço MAC associado a um determinado endereço IP. Para que o PC1 possa encapsular o pacote em um quadro (frame) destinado ao gateway padrão,
+6:50
+ele precisa conhecer o endereço MAC desse gateway. Portanto, o PC1 fará uma solicitação ARP, mais ou menos assim: "Olá, 172.16.0.252." 7:01
+"Aqui é o 172.16.0.1. Qual é o seu endereço MAC?"
+7:06
+Lembre-se de que a mensagem de solicitação ARP é um *broadcast*. Portanto, ela será enviada pela rede dessa forma, alcançando todos os *hosts*.
+7:13
+Felizmente, o *Spanning Tree* evita uma tempestade de *broadcast* ao desativar algumas das interfaces do *switch*.
+7:19
+Assim, tanto o R1 quanto o R2 recebem a solicitação ARP, e ambos compartilham o mesmo endereço IP virtual,
+7:27
+172.16.0.252 — o endereço que consta na solicitação ARP. O que acontece agora? Qual deles enviará a resposta ARP?
+7:33
+O R1 é o roteador ativo e o R2 é o roteador em espera (*standby*); logo, você provavelmente pode deduzir que o R1
+7:40
+enviará a resposta ARP. E isso está correto. O R1 enviará uma resposta ARP do tipo *unicast*, da seguinte forma:
+7:47
+"Olá, 172.16.0.1. Aqui é o 172.16.0.252. Meu endereço MAC é..." — e, em seguida, ele informará ao PC1 qual é o endereço MAC virtual.
+7:57
+Exatamente; não é utilizado apenas um endereço IP virtual, mas também um endereço MAC virtual.
+8:04
+Cada protocolo FHRP utiliza um endereço MAC virtual diferente — falarei sobre eles mais adiante. Portanto, a resposta ARP é enviada ao PC1.
+8:14
+Agora, o PC1 conhece o endereço MAC do seu *gateway* padrão. Suponhamos, então, que o PC1 precise enviar tráfego para o endereço IP 8.8.8.8 — que, aliás, é um servidor do Google.
+8:23
+Quais serão os campos de origem e destino no quadro (*frame*) e no pacote?
+8:30
+O IP de origem será o do PC1: 172.16.0.1. 8:35
+O IP de destino será o do servidor do Google, 8.8.8.8. O MAC de origem será o endereço MAC do PC1.
+8:43
+E o endereço MAC de destino será o endereço MAC virtual utilizado pelo FHRP. O quadro (frame) será enviado para o R1 e, em seguida, o pacote será encaminhado pela Internet.
+8:53
+Agora, e se o R1 ficar inativo? Não haverá um gateway padrão para a rede. Mas, após alguns segundos, o R2 perceberá: "Não recebo mensagens 'Hello'
+9:02
+do R1 há algum tempo... vou assumir o papel de roteador ativo!".
+9:07
+Portanto, o R2 passa a ser o roteador ativo. Mas como ele informa aos outros dispositivos que o tráfego deve ser enviado para ele, em vez de para o R1?
+9:14
+Observe que os hosts finais — os PCs — não precisam alterar suas tabelas ARP.
+9:20
+A entrada na tabela ARP do PC está configurada de tal forma que mapeia o endereço IP virtual 172.16.0.252
+9:27
+para o endereço MAC virtual. Então, o que precisa ser atualizado para que o tráfego passe a ser encaminhado pelo R2?
+9:34
+A resposta são os switches. O R2 precisa fazer com que os switches atualizem suas tabelas de endereços MAC.
+9:40
+Lembre-se de como os switches atualizam suas tabelas de endereços MAC: ao receber um quadro, eles verificam o campo de endereço MAC de origem e o utilizam para atualizar
+9:48
+as informações na tabela de endereços MAC. Portanto, o R2 precisa enviar quadros que contenham o endereço MAC virtual como endereço MAC de origem.
+9:56
+Para isso, ele enviará respostas "ARP gratuitas" (gratuitous ARP).
+10:02
+O conceito de "ARP gratuito" provavelmente está fora do escopo do CCNA, mas aqui vai uma breve explicação.
+10:09
+Mensagens de "ARP gratuito" são respostas ARP enviadas sem que tenham sido solicitadas. Normalmente, as respostas ARP são enviadas em resposta a uma solicitação ARP; no entanto, no ARP gratuito (*gratuitous ARP*),
+10:19
+as mensagens de resposta ARP são enviadas sem que tenha havido uma solicitação ARP prévia. Eis outra diferença entre o ARP gratuito e as respostas ARP convencionais:
+10:27
+os quadros são enviados via *broadcast* para o endereço MAC composto apenas por valores "F" (endereço de *broadcast*), enquanto as respostas ARP normais são enviadas via *unicast*.
+10:34
+Como se trata de um *broadcast*, todos os switches recebem esses quadros e atualizam suas tabelas de endereços MAC. Portanto, o R2 enviará mensagens ARP gratuitas da seguinte forma:
+10:43
+elas serão propagadas por toda a rede via *broadcast* e, mais uma vez, o protocolo *Spanning Tree* evitará a ocorrência de uma tempestade de *broadcast* (*broadcast storm*).
+10:49
+Em seguida, os switches atualizarão suas tabelas de endereços MAC. O SW2 aprenderá que agora pode alcançar o endereço MAC virtual por meio desta interface; o SW1 aprenderá
+10:58
+a mesma coisa, e assim por diante.
+
+
+
+
+...serão o SW3 e o SW4.
+11:04
+Agora, o R2 é o roteador ativo, e todos os switches atualizaram suas tabelas de endereços MAC. Vamos supor que o PC1 queira enviar tráfego para o mesmo servidor do Google, 8.8.8.8, novamente.
+11:15
+O quadro (frame) e o pacote são exatamente os mesmos de antes. O IP de origem é o do PC1, o IP de destino é o do servidor do Google, o MAC de origem é o do PC1 e...
+11:25
+...o MAC de destino é o MAC virtual. No entanto, desta vez, o quadro será enviado para o R2, que encaminhará o pacote pela...
+11:31
+...Internet. Agora, e se o R1 voltar a ficar online?
+11:36
+Ele se tornará o roteador ativo novamente? Não, ele passará a ser o roteador em espera (standby).
+11:42
+Como mencionei a respeito do DR e do BDR no OSPF, os FHRPs são "não preemptivos" (non-preemptive).
+11:48
+O roteador ativo atual não abrirá mão de sua função automaticamente, mesmo que o roteador que era ativo anteriormente retorne.
+11:54
+Contudo, embora esse seja o comportamento padrão, é possível alterar essa configuração para fazer com que o R1 exerça a preempção sobre o R2, retomando sua função de roteador ativo automaticamente; assim, o R2 voltará a ser o roteador em espera.
+12:05
+Muito bem, essa foi uma visão geral básica de como funcionam os protocolos de redundância de primeiro salto (FHRPs).
+Resumo sobre FHRPs
+12:11
+Ainda não falei sobre nenhum FHRP específico, mas a maior parte dessas informações se aplica...
+12:17
+...a todos eles. Antes de prosseguir para explicar alguns FHRPs específicos, aqui está uma breve revisão.
+12:24
+Um IP virtual é configurado nos dois roteadores, e um MAC virtual é gerado para esse IP...
+12:29
+...virtual. Cada FHRP utiliza um formato diferente para o endereço MAC virtual; abordarei esses endereços MAC
+12:35
+na próxima seção. São eleitos um roteador ativo e um roteador em espera (*standby*).
+12:41
+Vale ressaltar que diferentes FHRPs utilizam terminologias distintas. Alguns suportam uma configuração
+12:46
+do tipo "ativo-ativo", na qual dois roteadores operam como ativos simultaneamente — mas explicarei isso mais adiante. Em seguida, os dispositivos finais (*hosts*) na rede são configurados para utilizar o IP virtual como seu *gateway* padrão.
+12:57
+O roteador ativo responde às solicitações ARP utilizando o endereço MAC virtual; assim, o tráfego destinado a outras redes é encaminhado a ele.
+13:05
+Ele atua como o *gateway* padrão da rede. Caso o roteador ativo falhe, o roteador em espera assume a função de roteador ativo.
+13:13
+O novo roteador ativo envia mensagens ARP gratuitas (*gratuitous ARP*), permitindo que os *switches* atualizem suas tabelas de endereços MAC.
+13:19
+A partir desse momento, ele passa a atuar como o *gateway* padrão da rede. Se o roteador que era ativo anteriormente voltar a ficar *online*, por padrão, ele não reassume sua função
+13:27
+de roteador ativo; ele passa a ser o roteador em espera. Isso é semelhante ao conceito de DR e BDR no protocolo OSPF: eles não abrem mão de suas funções automaticamente,
+13:35
+mesmo que outro roteador seja configurado com uma prioridade mais alta. Contudo, nos FHRPs, é possível configurar a "preempção" (*preemption*), permitindo que o roteador que era ativo anteriormente reassuma
+13:44
+sua função original caso retorne à operação. Bem, peço desculpas pelo excesso de texto.
+13:49
+Antes de prosseguirmos para protocolos FHRP específicos, recomendo assistir novamente à seção anterior para garantir a compreensão dos fundamentos de como os FHRPs funcionam.
+13:58
+Vamos em frente. Agora, apresentarei uma breve visão geral de três dos principais protocolos FHRP. HSRP
+14:05
+A funcionalidade de cada um é bem semelhante, por isso esta seção será bastante breve; no entanto, certifique-se de aprender esses detalhes para o exame.
+14:12
+Começando pelo HSRP (Hot Standby Router Protocol).
+14:18
+O HSRP é proprietário da Cisco, portanto, funciona apenas em dispositivos Cisco.
+14:23
+Você não pode utilizá-lo em roteadores Juniper, por exemplo. No HSRP, são eleitos um roteador ativo (active) e um roteador de espera (standby).
+14:29
+Esses são os dois termos que mencionei anteriormente, mas você verá que o próximo FHRP utiliza termos diferentes.
+14:35
+Existem duas versões do HSRP: a versão 1 e a versão 2.
+14:42
+A versão 2 adiciona suporte a IPv6 e aumenta o número de "grupos" que podem ser configurados.
+14:47
+Você entenderá o que é um grupo quando configurarmos o HSRP mais adiante. No nosso exemplo de hoje, havia apenas uma sub-rede, 172.16.0.0/24, e uma VLAN.
+14:59
+Mas, em situações com múltiplas sub-redes e VLANs, será necessário configurar um endereço IP virtual para cada sub-rede, já que cada uma delas precisa do seu próprio gateway padrão.
+15:09
+Cada um desses IPs virtuais é configurado em um grupo HSRP separado. De qualquer forma, como mencionei, você verá como isso funciona mais adiante.
+15:18
+Lembra quando expliquei que os roteadores se comunicam entre si enviando mensagens "hello" via multicast?
+15:23
+Estes são os endereços utilizados: 224.0.0.2 para a versão 1 e 224.0.0.102 para a versão 2.
+15:32
+Pode não parecer tão importante, mas tente memorizar esses endereços para a prova.
+15:37
+A seguir, veremos os formatos de endereço MAC virtual. Estes são mais difíceis de memorizar, mas certifique-se de lembrá-los para o exame.
+15:45
+Use os flashcards, tente escrevê-los de memória — faça o que for preciso para memorizá-los.
+15:51
+Então, a versão 1 utiliza `0000 0c07 ac`, seguida pelo número do grupo.
+15:58
+Por exemplo, digamos que, no meu exemplo anterior, eu tenha configurado o endereço IP virtual no grupo 1.
+16:05
+Se estiver usando o HSRP versão 1, qual seria o endereço MAC virtual? Seria `0000 0c07 ac01`, já que o número do grupo é 1.
+16:16
+Já o HSRP versão 2 utiliza o formato `0000 0c9F Fxxx`, onde, novamente, `xxx` corresponde ao número do grupo.
+16:28
+Observe que, agora, 3 dígitos hexadecimais estão disponíveis...
+
+
+
+
+...em vez de 2; portanto, há mais números de grupo disponíveis.
+16:34
+De qualquer forma, se o número de grupo 1 for utilizado, qual seria o endereço MAC virtual na versão 2 do HSRP?
+16:40
+É 0000 0c9f f001.
+16:47
+Um último ponto: em uma situação com múltiplas sub-redes/VLANs, você pode configurar um
+16:52
+roteador ativo diferente em cada sub-rede para realizar o balanceamento de carga. Lembra-se do que mencionei em vídeos anteriores sobre o protocolo Spanning Tree?
+16:59
+Você pode configurar um *root bridge* (ponte raiz) diferente em cada VLAN, de modo que o tráfego seja distribuído (balanceado) entre os switches.
+17:05
+Pois bem, ao configurar múltiplos grupos HSRP — um para cada sub-rede e VLAN —, você pode definir
+17:11
+um roteador ativo diferente para cada uma delas. Por exemplo, o R1 poderia ser o roteador ativo na VLAN1 e *standby* (em espera) na VLAN2, enquanto o R2 poderia
+17:21
+ser o *standby* na VLAN1 e o ativo na VLAN2.
+17:26
+Isso provavelmente vai além do que você precisa saber para o CCNA, mas deixe-me demonstrar brevemente o conceito.
+17:31
+Digamos que a VLAN1 esteja atribuída aos hosts na sub-rede 172.16.1.0/24.
+17:38
+O PC1 e o PC3 estão na VLAN1. O R1 e o R2 possuem seus próprios endereços IP na VLAN1, mas também compartilham o IP virtual 172.16.1.252,
+17:50
+que é utilizado como *gateway* padrão da sub-rede. O R1 é o roteador ativo, e o R2 é o roteador *standby*.
+17:58
+Por sua vez, a sub-rede 172.16.2.0/24 corresponde à VLAN2.
+18:03
+O PC2 e o PC4 estão na VLAN2. R1 e R2 possuem seus próprios endereços IP na VLAN2, conectando-se aos switches por meio da topologia "router-on-a-stick".
+18:14
+Eles também compartilham o endereço IP virtual 172.16.2.252, que é utilizado como gateway padrão para a
+18:21
+sub-rede. R2 é o roteador ativo, e R1 é o roteador em espera (standby).
+18:27
+Agora, o tráfego pode ser balanceado entre os dois caminhos: a VLAN1 utiliza R1 e a VLAN2 utiliza
+18:32
+R2 como gateway padrão da sub-rede; além disso, cada sub-rede conta com um roteador em espera, caso o roteador ativo falhe.
+18:39
+Essa é, portanto, uma visão geral básica do HSRP. Embora ele não permita o balanceamento de carga dentro de uma única sub-rede, é possível configurar um
+18:47
+roteador ativo diferente para cada sub-rede, de modo que o tráfego seja balanceado entre os roteadores. Vamos passar para o próximo FHRP.
+VRRP
+18:57
+A seguir, temos o VRRP (Virtual Router Redundancy Protocol). Ao contrário do HSRP, ele é um padrão aberto, podendo ser executado em dispositivos de qualquer fabricante.
+19:07
+Roteadores Cisco também o suportam; portanto, você pode optar pelo HSRP ou pelo VRRP. Na verdade, em termos de funcionalidade, eles são praticamente idênticos, apresentando apenas algumas pequenas diferenças.
+19:19
+Em vez de um roteador "ativo" e um "em espera" (standby), são eleitos um roteador "mestre" (master) e um "reserva" (backup).
+19:24
+A função é a mesma; apenas a nomenclatura muda. O "mestre" equivale ao "ativo" do HSRP, e o "reserva" equivale ao "em espera" (standby) do HSRP.
+19:34
+O endereço multicast IPv4 utilizado também é diferente: 224.0.0.18.
+19:39
+Mais uma vez, utilize os flashcards para memorizar detalhes como esse.
+19:45
+O formato do endereço MAC virtual também é diferente. 0000 5e00 01, seguido pelo número do grupo VRRP.
+19:54
+Vamos tentar algo um pouco mais desafiador. E se eu configurasse o grupo VRRP 200, em vez do grupo 1?
+20:02
+Qual seria o endereço MAC virtual? Você precisa converter 200 para hexadecimal.
+20:07
+Pause o vídeo para tentar fazer isso; pesquise no Google caso não se lembre de como funciona o sistema hexadecimal.
+20:13
+Muito bem, a resposta é 0000 5e00 01c8.
+20:21
+O valor hexadecimal c8 equivale a 200 em decimal. Assim como no HSRP — embora o VRRP não consiga realizar balanceamento de carga para hosts em uma mesma sub-rede —,
+20:31
+é possível realizar o balanceamento de carga entre sub-redes diferentes, configurando um roteador "master" (principal) distinto em cada uma delas.
+20:37
+Aqui está o mesmo diagrama de antes, mostrando o balanceamento de carga entre as duas sub-redes.
+20:43
+A única diferença é que os termos "master" e "backup" são utilizados em vez de "active" e "standby".
+20:49
+Antes de prosseguir, gostaria de mencionar um ponto que não está diretamente relacionado aos protocolos FHRP.
+20:55
+Observe que todos os hosts na VLAN1 pertencem à mesma sub-rede, 172.16.1.0/24, e todos os hosts
+21:02
+na VLAN2 pertencem à mesma sub-rede, 172.16.2.0/24.
+21:08
+É assim que sub-redes e VLANs são utilizadas. As sub-redes dividem a rede na Camada 3 (Layer 3), enquanto as VLANs a dividem na Camada 2 (Layer 2).
+21:16
+Elas trabalham em conjunto, sendo que cada sub-rede corresponde a uma VLAN específica. Talvez você já tenha notado isso ao longo do curso, mas achei importante ressaltar. Tabela comparativa: HSRP/VRRP
+21:26
+Antes de prosseguirmos para o último FHRP, aqui está uma tabela comparativa entre HSRP e VRRP.
+21:32
+Em termos de funcionalidade, eles são praticamente iguais. Mas lembre-se das diferenças na terminologia, nos endereços IP multicast e nos endereços MAC virtuais.
+21:42
+Lembre-se também de que o HSRP é proprietário da Cisco, enquanto o VRRP é um padrão aberto que pode
+21:47
+funcionar em qualquer dispositivo de rede que ofereça suporte a ele. A seguir, veremos o GLBP.
+GLBP
+21:55
+O último FHRP que você deve conhecer é o GLBP (Gateway Load Balancing Protocol).
+22:01
+Ele é um pouco diferente do HSRP e do VRRP. Assim como o HSRP, é proprietário da Cisco; portanto, funciona apenas em dispositivos Cisco.
+22:10
+Aqui está a grande diferença: ele realiza o balanceamento de carga entre vários roteadores dentro de uma mesma sub-rede.
+22:17
+Por exemplo, se o PC1 e o PC2 estiverem ambos na VLAN1, o PC1 pode usar o R1 como seu gateway padrão, e
+22:24
+o PC2 pode usar o R2 como seu gateway padrão. Isso é diferente do que ocorre no HSRP e no VRRP.
+
+
+no qual todos os hosts na mesma sub-rede devem usar o
+22:33
+mesmo roteador como gateway padrão para a sub-rede. No GLBP, um único AVG (Active Virtual Gateway – Gateway Virtual Ativo) é eleito para a sub-rede.
+22:43
+Em seguida, até quatro AVFs (Active Virtual Forwarders – Encaminhadores Virtuais Ativos) são atribuídos pelo AVG, sendo que o próprio AVG
+22:51
+também pode atuar como um AVF. Cada AVF funciona como o gateway padrão para uma parte dos hosts na sub-rede.
+22:58
+Assim, o balanceamento de carga é obtido dentro de uma única sub-rede. O endereço IPv4 multicast é 224.0.0.102, o mesmo utilizado pelo HSRP versão 2.
+23:10
+O formato do endereço MAC virtual é 0007 b400, seguido pelo número do grupo GLBP e pelo
+23:17
+número do AVF. Por exemplo, qual é o endereço MAC virtual do AVF número 1 no grupo GLBP 1?
+23:25
+É 0007 b400 0101. Portanto, as funções do GLBP são um pouco mais complexas do que as do HSRP e do VRRP; mas, para fins de
+23:37
+exame CCNA, lembre-se de que o GLBP permite que vários roteadores ativos realizem o balanceamento de carga do tráfego dentro
+23:43
+de uma única sub-rede. Lembre-se também do endereço IP multicast e do formato do endereço MAC virtual.
+23:49
+Pode não parecer tão importante, mas, para o exame CCNA, certifique-se de memorizar os endereços
+23:55
+IP e MAC. Aqui está a tabela novamente, agora com o GLBP incluído.
+Tabela HSRP/VRRP/GLBP
+24:01
+Se você se lembrar das características básicas do HSRP, VRRP e GLBP, e memorizar as
+24:07
+informações contidas nesta tabela, estará preparado para responder a quaisquer questões sobre FHRPs no
+24:12
+exame CCNA. No entanto, como um extra, vou mostrar algumas configurações bem básicas de
+24:18
+HSRP, para que possamos testá-las em um laboratório no próximo vídeo.
+24:24
+Embora a configuração de HSRP não faça parte dos tópicos do exame CCNA, ganhar um pouco de experiência prática ajudará você a entender como ele funciona.
+24:32
+Então, vamos realizar algumas configurações básicas de HSRP.
+Configuração de HSRP
+24:37
+Para que tudo coubesse na tela e fosse possível exibir a CLI ao mesmo tempo, simplifiquei a rede.
+24:42
+Nosso foco será configurar o R1 e o R2 para usar o HSRP, fornecendo um endereço de gateway padrão redundante
+24:47
+para a sub-rede 172.16.0.0/24.
+24:53
+Já configurei todos os endereços IP das interfaces; portanto, só precisamos configurar o HSRP.
+24:59
+Observe que, desta vez, estou usando .254 como IP virtual, em vez de .252. Então, vamos começar configurando o R1.
+25:08
+O HSRP é configurado diretamente na interface — neste caso, a G0/0.
+25:14
+Certifique-se de realizar a configuração na interface correta: aquela conectada à rede para a qual o dispositivo atuará como gateway padrão.
+25:21
+O HSRP é configurado por meio do comando `standby`. Usei o ponto de interrogação para verificar quais opções estão disponíveis.
+25:28
+Existem muitas outras opções, mas a que queremos utilizar é esta: o número do grupo. 25:34
+Observe que a versão 1 do HSRP é o padrão; portanto, o intervalo de grupos disponível vai de 0 a 255.
+25:41
+Se você utilizar a versão 2 do HSRP, esse intervalo passa a ser de 0 a 4095.
+25:46
+Na verdade, vou mostrar como alterar para a versão 2. O comando é `STANDBY VERSION 2`.
+25:53
+Se eu verificar o comando `STANDBY` novamente, você verá que o intervalo de números de grupo agora vai de 0 a 4095.
+26:01
+Esta rede simples utiliza apenas uma única VLAN, a VLAN 1; por isso, escolhi o número de grupo HSRP
+26:07
+1. Não é obrigatório fazer isso — não é uma regra —, mas gosto de fazer com que o número do grupo HSRP
+26:13
+corresponda ao número da VLAN utilizada para a sub-rede. Vale ressaltar que esse número de grupo precisa ser idêntico em ambos os roteadores; isso é importante.
+26:21
+Então, utilizei o ponto de interrogação novamente para conferir as opções disponíveis. Vamos analisar três delas:
+26:27
+`IP`, `PREEMPT` e `PRIORITY`. Primeiro, configura-se o IP virtual usando o comando `STANDBY`, seguido pelo número do grupo e pela palavra-chave `IP`,
+26:38
+e, na sequência, pelo endereço IP que você deseja definir como gateway padrão. Em seguida, utilizei o comando `PRIORITY` — note que o intervalo é de 0 a 255 — e defini a prioridade do R1
+26:49
+como 200. Para que serve a prioridade? Ela é utilizada para determinar qual roteador será o roteador ativo.
+26:56
+O roteador ativo é definido seguindo esta ordem: primeiramente, o roteador com a maior prioridade HSRP dentro do grupo torna-se o roteador ativo. 27:05
+A prioridade padrão é 100. Se os roteadores tiverem a mesma prioridade, o roteador com o endereço IP mais alto se tornará
+27:11
+o roteador ativo. Neste caso, o endereço IP do R1, 172.16.0.253, é maior que o endereço IP do R2, 172.16.0.252.
+27:23
+Portanto, mesmo sem configurar a prioridade, o R1 ainda se tornaria o roteador ativo; mas,
+27:28
+ainda assim, eu a configurei. Por fim, habilitei a "preempção" (preemption).
+27:34
+Habilitar o comando de preempção faz com que o roteador assuma a função de roteador ativo, mesmo que outro roteador já esteja ocupando essa posição — embora o roteador que realiza a preempção precise ter uma prioridade maior
+27:43
+ou um endereço IP mais alto. Por exemplo, digamos que o R1 seja o roteador ativo e o R2 seja o roteador em espera (standby).
+27:50
+Se uma falha fizer com que o R1 seja reiniciado, o R2 se tornará o roteador ativo. Quando o R1 voltar a ficar online, se a preempção não estiver habilitada, o R2 continuará sendo o roteador ativo
+28:01
+e o R1 ficará em espera. No entanto, com a preempção habilitada, o R1 retomará sua função como roteador ativo, pois
+28:08
+ele possui a prioridade mais alta. Observe que você só precisa configurar a preempção
+
+
+
+no roteador que você deseja que se torne o
+28:13
+roteador ativo. Mesmo que eu não configure a preempção no R2, o R1 ainda será capaz de realizar a preempção sobre o R2 e
+28:20
+assumir de volta a função de roteador ativo. Agora, vamos configurar o R2. Primeiramente, habilitei o HSRP versão 2 na interface G0/0 do R2.
+28:30
+Isso é importante: o HSRP versão 1 e a versão 2 não são compatíveis. Portanto, se o R1 utiliza a versão
+28:37
+2, o R2 também deve utilizar a versão 2; caso contrário, surgirão problemas.
+28:42
+Em seguida, configurei o mesmo IP virtual utilizado no R1: 172.16.0.254.
+28:49
+Os dois comandos seguintes — a definição da prioridade e da preempção — são, na verdade, desnecessários. O R1 já possui uma prioridade maior que a do R2, e a preempção não precisa estar habilitada
+28:58
+no roteador em espera (*standby*). No entanto, eu os configurei de qualquer forma, para que a configuração permaneça consistente entre os dois roteadores; mas,
+29:05
+na prática, isso não faz diferença. Por fim, vamos analisar a saída do comando `SHOW STANDBY`.
+29:12
+Esta é a saída tanto para o R1 quanto para o R2; vamos focar no R1. Observe, primeiramente, que o número do grupo HSRP é 1 e que a versão 2 está sendo utilizada.
+29:22
+O estado é *active* (ativo), uma vez que o R1 é o roteador ativo. Aqui, é exibido o endereço IP virtual que configuramos.
+29:30
+Estas duas linhas mostram o endereço MAC virtual; trata-se do endereço padrão. Aqui estão os temporizadores (*timers*) do HSRP.
+29:37
+Como não os configuramos, eles permanecem com os valores padrão. A preempção está habilitada, pois configuramos o comando `STANDBY 1 PREEMPT`. 29:45
+O roteador ativo é o local, pois o próprio R1 é o roteador ativo. O roteador em espera (*standby*) é o 172.16.0.252, que corresponde ao R2.
+29:55
+E, finalmente, aqui está o valor de prioridade 200 que configuramos. Se você quiser conferir a saída do comando também para o R2, pause o vídeo.
+30:03
+Muito bem, isso é tudo o que abordaremos sobre a configuração do HSRP; no vídeo de laboratório, teremos
+30:09
+uma abordagem mais prática. Antes de passar para o questionário, vamos revisar o que cobrimos neste vídeo.
+Tópicos abordados
+30:16
+Primeiro, apresentei o propósito e a função básica dos FHRPs, que consistem em fornecer
+30:21
+um gateway padrão redundante para uma sub-rede. Em seguida, apresentei brevemente três FHRPs diferentes: HSRP, VRRP e GLBP.
+30:33
+Certifique-se de aprender as características básicas de cada um e utilize a tabela para memorizar seus endereços IP multicast e endereços MAC virtuais.
+30:41
+Depois, apresentei algumas configurações básicas de HSRP. É pouco provável que você seja questionado sobre esses comandos no exame, mas a prática
+30:49
+ajudará você a compreender o assunto. Por isso, no próximo vídeo, realizaremos um laboratório simples de HSRP,
+30:54
+explorando conceitos como a preempção (*preemption*), entre outros. Aqui estão os comandos que utilizamos:
+31:00
+STANDBY VERSION 2, para configurar o roteador para utilizar a versão 2 do HSRP.
+31:05
+STANDBY IP, para definir o endereço IP virtual que servirá como gateway padrão.
+31:11
+STANDBY PRIORITY, para auxiliar no controle de qual roteador se tornará o roteador ativo. E o STANDBY PREEMPT, para fazer com que o roteador ativo retome sua função caso ele se recupere de
+31:20
+uma falha.
+
+
