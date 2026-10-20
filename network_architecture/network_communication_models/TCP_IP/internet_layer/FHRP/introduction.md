@@ -8,89 +8,33 @@ Primeiro, apresentarei o propósito dos protocolos de redundância de primeiro s
 
 ## Introdução ao FHRP
 
+![](../../../../z_imgs/185359.png)
 
+Utilizei este mesmo diagrama ao falar sobre o protocolo Spanning Tree, para demonstrar o conceito e a importância da redundância em redes. Por exemplo, se houvesse apenas uma conexão com a Internet e ela falhar devido a um problema de hardware ou qualquer outro motivo, os PCs não conseguirão mais acessar a Internet. Em sua casa, perder o acesso à Internet por algum tempo seria frustrante, mas provavelmente não chegaria a ser um desastre. Para a maioria das empresas modernas, no entanto, isso representaria um grande problema.
 
-Utilizei este mesmo diagrama no "Dia 20", ao falar sobre o protocolo Spanning Tree, para demonstrar
-2:16
-o conceito e a importância da redundância em redes. Por exemplo, se houver apenas uma conexão com a Internet e ela falhar devido a um problema de hardware
-2:25
-ou qualquer outro motivo, os PCs não conseguirão mais acessar a Internet.
-2:31
-Em sua casa, perder o acesso à Internet por algum tempo seria frustrante, mas provavelmente não chegaria a ser um desastre.
-2:37
-Para a maioria das empresas modernas, no entanto, isso representaria um grande problema. Por isso, podemos utilizar conexões redundantes com a Internet, como mostrado aqui.
-2:45
-Observe que adicionei nomes aos dispositivos e endereços IP na rede 172.16.0.0/24
-2:51
-para facilitar a explicação. Agora, caso esta conexão falhe, o PC1 pode utilizar este caminho alternativo para acessar a Internet.
-2:59
-Pode tratar-se, por exemplo, de uma conexão mais lenta e barata, utilizada apenas até que a conexão principal seja restabelecida.
-3:06
-Mas vamos parar para refletir sobre isso, pois a questão não é tão simples assim. Nesta rede, digamos que o endereço IP do R1, 172.16.0.254, esteja configurado como gateway padrão.
-3:17
-Isso significa que cada PC está configurado com o endereço 172.16.0.254 como seu gateway padrão.
-3:25
-Portanto, sempre que esses PCs precisarem enviar tráfego para fora da sub-rede local, eles o enviarão
-3:31
-para o gateway padrão, o R1. Mas o que acontece se o R1 ficar indisponível por algum motivo, talvez uma falha de hardware?
-3:38
-Felizmente, existe um roteador de backup conectado à Internet: o R2.
-3:43
-Mas há um problema aqui. Você consegue identificar qual é? Pause o vídeo e pense sobre isso por um minuto.
-3:51
-Bem, o problema está aqui: o gateway padrão dos PCs ainda está definido como .254, o endereço do R1.
-3:59
-Embora o R2 esteja disponível como backup, os PCs não sabem que o R1 está indisponível e que deveriam passar a usar o R2 como gateway padrão.
-4:08
-Se um PC precisar enviar tráfego para a Internet, ele continuará tentando enviá-lo para o R1.
-4:13
-Então, como podemos fazer com que o R2 se torne automaticamente o novo gateway padrão, caso o R1 não possa mais
-4:19
-ser utilizado? Essa é a função de um protocolo de redundância de primeiro salto, ou FHRP (First-Hop Redundancy Protocol).
-4:25
-Aqui está uma breve explicação sobre FHRPs, extraída da Wikipedia: "Um protocolo de redundância de primeiro salto (FHRP) é um protocolo de rede de computadores
-4:35
-projetado para proteger o gateway padrão utilizado em uma sub-rede, permitindo que dois ou mais roteadores
-4:40
-forneçam redundância para esse endereço;" Em caso de falha de um roteador ativo, o
-4:46
-roteador de backup assume o endereço, geralmente em poucos segundos.
-4:51
-O termo "protocolo de redundância de primeiro salto" (first-hop redundancy protocol – FHRP) é utilizado porque o gateway padrão é o "primeiro salto" — ou seja, o primeiro roteador no caminho para qualquer destino para o qual o PC esteja enviando
-5:00
-tráfego. É assim que os FHRPs funcionam: os dois roteadores compartilham um VIP (endereço IP virtual), por exemplo, 172.16.0.252.
-5:13
-Você configura os PCs na rede para utilizarem esse IP virtual como gateway padrão, em vez do endereço IP real do R1.
-5:20
-Agora, os roteadores possuem
+Por isso, podemos utilizar conexões redundantes com a Internet, como mostrado aqui. Observe que adicionei nomes aos dispositivos e endereços IP na rede 172.16.0.0/24 para facilitar a explicação. Agora, caso a conexão entre o R1 e a Internet falhe, o PC1 pode utilizar um caminho alternativo para acessar a Internet via R2. Pode tratar-se, por exemplo, de uma conexão mais lenta e barata, utilizada apenas até que a conexão principal seja restabelecida. Mas vamos parar para refletir sobre isso, pois a questão não é tão simples assim. 
 
+Nesta rede, digamos que o endereço IP do R1, 172.16.0.254, esteja configurado como gateway padrão. Isso significa que cada PC está configurado com o endereço 172.16.0.254 como seu gateway padrão. Portanto, sempre que esses PCs precisarem enviar tráfego para fora da sub-rede local, eles o enviarão para o gateway padrão, o R1. Mas o que acontece se o R1 ficar indisponível por algum motivo, talvez uma falha de hardware?
 
+Felizmente, existe um roteador de backup conectado à Internet: o R2. Mas há um problema aqui. Você consegue identificar qual é? Bem, o problema é que o gateway padrão dos PCs está definido como .254, o endereço do R1. Embora o R2 esteja disponível como backup, os PCs não sabem que o R1 está indisponível e que deveriam passar a usar o R2 como gateway padrão. Se um PC precisar enviar tráfego para a Internet, ele continuará tentando enviá-lo para o R1.
 
+Então, como podemos fazer com que o R2 se torne automaticamente o novo gateway padrão, caso o R1 não possa mais ser utilizado? Essa é a função de um protocolo de redundância de primeiro salto, ou FHRP (First-Hop Redundancy Protocol).
 
+Aqui está uma breve explicação sobre FHRPs, extraída da Wikipedia: "Um protocolo de redundância de primeiro salto (FHRP) é um protocolo de rede de computadores projetado para proteger o gateway padrão utilizado em uma sub-rede, permitindo que dois ou mais roteadores forneçam redundância para esse endereço;" Em caso de falha de um roteador ativo, o roteador de backup assume o endereço, geralmente em poucos segundos.
 
-negociar seus papéis entre si. Como eles fazem isso?
-5:26
-Eles enviam mensagens "Hello" (olá) via multicast um para o outro, assim. Certo, então quais papéis eles negociaram?
-5:34
-Bem, um deles — digamos, o R1 — se tornará o roteador ativo. O outro, R2, se tornará o roteador em espera (standby).
-5:43
-Observe que os termos específicos, como "ativo" e "em espera", variam dependendo de qual FHRP está sendo
-5:49
-utilizado, pois, como mostrei anteriormente, existem diferentes tipos de FHRP. Portanto, o R1 é o ativo, o que significa que ele atuará como o gateway padrão da rede.
-5:59
-O R2 está em espera, o que significa que ele não funcionará como gateway padrão, a menos que o R1 falhe.
-6:06
-Se o R1 falhar, o R2 assumirá automaticamente o papel de gateway padrão. Então, digamos que configuramos nosso FHRP nesta rede; agora, o PC1 precisa enviar
-6:16
-tráfego para um destino em outra rede. Eis o que o PC1 "pensa": "Preciso enviar tráfego para um destino em outra rede."
-6:25
-"Meu gateway padrão é 172.16.0.252, mas ainda não sei qual é o endereço MAC dele."
-6:31
-"Vou enviar uma solicitação ARP para descobrir o endereço MAC de 172.16.0.252." Faz tempo que não menciono o ARP neste curso, mas lembre-se de que ele é usado para descobrir
-6:42
-o endereço MAC associado a um determinado endereço IP. Para que o PC1 possa encapsular o pacote em um quadro (frame) destinado ao gateway padrão,
-6:50
-ele precisa conhecer o endereço MAC desse gateway. Portanto, o PC1 fará uma solicitação ARP, mais ou menos assim: "Olá, 172.16.0.252." 7:01
+O termo "protocolo de redundância de primeiro salto" (first-hop redundancy protocol – FHRP) é utilizado porque o gateway padrão é o "primeiro salto" — ou seja, o primeiro roteador no caminho para qualquer destino para o qual o PC esteja enviando tráfego. É assim que os FHRPs funcionam: os dois roteadores compartilham um VIP (endereço IP virtual), por exemplo, 172.16.0.252. Você configura os PCs na rede para utilizarem esse IP virtual como gateway padrão, em vez do endereço IP real do R1.
+
+![](../../../../z_imgs/075356.png)
+
+Agora, os roteadores possuem negociar seus papéis entre si. Como eles fazem isso? Eles enviam mensagens "Hello" (olá) via multicast um para o outro, assim. 
+
+![](../../../../z_imgs/075530.png)
+
+Certo, então quais papéis eles negociaram? Bem, um deles — digamos, o R1 — se tornará o roteador ativo. O outro, R2, se tornará o roteador em espera (standby). Observe que os termos específicos, como "ativo" e "em espera", variam dependendo de qual FHRP está sendo utilizado, pois, como mostrei anteriormente, existem diferentes tipos de FHRP. Portanto, o R1 é o ativo, o que significa que ele atuará como o gateway padrão da rede. O R2 está em espera, o que significa que ele não funcionará como gateway padrão, a menos que o R1 falhe.
+
+Se o R1 falhar, o R2 assumirá automaticamente o papel de gateway padrão. Então, digamos que configuramos nosso FHRP nesta rede; agora, o PC1 precisa enviar tráfego para um destino em outra rede. Eis o que o PC1 "pensa": "Preciso enviar tráfego para um destino em outra rede. Meu gateway padrão é 172.16.0.252, mas ainda não sei qual é o endereço MAC dele. Vou enviar uma solicitação ARP para descobrir o endereço MAC de 172.16.0.252." 
+
+Para que o PC1 possa encapsular o pacote em um quadro (frame) destinado ao gateway padrão, ele precisa conhecer o endereço MAC desse gateway. Portanto, o PC1 fará uma solicitação ARP, mais ou menos assim: "Olá, 172.16.0.252." 7:01
 "Aqui é o 172.16.0.1. Qual é o seu endereço MAC?"
 7:06
 Lembre-se de que a mensagem de solicitação ARP é um *broadcast*. Portanto, ela será enviada pela rede dessa forma, alcançando todos os *hosts*.
