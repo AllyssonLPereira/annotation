@@ -87,49 +87,22 @@ Lembra quando expliquei que os roteadores se comunicam entre si enviando mensage
 
 A seguir, veremos os formatos de endereço MAC virtual. Estes são mais difíceis de memorizar. Então, a versão 1 utiliza `0000.0c07.ac`, seguida pelo número do grupo. Por exemplo, digamos que, no meu exemplo anterior, eu tenha configurado o endereço IP virtual no grupo 1. Se estiver usando o HSRP versão 1, qual seria o endereço MAC virtual? Seria `0000.0c07.ac01`, já que o número do grupo é 1.
 
-Já o HSRP versão 2 utiliza o formato `0000.0c9F.Fxxx`, onde, novamente, `xxx` corresponde ao número do grupo. Observe que, agora, 3 dígitos hexadecimais estão disponíveis...
+Já o HSRP versão 2 utiliza o formato `0000.0c9F.Fxxx`, onde, novamente, `xxx` corresponde ao número do grupo. Observe que, agora, 3 dígitos hexadecimais estão disponíveis em vez de 2; portanto, há mais números de grupo disponíveis. De qualquer forma, se o número de grupo 1 for utilizado, qual seria o endereço MAC virtual na versão 2 do HSRP? É `0000.0c9f.f001`.
+
+Um último ponto: em uma situação com múltiplas sub-redes/VLANs, você pode configurar um roteador ativo diferente em cada sub-rede para realizar o balanceamento de carga. Semelhante ao protocolo Spanning Tree, você pode configurar um *root bridge* (ponte raiz) diferente em cada VLAN, de modo que o tráfego seja distribuído (balanceado) entre os switches.
+
+Pois bem, ao configurar múltiplos grupos HSRP — um para cada sub-rede e VLAN —, você pode definir um roteador ativo diferente para cada uma delas. Por exemplo, o R1 poderia ser o roteador ativo na VLAN1 e *standby* (em espera) na VLAN2, enquanto o R2 poderia ser o *standby* na VLAN1 e o ativo na VLAN2. Deixe-me demonstrar brevemente o conceito.
+
+![](../../../../z_imgs/075808.png)
+
+Digamos que a VLAN1 esteja atribuída aos hosts na sub-rede 172.16.1.0/24. O PC1 e o PC3 estão na VLAN1. O R1 e o R2 possuem seus próprios endereços IP na VLAN1, mas também compartilham o IP virtual 172.16.1.252, que é utilizado como *gateway* padrão da sub-rede. O R1 é o roteador ativo, e o R2 é o roteador *standby*. Por sua vez, a sub-rede 172.16.2.0/24 corresponde à VLAN2. O PC2 e o PC4 estão na VLAN2. R1 e R2 possuem seus próprios endereços IP na VLAN2, conectando-se aos switches por meio da topologia "router-on-a-stick".
+
+Eles também compartilham o endereço IP virtual 172.16.2.252, que é utilizado como gateway padrão para a sub-rede. R2 é o roteador ativo, e R1 é o roteador em espera (standby). Agora, o tráfego pode ser balanceado entre os dois caminhos: a VLAN1 utiliza R1 e a VLAN2 utiliza R2 como gateway padrão da sub-rede; além disso, cada sub-rede conta com um roteador em espera, caso o roteador ativo falhe.
 
 
 
 
-...em vez de 2; portanto, há mais números de grupo disponíveis.
-16:34
-De qualquer forma, se o número de grupo 1 for utilizado, qual seria o endereço MAC virtual na versão 2 do HSRP?
-16:40
-É 0000 0c9f f001.
-16:47
-Um último ponto: em uma situação com múltiplas sub-redes/VLANs, você pode configurar um
-16:52
-roteador ativo diferente em cada sub-rede para realizar o balanceamento de carga. Lembra-se do que mencionei em vídeos anteriores sobre o protocolo Spanning Tree?
-16:59
-Você pode configurar um *root bridge* (ponte raiz) diferente em cada VLAN, de modo que o tráfego seja distribuído (balanceado) entre os switches.
-17:05
-Pois bem, ao configurar múltiplos grupos HSRP — um para cada sub-rede e VLAN —, você pode definir
-17:11
-um roteador ativo diferente para cada uma delas. Por exemplo, o R1 poderia ser o roteador ativo na VLAN1 e *standby* (em espera) na VLAN2, enquanto o R2 poderia
-17:21
-ser o *standby* na VLAN1 e o ativo na VLAN2.
-17:26
-Isso provavelmente vai além do que você precisa saber para o CCNA, mas deixe-me demonstrar brevemente o conceito.
-17:31
-Digamos que a VLAN1 esteja atribuída aos hosts na sub-rede 172.16.1.0/24.
-17:38
-O PC1 e o PC3 estão na VLAN1. O R1 e o R2 possuem seus próprios endereços IP na VLAN1, mas também compartilham o IP virtual 172.16.1.252,
-17:50
-que é utilizado como *gateway* padrão da sub-rede. O R1 é o roteador ativo, e o R2 é o roteador *standby*.
-17:58
-Por sua vez, a sub-rede 172.16.2.0/24 corresponde à VLAN2.
-18:03
-O PC2 e o PC4 estão na VLAN2. R1 e R2 possuem seus próprios endereços IP na VLAN2, conectando-se aos switches por meio da topologia "router-on-a-stick".
-18:14
-Eles também compartilham o endereço IP virtual 172.16.2.252, que é utilizado como gateway padrão para a
-18:21
-sub-rede. R2 é o roteador ativo, e R1 é o roteador em espera (standby).
-18:27
-Agora, o tráfego pode ser balanceado entre os dois caminhos: a VLAN1 utiliza R1 e a VLAN2 utiliza
-18:32
-R2 como gateway padrão da sub-rede; além disso, cada sub-rede conta com um roteador em espera, caso o roteador ativo falhe.
-18:39
+
 Essa é, portanto, uma visão geral básica do HSRP. Embora ele não permita o balanceamento de carga dentro de uma única sub-rede, é possível configurar um
 18:47
 roteador ativo diferente para cada sub-rede, de modo que o tráfego seja balanceado entre os roteadores. Vamos passar para o próximo FHRP.
