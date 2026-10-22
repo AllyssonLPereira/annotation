@@ -8,7 +8,7 @@ Primeiro, apresentarei o propósito dos protocolos de redundância de primeiro s
 
 ## Introdução ao FHRP
 
-![](../../../../z_imgs/185359.png)
+![](../../../../../z_imgs/185359.png)
 
 Utilizei este mesmo diagrama ao falar sobre o protocolo Spanning Tree, para demonstrar o conceito e a importância da redundância em redes. Por exemplo, se houvesse apenas uma conexão com a Internet e ela falhar devido a um problema de hardware ou qualquer outro motivo, os PCs não conseguirão mais acessar a Internet. Em sua casa, perder o acesso à Internet por algum tempo seria frustrante, mas provavelmente não chegaria a ser um desastre. Para a maioria das empresas modernas, no entanto, isso representaria um grande problema.
 
@@ -24,11 +24,11 @@ Aqui está uma breve explicação sobre FHRPs, extraída da Wikipedia: "Um proto
 
 O termo "protocolo de redundância de primeiro salto" (first-hop redundancy protocol – FHRP) é utilizado porque o gateway padrão é o "primeiro salto" — ou seja, o primeiro roteador no caminho para qualquer destino para o qual o PC esteja enviando tráfego. É assim que os FHRPs funcionam: os dois roteadores compartilham um VIP (endereço IP virtual), por exemplo, 172.16.0.252. Você configura os PCs na rede para utilizarem esse IP virtual como gateway padrão, em vez do endereço IP real do R1.
 
-![](../../../../z_imgs/075356.png)
+![](../../../../../z_imgs/075356.png)
 
 Agora, os roteadores possuem negociar seus papéis entre si. Como eles fazem isso? Eles enviam mensagens "Hello" (olá) via multicast um para o outro, assim. 
 
-![](../../../../z_imgs/075530.png)
+![](../../../../../z_imgs/075530.png)
 
 Certo, então quais papéis eles negociaram? Bem, um deles — digamos, o R1 — se tornará o roteador ativo. O outro, R2, se tornará o roteador em espera (standby). Observe que os termos específicos, como "ativo" e "em espera", variam dependendo de qual FHRP está sendo utilizado, pois, como mostrei anteriormente, existem diferentes tipos de FHRP. Portanto, o R1 é o ativo, o que significa que ele atuará como o gateway padrão da rede. O R2 está em espera, o que significa que ele não funcionará como gateway padrão, a menos que o R1 falhe.
 
@@ -36,7 +36,7 @@ Se o R1 falhar, o R2 assumirá automaticamente o papel de gateway padrão. Entã
 
 Para que o PC1 possa encapsular o pacote em um quadro (frame) destinado ao gateway padrão, ele precisa conhecer o endereço MAC desse gateway. Portanto, o PC1 fará uma solicitação ARP, mais ou menos assim: "Olá, 172.16.0.252. Aqui é o 172.16.0.1. Qual é o seu endereço MAC?" Lembre-se de que a mensagem de solicitação ARP é um *broadcast*. Portanto, ela será enviada pela rede dessa forma, alcançando todos os *hosts*.
 
-![](../../../../z_imgs/123820.png)
+![](../../../../../z_imgs/123820.png)
 
 Felizmente, o *Spanning Tree* evita uma tempestade de *broadcast* ao desativar algumas das interfaces do *switch*. Assim, tanto o R1 quanto o R2 recebem a solicitação ARP, e ambos compartilham o mesmo endereço IP virtual, 172.16.0.252 — o endereço que consta na solicitação ARP. O que acontece agora? Qual deles enviará a resposta ARP?
 
@@ -93,7 +93,7 @@ Um último ponto: em uma situação com múltiplas sub-redes/VLANs, você pode c
 
 Pois bem, ao configurar múltiplos grupos HSRP — um para cada sub-rede e VLAN —, você pode definir um roteador ativo diferente para cada uma delas. Por exemplo, o R1 poderia ser o roteador ativo na VLAN1 e *standby* (em espera) na VLAN2, enquanto o R2 poderia ser o *standby* na VLAN1 e o ativo na VLAN2. Deixe-me demonstrar brevemente o conceito.
 
-![](../../../../z_imgs/075808.png)
+![](../../../../../z_imgs/075808.png)
 
 Digamos que a VLAN1 esteja atribuída aos hosts na sub-rede 172.16.1.0/24. O PC1 e o PC3 estão na VLAN1. O R1 e o R2 possuem seus próprios endereços IP na VLAN1, mas também compartilham o IP virtual 172.16.1.252, que é utilizado como *gateway* padrão da sub-rede. O R1 é o roteador ativo, e o R2 é o roteador *standby*. Por sua vez, a sub-rede 172.16.2.0/24 corresponde à VLAN2. O PC2 e o PC4 estão na VLAN2. R1 e R2 possuem seus próprios endereços IP na VLAN2, conectando-se aos switches por meio da topologia "router-on-a-stick".
 
@@ -111,7 +111,7 @@ O endereço multicast IPv4 utilizado também é diferente: 224.0.0.18. O formato
 
 Aqui está o mesmo diagrama de antes, mostrando o balanceamento de carga entre as duas sub-redes.
 
-![](../../../../z_imgs/072825.png)
+![](../../../../../z_imgs/072825.png)
 
 A única diferença é que os termos "master" e "backup" são utilizados em vez de "active" e "standby". Antes de prosseguir, gostaria de mencionar um ponto que não está diretamente relacionado aos protocolos FHRP.
 
@@ -121,7 +121,7 @@ Observe que todos os hosts na VLAN1 pertencem à mesma sub-rede, 172.16.1.0/24, 
 
 Antes de prosseguirmos para o último FHRP, aqui está uma tabela comparativa entre HSRP e VRRP. 
 
-![](../../../../z_imgs/073049.png)
+![](../../../../../z_imgs/073049.png)
 
 Em termos de funcionalidade, eles são praticamente iguais. Mas lembre-se das diferenças na terminologia, nos endereços IP multicast e nos endereços MAC virtuais. Lembre-se também de que o HSRP é proprietário da Cisco, enquanto o VRRP é um padrão aberto que pode funcionar em qualquer dispositivo de rede que ofereça suporte a ele. A seguir, veremos o GLBP.
 
@@ -135,13 +135,13 @@ O endereço IPv4 multicast é 224.0.0.102, o mesmo utilizado pelo HSRP versão 2
 
 Portanto, as funções do GLBP são um pouco mais complexas do que as do HSRP e do VRRP; lembre-se de que o GLBP permite que vários roteadores ativos realizem o balanceamento de carga do tráfego dentro de uma única sub-rede. Lembre-se também do endereço IP multicast e do formato do endereço MAC virtual. Aqui está a tabela novamente, agora com o GLBP incluído.
 
-![](../../../../z_imgs/074350.png)
+![](../../../../../z_imgs/074350.png)
 
 ## Configuração de HSRP
 
 Para que tudo coubesse na tela e fosse possível exibir a CLI ao mesmo tempo, simplifiquei a rede. Nosso foco será configurar o R1 e o R2 para usar o HSRP, fornecendo um endereço de gateway padrão redundante para a sub-rede 172.16.0.0/24.
 
-![](../../../../z_imgs/074537.png)
+![](../../../../../z_imgs/074537.png)
 
 Já configurei todos os endereços IP das interfaces; portanto, só precisamos configurar o HSRP. Observe que, desta vez, estou usando .254 como IP virtual, em vez de .252. Então, vamos começar configurando o R1.
 
@@ -151,7 +151,7 @@ Observe que a versão 1 do HSRP é o padrão; portanto, o intervalo de grupos di
 
 Esta rede simples utiliza apenas uma única VLAN, a VLAN 1; por isso, escolhi o número de grupo HSRP 1. Não é obrigatório fazer isso — não é uma regra —, mas gosto de fazer com que o número do grupo HSRP corresponda ao número da VLAN utilizada para a sub-rede. Vale ressaltar que esse número de grupo precisa ser idêntico em ambos os roteadores; isso é importante.
 
-![](../../../../z_imgs/075600.png)
+![](../../../../../z_imgs/075600.png)
 
 Então, utilizei o ponto de interrogação novamente para conferir as opções disponíveis. Vamos analisar três delas: `ip`, `preempt` e `priority`.  Primeiro, configura-se o IP virtual usando o comando `standby`, seguido pelo número do grupo e pela palavra-chave `ip`, e, na sequência, pelo endereço IP que você deseja definir como gateway padrão. 
 
@@ -161,13 +161,13 @@ Por fim, habilitei a "preempção" (preemption). Habilitar o comando de preempç
 
 Observe que você só precisa configurar a preempção no roteador que você deseja que se torne o roteador ativo. Mesmo que eu não configure a preempção no R2, o R1 ainda será capaz de realizar a preempção sobre o R2 e assumir de volta a função de roteador ativo. Agora, vamos configurar o R2.
 
-![](../../../../z_imgs/075705.png)
+![](../../../../../z_imgs/075705.png)
 
 Primeiramente, habilitei o HSRP versão 2 na interface G0/0 do R2. Isso é importante: o HSRP versão 1 e a versão 2 não são compatíveis. Portanto, se o R1 utiliza a versão 2, o R2 também deve utilizar a versão 2; caso contrário, surgirão problemas.
 
 Em seguida, configurei o mesmo IP virtual utilizado no R1: 172.16.0.254. Os dois comandos seguintes — a definição da prioridade e da preempção — são, na verdade, desnecessários. O R1 já possui uma prioridade maior que a do R2, e a preempção não precisa estar habilitada no roteador em espera (*standby*). No entanto, eu os configurei de qualquer forma, para que a configuração permaneça consistente entre os dois roteadores; mas, na prática, isso não faz diferença. Por fim, vamos analisar a saída do comando `show standby`.
 
-![](../../../../z_imgs/075759.png)
+![](../../../../../z_imgs/075759.png)
 
 Esta é a saída tanto para o R1 quanto para o R2; vamos focar no R1. 
 
