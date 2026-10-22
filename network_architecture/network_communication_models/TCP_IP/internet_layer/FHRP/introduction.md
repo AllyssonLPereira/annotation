@@ -99,225 +99,87 @@ Digamos que a VLAN1 esteja atribuída aos hosts na sub-rede 172.16.1.0/24. O PC1
 
 Eles também compartilham o endereço IP virtual 172.16.2.252, que é utilizado como gateway padrão para a sub-rede. R2 é o roteador ativo, e R1 é o roteador em espera (standby). Agora, o tráfego pode ser balanceado entre os dois caminhos: a VLAN1 utiliza R1 e a VLAN2 utiliza R2 como gateway padrão da sub-rede; além disso, cada sub-rede conta com um roteador em espera, caso o roteador ativo falhe.
 
+Essa é, portanto, uma visão geral básica do HSRP. Embora ele não permita o balanceamento de carga dentro de uma única sub-rede, é possível configurar um roteador ativo diferente para cada sub-rede, de modo que o tráfego seja balanceado entre os roteadores. Vamos passar para o próximo FHRP.
 
+## VRRP
 
+A seguir, temos o VRRP (Virtual Router Redundancy Protocol). Ao contrário do HSRP, ele é um padrão aberto, podendo ser executado em dispositivos de qualquer fabricante. Roteadores Cisco também o suportam; portanto, você pode optar pelo HSRP ou pelo VRRP. Na verdade, em termos de funcionalidade, eles são praticamente idênticos, apresentando apenas algumas pequenas diferenças.
 
+Em vez de um roteador "ativo" (active) e um "em espera" (standby), são eleitos um roteador "mestre" (master) e um "reserva" (backup). A função é a mesma; apenas a nomenclatura muda. O "mestre" equivale ao "ativo" do HSRP, e o "reserva" equivale ao "em espera" (standby) do HSRP.
 
-Essa é, portanto, uma visão geral básica do HSRP. Embora ele não permita o balanceamento de carga dentro de uma única sub-rede, é possível configurar um
-18:47
-roteador ativo diferente para cada sub-rede, de modo que o tráfego seja balanceado entre os roteadores. Vamos passar para o próximo FHRP.
-VRRP
-18:57
-A seguir, temos o VRRP (Virtual Router Redundancy Protocol). Ao contrário do HSRP, ele é um padrão aberto, podendo ser executado em dispositivos de qualquer fabricante.
-19:07
-Roteadores Cisco também o suportam; portanto, você pode optar pelo HSRP ou pelo VRRP. Na verdade, em termos de funcionalidade, eles são praticamente idênticos, apresentando apenas algumas pequenas diferenças.
-19:19
-Em vez de um roteador "ativo" e um "em espera" (standby), são eleitos um roteador "mestre" (master) e um "reserva" (backup).
-19:24
-A função é a mesma; apenas a nomenclatura muda. O "mestre" equivale ao "ativo" do HSRP, e o "reserva" equivale ao "em espera" (standby) do HSRP.
-19:34
-O endereço multicast IPv4 utilizado também é diferente: 224.0.0.18.
-19:39
-Mais uma vez, utilize os flashcards para memorizar detalhes como esse.
-19:45
-O formato do endereço MAC virtual também é diferente. 0000 5e00 01, seguido pelo número do grupo VRRP.
-19:54
-Vamos tentar algo um pouco mais desafiador. E se eu configurasse o grupo VRRP 200, em vez do grupo 1?
-20:02
-Qual seria o endereço MAC virtual? Você precisa converter 200 para hexadecimal.
-20:07
-Pause o vídeo para tentar fazer isso; pesquise no Google caso não se lembre de como funciona o sistema hexadecimal.
-20:13
-Muito bem, a resposta é 0000 5e00 01c8.
-20:21
-O valor hexadecimal c8 equivale a 200 em decimal. Assim como no HSRP — embora o VRRP não consiga realizar balanceamento de carga para hosts em uma mesma sub-rede —,
-20:31
-é possível realizar o balanceamento de carga entre sub-redes diferentes, configurando um roteador "master" (principal) distinto em cada uma delas.
-20:37
+O endereço multicast IPv4 utilizado também é diferente: 224.0.0.18. O formato do endereço MAC virtual também é diferente. `0000.5e00.01xx`, seguido pelo número do grupo VRRP. Vamos tentar algo um pouco mais desafiador. E se eu configurasse o grupo VRRP `200`, em vez do grupo 1? Qual seria o endereço MAC virtual? Você precisa converter 200 para hexadecimal. Muito bem, a resposta é `0000.5e00.01c8`. O valor hexadecimal `c8` equivale a `200` em decimal. Assim como no HSRP — embora o VRRP não consiga realizar balanceamento de carga para hosts em uma mesma sub-rede —, é possível realizar o balanceamento de carga entre sub-redes diferentes, configurando um roteador "master" (principal) distinto em cada uma delas.
+
 Aqui está o mesmo diagrama de antes, mostrando o balanceamento de carga entre as duas sub-redes.
-20:43
-A única diferença é que os termos "master" e "backup" são utilizados em vez de "active" e "standby".
-20:49
-Antes de prosseguir, gostaria de mencionar um ponto que não está diretamente relacionado aos protocolos FHRP.
-20:55
-Observe que todos os hosts na VLAN1 pertencem à mesma sub-rede, 172.16.1.0/24, e todos os hosts
-21:02
-na VLAN2 pertencem à mesma sub-rede, 172.16.2.0/24.
-21:08
-É assim que sub-redes e VLANs são utilizadas. As sub-redes dividem a rede na Camada 3 (Layer 3), enquanto as VLANs a dividem na Camada 2 (Layer 2).
-21:16
-Elas trabalham em conjunto, sendo que cada sub-rede corresponde a uma VLAN específica. Talvez você já tenha notado isso ao longo do curso, mas achei importante ressaltar. Tabela comparativa: HSRP/VRRP
-21:26
-Antes de prosseguirmos para o último FHRP, aqui está uma tabela comparativa entre HSRP e VRRP.
-21:32
-Em termos de funcionalidade, eles são praticamente iguais. Mas lembre-se das diferenças na terminologia, nos endereços IP multicast e nos endereços MAC virtuais.
-21:42
-Lembre-se também de que o HSRP é proprietário da Cisco, enquanto o VRRP é um padrão aberto que pode
-21:47
-funcionar em qualquer dispositivo de rede que ofereça suporte a ele. A seguir, veremos o GLBP.
-GLBP
-21:55
-O último FHRP que você deve conhecer é o GLBP (Gateway Load Balancing Protocol).
-22:01
-Ele é um pouco diferente do HSRP e do VRRP. Assim como o HSRP, é proprietário da Cisco; portanto, funciona apenas em dispositivos Cisco.
-22:10
-Aqui está a grande diferença: ele realiza o balanceamento de carga entre vários roteadores dentro de uma mesma sub-rede.
-22:17
-Por exemplo, se o PC1 e o PC2 estiverem ambos na VLAN1, o PC1 pode usar o R1 como seu gateway padrão, e
-22:24
-o PC2 pode usar o R2 como seu gateway padrão. Isso é diferente do que ocorre no HSRP e no VRRP.
 
+![](../../../../z_imgs/072825.png)
 
-no qual todos os hosts na mesma sub-rede devem usar o
-22:33
-mesmo roteador como gateway padrão para a sub-rede. No GLBP, um único AVG (Active Virtual Gateway – Gateway Virtual Ativo) é eleito para a sub-rede.
-22:43
-Em seguida, até quatro AVFs (Active Virtual Forwarders – Encaminhadores Virtuais Ativos) são atribuídos pelo AVG, sendo que o próprio AVG
-22:51
-também pode atuar como um AVF. Cada AVF funciona como o gateway padrão para uma parte dos hosts na sub-rede.
-22:58
-Assim, o balanceamento de carga é obtido dentro de uma única sub-rede. O endereço IPv4 multicast é 224.0.0.102, o mesmo utilizado pelo HSRP versão 2.
-23:10
-O formato do endereço MAC virtual é 0007 b400, seguido pelo número do grupo GLBP e pelo
-23:17
-número do AVF. Por exemplo, qual é o endereço MAC virtual do AVF número 1 no grupo GLBP 1?
-23:25
-É 0007 b400 0101. Portanto, as funções do GLBP são um pouco mais complexas do que as do HSRP e do VRRP; mas, para fins de
-23:37
-exame CCNA, lembre-se de que o GLBP permite que vários roteadores ativos realizem o balanceamento de carga do tráfego dentro
-23:43
-de uma única sub-rede. Lembre-se também do endereço IP multicast e do formato do endereço MAC virtual.
-23:49
-Pode não parecer tão importante, mas, para o exame CCNA, certifique-se de memorizar os endereços
-23:55
-IP e MAC. Aqui está a tabela novamente, agora com o GLBP incluído.
-Tabela HSRP/VRRP/GLBP
-24:01
-Se você se lembrar das características básicas do HSRP, VRRP e GLBP, e memorizar as
-24:07
-informações contidas nesta tabela, estará preparado para responder a quaisquer questões sobre FHRPs no
-24:12
-exame CCNA. No entanto, como um extra, vou mostrar algumas configurações bem básicas de
-24:18
-HSRP, para que possamos testá-las em um laboratório no próximo vídeo.
-24:24
-Embora a configuração de HSRP não faça parte dos tópicos do exame CCNA, ganhar um pouco de experiência prática ajudará você a entender como ele funciona.
-24:32
-Então, vamos realizar algumas configurações básicas de HSRP.
-Configuração de HSRP
-24:37
-Para que tudo coubesse na tela e fosse possível exibir a CLI ao mesmo tempo, simplifiquei a rede.
-24:42
-Nosso foco será configurar o R1 e o R2 para usar o HSRP, fornecendo um endereço de gateway padrão redundante
-24:47
-para a sub-rede 172.16.0.0/24.
-24:53
-Já configurei todos os endereços IP das interfaces; portanto, só precisamos configurar o HSRP.
-24:59
-Observe que, desta vez, estou usando .254 como IP virtual, em vez de .252. Então, vamos começar configurando o R1.
-25:08
-O HSRP é configurado diretamente na interface — neste caso, a G0/0.
-25:14
-Certifique-se de realizar a configuração na interface correta: aquela conectada à rede para a qual o dispositivo atuará como gateway padrão.
-25:21
-O HSRP é configurado por meio do comando `standby`. Usei o ponto de interrogação para verificar quais opções estão disponíveis.
-25:28
-Existem muitas outras opções, mas a que queremos utilizar é esta: o número do grupo. 25:34
-Observe que a versão 1 do HSRP é o padrão; portanto, o intervalo de grupos disponível vai de 0 a 255.
-25:41
-Se você utilizar a versão 2 do HSRP, esse intervalo passa a ser de 0 a 4095.
-25:46
-Na verdade, vou mostrar como alterar para a versão 2. O comando é `STANDBY VERSION 2`.
-25:53
-Se eu verificar o comando `STANDBY` novamente, você verá que o intervalo de números de grupo agora vai de 0 a 4095.
-26:01
-Esta rede simples utiliza apenas uma única VLAN, a VLAN 1; por isso, escolhi o número de grupo HSRP
-26:07
-1. Não é obrigatório fazer isso — não é uma regra —, mas gosto de fazer com que o número do grupo HSRP
-26:13
-corresponda ao número da VLAN utilizada para a sub-rede. Vale ressaltar que esse número de grupo precisa ser idêntico em ambos os roteadores; isso é importante.
-26:21
-Então, utilizei o ponto de interrogação novamente para conferir as opções disponíveis. Vamos analisar três delas:
-26:27
-`IP`, `PREEMPT` e `PRIORITY`. Primeiro, configura-se o IP virtual usando o comando `STANDBY`, seguido pelo número do grupo e pela palavra-chave `IP`,
-26:38
-e, na sequência, pelo endereço IP que você deseja definir como gateway padrão. Em seguida, utilizei o comando `PRIORITY` — note que o intervalo é de 0 a 255 — e defini a prioridade do R1
-26:49
-como 200. Para que serve a prioridade? Ela é utilizada para determinar qual roteador será o roteador ativo.
-26:56
-O roteador ativo é definido seguindo esta ordem: primeiramente, o roteador com a maior prioridade HSRP dentro do grupo torna-se o roteador ativo. 27:05
-A prioridade padrão é 100. Se os roteadores tiverem a mesma prioridade, o roteador com o endereço IP mais alto se tornará
-27:11
-o roteador ativo. Neste caso, o endereço IP do R1, 172.16.0.253, é maior que o endereço IP do R2, 172.16.0.252.
-27:23
-Portanto, mesmo sem configurar a prioridade, o R1 ainda se tornaria o roteador ativo; mas,
-27:28
-ainda assim, eu a configurei. Por fim, habilitei a "preempção" (preemption).
-27:34
-Habilitar o comando de preempção faz com que o roteador assuma a função de roteador ativo, mesmo que outro roteador já esteja ocupando essa posição — embora o roteador que realiza a preempção precise ter uma prioridade maior
-27:43
-ou um endereço IP mais alto. Por exemplo, digamos que o R1 seja o roteador ativo e o R2 seja o roteador em espera (standby).
-27:50
-Se uma falha fizer com que o R1 seja reiniciado, o R2 se tornará o roteador ativo. Quando o R1 voltar a ficar online, se a preempção não estiver habilitada, o R2 continuará sendo o roteador ativo
-28:01
-e o R1 ficará em espera. No entanto, com a preempção habilitada, o R1 retomará sua função como roteador ativo, pois
-28:08
-ele possui a prioridade mais alta. Observe que você só precisa configurar a preempção
+A única diferença é que os termos "master" e "backup" são utilizados em vez de "active" e "standby". Antes de prosseguir, gostaria de mencionar um ponto que não está diretamente relacionado aos protocolos FHRP.
 
+Observe que todos os hosts na VLAN1 pertencem à mesma sub-rede, 172.16.1.0/24, e todos os hosts na VLAN2 pertencem à mesma sub-rede, 172.16.2.0/24. É assim que sub-redes e VLANs são utilizadas. As sub-redes dividem a rede na Camada 3 (Layer 3), enquanto as VLANs a dividem na Camada 2 (Layer 2). Elas trabalham em conjunto, sendo que cada sub-rede corresponde a uma VLAN específica. 
 
+### Tabela comparativa: HSRP/VRRP
 
-no roteador que você deseja que se torne o
-28:13
-roteador ativo. Mesmo que eu não configure a preempção no R2, o R1 ainda será capaz de realizar a preempção sobre o R2 e
-28:20
-assumir de volta a função de roteador ativo. Agora, vamos configurar o R2. Primeiramente, habilitei o HSRP versão 2 na interface G0/0 do R2.
-28:30
-Isso é importante: o HSRP versão 1 e a versão 2 não são compatíveis. Portanto, se o R1 utiliza a versão
-28:37
-2, o R2 também deve utilizar a versão 2; caso contrário, surgirão problemas.
-28:42
-Em seguida, configurei o mesmo IP virtual utilizado no R1: 172.16.0.254.
-28:49
-Os dois comandos seguintes — a definição da prioridade e da preempção — são, na verdade, desnecessários. O R1 já possui uma prioridade maior que a do R2, e a preempção não precisa estar habilitada
-28:58
-no roteador em espera (*standby*). No entanto, eu os configurei de qualquer forma, para que a configuração permaneça consistente entre os dois roteadores; mas,
-29:05
-na prática, isso não faz diferença. Por fim, vamos analisar a saída do comando `SHOW STANDBY`.
-29:12
-Esta é a saída tanto para o R1 quanto para o R2; vamos focar no R1. Observe, primeiramente, que o número do grupo HSRP é 1 e que a versão 2 está sendo utilizada.
-29:22
-O estado é *active* (ativo), uma vez que o R1 é o roteador ativo. Aqui, é exibido o endereço IP virtual que configuramos.
-29:30
-Estas duas linhas mostram o endereço MAC virtual; trata-se do endereço padrão. Aqui estão os temporizadores (*timers*) do HSRP.
-29:37
-Como não os configuramos, eles permanecem com os valores padrão. A preempção está habilitada, pois configuramos o comando `STANDBY 1 PREEMPT`. 29:45
-O roteador ativo é o local, pois o próprio R1 é o roteador ativo. O roteador em espera (*standby*) é o 172.16.0.252, que corresponde ao R2.
-29:55
-E, finalmente, aqui está o valor de prioridade 200 que configuramos. Se você quiser conferir a saída do comando também para o R2, pause o vídeo.
-30:03
-Muito bem, isso é tudo o que abordaremos sobre a configuração do HSRP; no vídeo de laboratório, teremos
-30:09
-uma abordagem mais prática. Antes de passar para o questionário, vamos revisar o que cobrimos neste vídeo.
-Tópicos abordados
-30:16
-Primeiro, apresentei o propósito e a função básica dos FHRPs, que consistem em fornecer
-30:21
-um gateway padrão redundante para uma sub-rede. Em seguida, apresentei brevemente três FHRPs diferentes: HSRP, VRRP e GLBP.
-30:33
-Certifique-se de aprender as características básicas de cada um e utilize a tabela para memorizar seus endereços IP multicast e endereços MAC virtuais.
-30:41
-Depois, apresentei algumas configurações básicas de HSRP. É pouco provável que você seja questionado sobre esses comandos no exame, mas a prática
-30:49
-ajudará você a compreender o assunto. Por isso, no próximo vídeo, realizaremos um laboratório simples de HSRP,
-30:54
-explorando conceitos como a preempção (*preemption*), entre outros. Aqui estão os comandos que utilizamos:
-31:00
-STANDBY VERSION 2, para configurar o roteador para utilizar a versão 2 do HSRP.
-31:05
-STANDBY IP, para definir o endereço IP virtual que servirá como gateway padrão.
-31:11
-STANDBY PRIORITY, para auxiliar no controle de qual roteador se tornará o roteador ativo. E o STANDBY PREEMPT, para fazer com que o roteador ativo retome sua função caso ele se recupere de
-31:20
-uma falha.
+Antes de prosseguirmos para o último FHRP, aqui está uma tabela comparativa entre HSRP e VRRP. 
 
+![](../../../../z_imgs/073049.png)
+
+Em termos de funcionalidade, eles são praticamente iguais. Mas lembre-se das diferenças na terminologia, nos endereços IP multicast e nos endereços MAC virtuais. Lembre-se também de que o HSRP é proprietário da Cisco, enquanto o VRRP é um padrão aberto que pode funcionar em qualquer dispositivo de rede que ofereça suporte a ele. A seguir, veremos o GLBP.
+
+## GLBP
+
+O último FHRP que você deve conhecer é o GLBP (Gateway Load Balancing Protocol). Ele é um pouco diferente do HSRP e do VRRP. Assim como o HSRP, é proprietário da Cisco; portanto, funciona apenas em dispositivos Cisco. Aqui está a grande diferença: ele realiza o balanceamento de carga entre vários roteadores dentro de uma mesma sub-rede. Por exemplo, se o PC1 e o PC2 estiverem ambos na VLAN1, o PC1 pode usar o R1 como seu gateway padrão, e o PC2 pode usar o R2 como seu gateway padrão. Isso é diferente do que ocorre no HSRP e no VRRP, no qual todos os hosts na mesma sub-rede devem usar o mesmo roteador como gateway padrão para a sub-rede. 
+
+No GLBP, um único AVG (Active Virtual Gateway – Gateway Virtual Ativo) é eleito para a sub-rede. Em seguida, até quatro AVFs (Active Virtual Forwarders – Encaminhadores Virtuais Ativos) são atribuídos pelo AVG, sendo que o próprio AVG também pode atuar como um AVF. Cada AVF funciona como o gateway padrão para uma parte dos hosts na sub-rede. Assim, o balanceamento de carga é obtido dentro de uma única sub-rede. 
+
+O endereço IPv4 multicast é 224.0.0.102, o mesmo utilizado pelo HSRP versão 2. O formato do endereço MAC virtual é `0007.b400.xxyy`, seguido pelo número do grupo GLBP e pelo número do AVF. Por exemplo, qual é o endereço MAC virtual do AVF número 1 no grupo GLBP 1? É `0007.b400.0101`. 
+
+Portanto, as funções do GLBP são um pouco mais complexas do que as do HSRP e do VRRP; lembre-se de que o GLBP permite que vários roteadores ativos realizem o balanceamento de carga do tráfego dentro de uma única sub-rede. Lembre-se também do endereço IP multicast e do formato do endereço MAC virtual. Aqui está a tabela novamente, agora com o GLBP incluído.
+
+![](../../../../z_imgs/074350.png)
+
+## Configuração de HSRP
+
+Para que tudo coubesse na tela e fosse possível exibir a CLI ao mesmo tempo, simplifiquei a rede. Nosso foco será configurar o R1 e o R2 para usar o HSRP, fornecendo um endereço de gateway padrão redundante para a sub-rede 172.16.0.0/24.
+
+![](../../../../z_imgs/074537.png)
+
+Já configurei todos os endereços IP das interfaces; portanto, só precisamos configurar o HSRP. Observe que, desta vez, estou usando .254 como IP virtual, em vez de .252. Então, vamos começar configurando o R1.
+
+O HSRP é configurado diretamente na interface — neste caso, a G0/0. Certifique-se de realizar a configuração na interface correta: aquela conectada à rede para a qual o dispositivo atuará como gateway padrão. O HSRP é configurado por meio do comando `standby`. Usei o ponto de interrogação para verificar quais opções estão disponíveis. Existem muitas outras opções, mas a que queremos utilizar é esta: o número do grupo. 
+
+Observe que a versão 1 do HSRP é o padrão; portanto, o intervalo de grupos disponível vai de 0 a 255. Se você utilizar a versão 2 do HSRP, esse intervalo passa a ser de 0 a 4095. Na verdade, vou mostrar como alterar para a versão 2. O comando é `standby version 2`. Se eu verificar o comando `standby` novamente, você verá que o intervalo de números de grupo agora vai de 0 a 4095.
+
+Esta rede simples utiliza apenas uma única VLAN, a VLAN 1; por isso, escolhi o número de grupo HSRP 1. Não é obrigatório fazer isso — não é uma regra —, mas gosto de fazer com que o número do grupo HSRP corresponda ao número da VLAN utilizada para a sub-rede. Vale ressaltar que esse número de grupo precisa ser idêntico em ambos os roteadores; isso é importante.
+
+![](../../../../z_imgs/075600.png)
+
+Então, utilizei o ponto de interrogação novamente para conferir as opções disponíveis. Vamos analisar três delas: `ip`, `preempt` e `priority`.  Primeiro, configura-se o IP virtual usando o comando `standby`, seguido pelo número do grupo e pela palavra-chave `ip`, e, na sequência, pelo endereço IP que você deseja definir como gateway padrão. 
+
+Em seguida, utilizei o comando `priority` — note que o intervalo é de 0 a 255 — e defini a prioridade do R1 como 200. Para que serve a prioridade? Ela é utilizada para determinar qual roteador será o roteador ativo. O roteador ativo é definido seguindo esta ordem: primeiramente, o roteador com a maior prioridade HSRP dentro do grupo torna-se o roteador ativo. A prioridade padrão é 100. Se os roteadores tiverem a mesma prioridade, o roteador com o endereço IP mais alto se tornará o roteador ativo. Neste caso, o endereço IP do R1, 172.16.0.253, é maior que o endereço IP do R2, 172.16.0.252. Portanto, mesmo sem configurar a prioridade, o R1 ainda se tornaria o roteador ativo; mas, ainda assim, eu a configurei. 
+
+Por fim, habilitei a "preempção" (preemption). Habilitar o comando de preempção faz com que o roteador assuma a função de roteador ativo, mesmo que outro roteador já esteja ocupando essa posição — embora o roteador que realiza a preempção precise ter uma prioridade maior ou um endereço IP mais alto. Por exemplo, digamos que o R1 seja o roteador ativo e o R2 seja o roteador em espera (standby). Se uma falha fizer com que o R1 seja reiniciado, o R2 se tornará o roteador ativo. Quando o R1 voltar a ficar online, se a preempção não estiver habilitada, o R2 continuará sendo o roteador ativo e o R1 ficará em espera. No entanto, com a preempção habilitada, o R1 retomará sua função como roteador ativo, pois ele possui a prioridade mais alta.
+
+Observe que você só precisa configurar a preempção no roteador que você deseja que se torne o roteador ativo. Mesmo que eu não configure a preempção no R2, o R1 ainda será capaz de realizar a preempção sobre o R2 e assumir de volta a função de roteador ativo. Agora, vamos configurar o R2.
+
+![](../../../../z_imgs/075705.png)
+
+Primeiramente, habilitei o HSRP versão 2 na interface G0/0 do R2. Isso é importante: o HSRP versão 1 e a versão 2 não são compatíveis. Portanto, se o R1 utiliza a versão 2, o R2 também deve utilizar a versão 2; caso contrário, surgirão problemas.
+
+Em seguida, configurei o mesmo IP virtual utilizado no R1: 172.16.0.254. Os dois comandos seguintes — a definição da prioridade e da preempção — são, na verdade, desnecessários. O R1 já possui uma prioridade maior que a do R2, e a preempção não precisa estar habilitada no roteador em espera (*standby*). No entanto, eu os configurei de qualquer forma, para que a configuração permaneça consistente entre os dois roteadores; mas, na prática, isso não faz diferença. Por fim, vamos analisar a saída do comando `show standby`.
+
+![](../../../../z_imgs/075759.png)
+
+Esta é a saída tanto para o R1 quanto para o R2; vamos focar no R1. 
+
+- Observe, primeiramente, que o número do grupo HSRP é 1 e que a versão 2 está sendo utilizada;
+- O estado é *active* (ativo), uma vez que o R1 é o roteador ativo;
+- Aqui, é exibido o endereço IP virtual que configuramos;
+- Temos os endereço MAC virtual; trata-se do endereço padrão;
+- Os temporizadores (*timers*) do HSRP também estão presentes. Como não os configuramos, eles permanecem com os valores padrão;
+- A preempção está habilitada, pois configuramos o comando `standby 1 preempt`;
+- O roteador ativo é o local, pois o próprio R1 é o roteador ativo;
+- O roteador em espera (*standby*) é o 172.16.0.252, que corresponde ao R2; e
+- Finalmente, aqui está o valor de prioridade 200 que configuramos.
+
+O mesmo serve para o R2.
 
