@@ -17,138 +17,76 @@ Esta imagem mostra a topologia de rede, com o Host A enviando dados para o Host 
 
 Outra função dos protocolos da Camada 4 é oferecer — ou não — diversos serviços às aplicações. Você verá, em breve, que o TCP fornece esses serviços às aplicações, enquanto o UDP não o faz. Quais seriam alguns desses serviços? Um deles é a transferência confiável de dados.
 
+Isso significa garantir que o host de destino tenha, de fato, recebido cada bit de dados que deveria receber. 
+
+Outro serviço é a recuperação de erros. Caso ocorra um erro durante a transmissão, a Camada 4 pode assegurar que os dados sejam reenviados. Há também o sequenciamento de dados: mesmo que os dados cheguem ao destino fora de ordem, o host final consegue organizá-los na sequência correta. Mais um serviço é o controle de fluxo, que garante que o host de origem não envie tráfego em uma velocidade superior àquela que o host de destino consegue processar. Esses são serviços oferecidos pelo TCP, mas não pelo UDP. Explicarei isso com mais detalhes adiante; portanto, não se preocupe em memorizar tudo agora.
+
+### Números de Porta, Multiplexação de Sessões
+
+Bem, outra função da Camada 4 é fornecer endereçamento na própria Camada 4. Esses endereços são chamados de "números de porta". Vale notar que o termo "porta" também pode se referir às interfaces físicas onde conectamos cabos em dispositivos de rede; contudo, na Camada 4, o termo "porta" possui um significado completamente diferente. Esses números de porta desempenham algumas funções; uma delas é identificar o protocolo da Camada de Aplicação que está sendo utilizado.
+
+Outra função é possibilitar o que chamamos de "multiplexação de sessões". Deixe-me explicar esses conceitos. 
+
+174502
+
+Aqui temos o PC1, que acessará recursos de dois servidores pela Internet: o SRV1 e o SRV2. Vamos ver como essas portas são usadas para identificar o serviço que o PC1 deseja acessar e para rastrear as sessões entre o PC1 e os servidores. Primeiramente, o que é uma sessão? É, basicamente, uma troca de dados entre dois ou mais dispositivos que se comunicam. No uso diário do seu PC, ele precisa ser capaz de lidar com múltiplas sessões de comunicação simultaneamente.
+
+Talvez você tenha várias abas do navegador abertas, acessando diferentes serviços pela Internet. Provavelmente, há diversos serviços em execução no seu computador que precisam de acesso à Internet. No caso do PC1, digamos que ele esteja se comunicando com o SRV1. Na Camada 4, ele utiliza o protocolo TCP, com uma porta de origem 50000 e uma porta de destino 80. Para que servem essas portas? A porta de destino é fundamental: ela identifica o protocolo da Camada de Aplicação. Por exemplo, a porta TCP 80 é utilizada pelo protocolo HTTP, empregado para acessar sites.
+
+Portanto, é possível que o SRV1 esteja hospedando uma página da web que o PC1 deseja acessar. E quanto à porta de origem? Ela é selecionada aleatoriamente pelo PC1 e, em conjunto com a porta de destino, ajuda a identificar a sessão. Por exemplo, após o SRV1 receber a mensagem do PC1, ele provavelmente enviará uma resposta. Na resposta do SRV1, observe que os números das portas de origem e de destino estão invertidos; a porta de origem é a 80 e a de destino é a 50000. 
+
+Quando o PC1 recebe essa mensagem, os números das portas de origem e de destino indicam a ele que ela faz parte da mesma sessão de comunicação da mensagem que ele enviou anteriormente. 
+
+174854
+
+E se o PC1 abrir uma conexão separada com o SRV1? Ele pode estar usando HTTP na porta de destino 80 novamente, mas utilizando uma porta de origem diferente. A resposta do SRV1 usará essa porta de origem como porta de destino para sua resposta, de modo que o PC1 saiba que ela faz parte daquela sessão. Mas o PC1 deseja acessar algo no SRV2 ao mesmo tempo.
+
+175031
+
+Ele utiliza o número de porta de destino TCP 21 e seleciona, aleatoriamente, a porta de origem 60000. A porta TCP 21 é usada para o FTP, o Protocolo de Transferência de Arquivos (File Transfer Protocol). Como o nome sugere, ele é utilizado para transferir arquivos. A resposta do SRV2 inverterá os números das portas, usando a porta de origem 21 e a porta de destino 60000. Isso indicará ao PC1 que essa comunicação faz parte da mesma sessão.
+
+Bem, espero que isso tenha proporcionado uma compreensão básica de como as portas identificam o protocolo da Camada de Aplicação, como o HTTP (Hypertext Transfer Protocol — Protocolo de Transferência de Hipertexto), usado para acessar páginas da web, ou o FTP (File Transfer Protocol — Protocolo de Transferência de Arquivos), usado, como o próprio nome diz, para transferir arquivos.
+
+Também mostrei como esses números são utilizados pelos hosts para gerenciar múltiplas sessões de comunicação simultaneamente.
+
+Resumindo, o TCP garante:
+
 1. Transferência confiável de dados
 2. Recuperação de erros
 3. Sequenciamento de dados
 4. Controle de fluxo
+5. Endereçamento
+6. Multiplexação de sessões
 
-Isso significa garantir que o host de destino tenha, de fato, recebido cada bit de dados que deveria receber. 
+Os números de porta utilizados pelos protocolos da Camada de Aplicação são registrados junto à IANA (Internet Assigned Numbers Authority — Autoridade para Atribuição de Números na Internet). Eles definiram as seguintes faixas:
 
-Outro serviço é a recuperação de erros. Caso ocorra um erro durante a transmissão, a Camada 4 pode assegurar que os dados sejam reenviados. Há também o sequenciamento de dados: mesmo que os dados cheguem ao destino fora de ordem, o host final consegue organizá-los na sequência correta. Mais um serviço é o controle de fluxo, que garante que o host de origem não envie tráfego em uma velocidade superior àquela que o host de destino consegue processar. 
+- As portas conhecidas (well-known ports) compreendem o intervalo de 0 a 1023. Elas são usadas por protocolos importantes, como HTTP, FTP, etc., e são submetidas a uma regulamentação bastante rigorosa;
+- As portas registradas (registered ports) situam-se na faixa de 1024 a 49151. É necessário realizar um registro para utilizar esses números de porta, embora o processo não seja tão rigoroso quanto o aplicado à faixa das portas conhecidas;
+- Por fim, a faixa de 49152 a 65535 é utilizada para portas "efêmeras", também conhecidas como portas privadas ou dinâmicas. Os hosts utilizam essa faixa ao selecionar a porta de origem aleatória.
 
-Esses são serviços oferecidos pelo TCP, mas não pelo UDP. Explicarei isso com mais detalhes adiante; portanto, não se preocupe em memorizar tudo agora. Bem, outra função da Camada 4 é fornecer endereçamento na própria Camada 4.
+Observe que, no exemplo anterior, todos os números de porta de origem selecionados aleatoriamente pertenciam à faixa de portas efêmeras. Além disso, vale notar que os números de porta são um recurso presente nos dois principais protocolos da Camada 4: TCP e UDP. 
 
-Esses endereços são chamados de "números de porta". Vale notar que o termo "porta" também pode se referir às interfaces físicas onde conectamos cabos
-3:58
-em dispositivos de rede; contudo, na Camada 4, o termo "porta" possui um significado completamente diferente.
-4:04
-Esses números de porta desempenham algumas funções; uma delas é identificar o protocolo da Camada de Aplicação que está sendo utilizado.
-4:11
-Outra função é possibilitar o que chamamos de "multiplexação de sessões". Deixe-me explicar esses conceitos. Números de Porta, Multiplexação de Sessões
-4:18
-Aqui temos o PC1, que acessará recursos de dois servidores pela Internet: o SRV1 e o
-4:25
-SRV2. Vamos ver como essas portas são usadas para identificar o serviço que o PC1 deseja acessar e para rastrear
-4:32
-as sessões entre o PC1 e os servidores. Primeiramente, o que é uma sessão?
-4:38
-É, basicamente, uma troca de dados entre dois ou mais dispositivos que se comunicam. No uso diário do seu PC, ele precisa ser capaz de lidar com múltiplas sessões
-4:48
-de comunicação simultaneamente. Talvez você tenha várias abas do navegador abertas, acessando diferentes serviços pela Internet.
-4:57
-Provavelmente, há diversos serviços em execução no seu computador que precisam de acesso à Internet.
-5:02
-No caso do PC1, digamos que ele esteja se comunicando com o SRV1. Na Camada 4, ele utiliza o protocolo TCP, com uma porta de origem 50000 e uma porta de destino
-5:14
-80. Para que servem essas portas? A porta de destino é fundamental: ela identifica o protocolo da Camada de Aplicação.
-5:24
-Por exemplo, a porta TCP 80 é utilizada pelo protocolo HTTP, empregado para acessar sites.
-5:32
-Portanto, é possível que o SRV1 esteja hospedando uma página da web que o PC1 deseja acessar. E quanto à porta de origem?
-5:39
-Ela é selecionada aleatoriamente pelo PC1 e, em conjunto com a porta de destino, ajuda a identificar
-5:45
-a sessão. Por exemplo, após o SRV1 receber a mensagem do PC1, ele provavelmente enviará uma resposta. 5:54
-Na resposta do SRV1, observe que os números das portas de origem e de destino estão invertidos;
-5:59
-a porta de origem é a 80 e a de destino é a 50000. Quando o PC1 recebe essa mensagem, os números das portas de origem e de destino indicam a ele que
-6:09
-ela faz parte da mesma sessão de comunicação da mensagem que ele enviou anteriormente.
-6:15
-E se o PC1 abrir uma conexão separada com o SRV1? Ele pode estar usando HTTP na porta de destino 80 novamente, mas utilizando uma porta de origem
-6:24
-diferente. A resposta do SRV1...
+A seguir, explicarei cada um desses protocolos e você verá que as funcionalidades que mencionei anteriormente — transferência confiável de dados, recuperação de erros, sequenciamento de dados e controle de fluxo — são oferecidas pelo TCP, e não pelo UDP. Começarei explicando o TCP.
 
+##Visão geral do TCP
 
+Apresentarei uma visão geral de suas funcionalidades, analisaremos brevemente o cabeçalho TCP e, na sequência, aprofundarei a explicação sobre algumas de suas funções.
 
-...usará essa porta de origem como porta de destino para sua resposta,
-6:31
-de modo que o PC1 saiba que ela faz parte daquela sessão. Mas o PC1 deseja acessar algo no SRV2 ao mesmo tempo.
-6:39
-Ele utiliza o número de porta de destino TCP 21 e seleciona, aleatoriamente, a porta de origem 60000.
-6:46
-A porta TCP 21 é usada para o FTP, o Protocolo de Transferência de Arquivos (File Transfer Protocol).
-6:52
-Como o nome sugere, ele é utilizado para transferir arquivos. A resposta do SRV2 inverterá os números das portas, usando a porta de origem 21 e a porta de destino
-7:02
-60000. Isso indicará ao PC1 que essa comunicação faz parte da mesma sessão.
-7:09
-Bem, espero que isso tenha proporcionado uma compreensão básica de como as portas identificam o protocolo da Camada de Aplicação,
-7:15
-como o HTTP (Hypertext Transfer Protocol — Protocolo de Transferência de Hipertexto), usado para acessar páginas da web,
-7:22
-ou o FTP (File Transfer Protocol — Protocolo de Transferência de Arquivos), usado, como o próprio nome diz, para transferir arquivos.
-7:28
-Também mostrei como esses números são utilizados pelos hosts para gerenciar múltiplas sessões de comunicação simultaneamente.
-7:35
-Os números de porta utilizados pelos protocolos da Camada de Aplicação são registrados junto à IANA (Internet
-7:41
-Assigned Numbers Authority — Autoridade para Atribuição de Números na Internet). Eles definiram as seguintes faixas:
-7:47
-As portas conhecidas (well-known ports) compreendem o intervalo de 0 a 1023. Elas são usadas por protocolos importantes, como HTTP, FTP, etc., e são submetidas a uma regulamentação bastante rigorosa.
-8:00
-As portas registradas (registered ports) situam-se na faixa de 1024 a 49151.
-8:07
-É necessário realizar um registro para utilizar esses números de porta, embora o processo não seja tão rigoroso quanto o aplicado à faixa das portas conhecidas. 8:12
-Por fim, a faixa de 49152 a 65535 é utilizada para portas "efêmeras", também conhecidas
-8:21
-como portas privadas ou dinâmicas. Os hosts utilizam essa faixa ao selecionar a porta de origem aleatória.
-8:29
-Observe que, no exemplo anterior, todos os números de porta de origem selecionados aleatoriamente pertenciam à faixa de portas efêmeras.
-8:36
-Além disso, vale notar que os números de porta são um recurso presente nos dois principais protocolos da Camada 4: TCP
-8:42
-e UDP. A seguir, explicarei cada um desses protocolos e você verá que as funcionalidades que mencionei
-8:47
-anteriormente — transferência confiável de dados, recuperação de erros, sequenciamento de dados e controle de fluxo — são oferecidas
-8:54
-pelo TCP, e não pelo UDP. Começarei explicando o TCP.
-Visão geral do TCP
-8:59
-Apresentarei uma visão geral de suas funcionalidades, analisaremos brevemente o cabeçalho TCP
-9:05
-e, na sequência, aprofundarei a explicação sobre algumas de suas funções. Para começar, o TCP é um protocolo orientado a conexão.
-9:12
-O que isso significa? Bem, antes de efetivamente enviar dados para o host de destino, os dois hosts se comunicam
-9:18
-para estabelecer uma conexão. Uma vez estabelecida a conexão, a troca de dados tem início.
-9:24
-O host de origem não começa a enviar dados sem antes se comunicar com o host de destino e estabelecer essa conexão.
-9:32
-Além disso, o TCP proporciona uma comunicação confiável. Como ele faz isso?
-9:37
-O host de destino deve confirmar o recebimento de cada segmento TCP.
-9:42
-Lembre-se de que "segmento" é o nome dado à PDU da Camada 4 — assim como "pacote" na Camada 3 e "quadro"
-9:48
-na Camada 2. Portanto, se o host de origem não receber uma confirmação referente a um segmento, ele é enviado
-9:54
-novamente. Outro recurso oferecido pelo TCP é o sequenciamento. No próximo slide, você verá que existe um campo de sequência no cabeçalho TCP.
-10:04
-Os números de sequência no cabeçalho TCP permitem que os hosts de destino organizem os segmentos na ordem correta, mesmo que eles cheguem fora de ordem.
-10:12
-Bem, uma última observação por enquanto: o TCP oferece controle de fluxo.
-10:17
-Isso significa que o host de destino pode solicitar ao host de origem que aumente ou diminua a taxa de envio de dados, evitando que o destino fique sobrecarregado ao receber tráfego mais rapidamente do que
-10:26
-consegue processá-lo. Certo, vamos dar uma olhada no cabeçalho TCP — agradecimentos à Wikipedia por esta imagem.
-Cabeçalho TCP
-10:35
-Como você pode ver, há diversos campos no cabeçalho TCP, utilizados para fornecer todos os serviços que mencionei no slide anterior.
-10:43
-A boa notícia é que você não precisa aprender nem memorizar todo o cabeçalho para o CCNA. Vou apenas destacar brevemente alguns campos importantes.
-10:52
-Começando pelos campos de porta de origem e de destino. Observe que cada campo tem 16 bits (2 bytes) de extensão.
+Para começar, o TCP é um protocolo orientado a conexão. O que isso significa? Bem, antes de efetivamente enviar dados para o host de destino, os dois hosts se comunicam para estabelecer uma conexão. Uma vez estabelecida a conexão, a troca de dados tem início. O host de origem não começa a enviar dados sem antes se comunicar com o host de destino e estabelecer essa conexão.
+
+Além disso, o TCP proporciona uma comunicação confiável. Como ele faz isso? O host de destino deve confirmar o recebimento de cada segmento TCP. Lembre-se de que "segmento" é o nome dado à PDU da Camada 4 — assim como "pacote" na Camada 3 e "quadro" na Camada 2. Portanto, se o host de origem não receber uma confirmação referente a um segmento, ele é enviado novamente. 
+
+Outro recurso oferecido pelo TCP é o sequenciamento. Na próxima imagem, você verá que existe um campo de sequência no cabeçalho TCP. Os números de sequência no cabeçalho TCP permitem que os hosts de destino organizem os segmentos na ordem correta, mesmo que eles cheguem fora de ordem.
+
+Bem, uma última observação por enquanto: o TCP oferece controle de fluxo. Isso significa que o host de destino pode solicitar ao host de origem que aumente ou diminua a taxa de envio de dados, evitando que o destino fique sobrecarregado ao receber tráfego mais rapidamente do que consegue processá-lo. Certo, vamos dar uma olhada no cabeçalho TCP — agradecimentos à Wikipedia por esta imagem.
+
+### Cabeçalho TCP
+
+175802
+
+Como você pode ver, há diversos campos no cabeçalho TCP, utilizados para fornecer todos os serviços que mencionei anteriormente. Vou apenas destacar brevemente alguns campos importantes. Começando pelos campos de porta de origem e de destino.
+
+Observe que cada campo tem 16 bits (2 bytes) de extensão.
 11:00
 Isso significa que há um total de 65.536 números de porta disponíveis (ou seja, 2 elevado à 16ª potência).
 11:09
