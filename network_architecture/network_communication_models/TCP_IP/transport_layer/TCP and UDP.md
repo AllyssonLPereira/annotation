@@ -86,95 +86,54 @@ Bem, uma última observação por enquanto: o TCP oferece controle de fluxo. Iss
 
 Como você pode ver, há diversos campos no cabeçalho TCP, utilizados para fornecer todos os serviços que mencionei anteriormente. Vou apenas destacar brevemente alguns campos importantes. Começando pelos campos de porta de origem e de destino.
 
-Observe que cada campo tem 16 bits (2 bytes) de extensão.
-11:00
-Isso significa que há um total de 65.536 números de porta disponíveis (ou seja, 2 elevado à 16ª potência).
-11:09
-Os dois campos seguintes são o número de sequência e o número de confirmação (acknowledgment number). Esses campos são usados ​​para garantir o sequenciamento e uma comunicação confiável; explicarei isso
-11:17
-com mais detalhes adiante. O TCP possui uma série de bits de "flag", cada um com uma finalidade específica.
-11:25
-Quero destacar três deles: ACK, SYN e FIN.
-11:31
-Essas três flags são usadas para estabelecer e encerrar conexões. No próximo slide, explicarei esses processos com mais detalhes.
-11:39
-O último campo que gostaria de destacar é o campo "Tamanho da Janela" (Window Size). Este campo é utilizado para controle de fluxo, ajustando a taxa na qual os dados são enviados.
-11:47
-Bem, é isso sobre o cabeçalho TCP. Você não precisa aprender cada campo nem memorizá-los, mas deve estar ciente dos campos
-11:54
-que destaquei neste slide. Mencionei que o TCP é orientado a conexão, o que significa que os hosts...
+Observe que cada campo tem 16 bits (2 bytes) de extensão. Isso significa que há um total de 65.536 números de porta disponíveis (ou seja, 2 elevado à 16ª potência). Os dois campos seguintes são o número de sequência (Sequence number) e o número de confirmação (acknowledgment number). Esses campos são usados ​​para garantir o sequenciamento e uma comunicação confiável; explicarei isso com mais detalhes adiante. 
+
+O TCP possui uma série de bits de "flag", cada um com uma finalidade específica. Quero destacar três deles: ACK, SYN e FIN. Essas três flags são usadas para estabelecer e encerrar conexões. Explicarei esses processos com mais detalhes. O último campo que gostaria de destacar é o campo "Tamanho da Janela" (Window Size). Este campo é utilizado para controle de fluxo, ajustando a taxa na qual os dados são enviados. Bem, é isso sobre o cabeçalho TCP para esse arquivo. 
+
+### Estabelecendo conexões TCP: *Three-way handshake* (aperto de mão de três vias)
+
+Mencionei que o TCP é orientado a conexão, o que significa que é necessário que os hosts estabeleçam uma conexão antes de realmente enviar dados. O método que o TCP utiliza para estabelecer conexões é chamado de *TCP Three-way Handshake* (aperto de mão de três vias).
+
+Recebe esse nome porque envolve o envio de três mensagens entre os dois *hosts*. Por exemplo, digamos que o PC1 queira acessar uma página da web no SRV1 usando HTTP. Primeiro, ele precisa estabelecer uma conexão TCP. Para isso, utiliza duas *flags* (sinalizadores) no cabeçalho TCP que acabei de mostrar: ACK, que significa confirmação (*acknowledgment*), e SYN, que significa sincronização (*synchronization*). 
+
+Inicialmente, o PC1 envia um segmento TCP para o SRV1 com a *flag* SYN ativada — ou seja, esse *bit* está definido como 1. Essa é a primeira parte do *three-way handshake*. Em seguida, o SRV1 responde enviando um segmento TCP para o PC1 com as *flags* SYN e ACK ativadas. Portanto, ambos os *bits* estão definidos como 1. Essa é a segunda parte do *three-way handshake*. Por fim, o PC1 envia um segmento TCP com o *bit* ACK ativado. Agora, o *three-way handshake* está concluído e a conexão, estabelecida.
+
+075054
+
+A troca real de dados pode, então, começar; as três primeiras mensagens, que compõem o *three-way handshake*, servem apenas para estabelecer a conexão. Lembre-se bem do *three-way handshake*: SYN, SYN-ACK e, depois, ACK.
+
+### Encerrando conexões TCP: *Four-way handshake* (aperto de mão de quatro vias)
+
+Agora, vamos falar sobre como o TCP encerra conexões. Esse processo, por vezes chamado de *TCP four-way handshake* (aperto de mão de quatro vias), é menos conhecido do que o *three-way handshake*. Quando o PC1 decide que não precisa mais da conexão com o SRV1, ele inicia este processo para encerrar a conexão. O processo utiliza duas flags no cabeçalho TCP: FIN e ACK.
+
+Primeiro, o PC1 envia um segmento TCP para o SRV1 com a flag FIN ativada. O SRV1 responde com um ACK. Em seguida, o SRV1 envia seu próprio FIN. Por fim, o PC1 envia um ACK em resposta ao FIN do SRV1, e a conexão é encerrada.
+
+075218
+
+Então, você consegue entender o que significa "orientado a conexão"? Antes de efetivamente trocar dados, o PC1 e o SRV1 estabeleceram uma conexão. Bem, agora deixe-me demonstrar como o TCP utiliza os campos de sequência e confirmação (acknowledgment) do cabeçalho para garantir uma comunicação confiável e o sequenciamento. Vamos analisar uma troca entre dois computadores: PC1 e PC2.
+
+### Sequenciamento/Confirmação (Acknowledgment) no TCP
+
+075513
+
+Quando o PC1 envia a mensagem SYN do *three-way handshake* (aperto de mão de três vias), ele define um número de sequência inicial aleatório; digamos que ele defina como 10. Então, quando o PC2 envia o SYN-ACK para o PC1, ele define seu próprio número de sequência inicial aleatório, por exemplo, 50. Além disso, ele confirma o recebimento do segmento do PC1 — que tinha o número de sequência 10 — definindo o campo de confirmação (acknowledgment) como 11. Por que 11?
+
+Isso ocorre porque o TCP utiliza um mecanismo chamado "confirmação progressiva" (*forward acknowledgment*). Em vez de confirmar o número de sequência 10 usando o valor 10 no campo de confirmação, ele informa ao PC1 qual é o número de sequência do próximo segmento que espera receber. Dando continuidade a esse processo, o PC1 envia o ACK final do *three-way handshake* (estabelecimento de conexão em três etapas). 
+
+O número de sequência é 11 e, utilizando o mecanismo de confirmação progressiva (*forward acknowledgment*), ele define o valor 51 no campo de confirmação (*acknowledgment field*). O PC2 responde com um número de sequência 51 e, novamente, utiliza a confirmação progressiva, definindo o valor 12 no campo de confirmação. A troca de informações prossegue, da seguinte forma.
+
+Então, o que você deve guardar disso? Lembre-se de que os *hosts* definem um número de sequência inicial aleatório e que a confirmação progressiva é utilizada para indicar o número de sequência do próximo segmento que o *host* espera receber. 
+
+Pois bem, mostrei como os campos de sequência e de confirmação no cabeçalho TCP são usados ​​para confirmar que o *host* recebeu cada segmento TCP que deveria receber. Esses números de sequência também permitem que os *hosts* identifiquem a ordem correta dos segmentos, mesmo que, por algum motivo, eles cheguem fora de ordem. 
 
 
 
-Estabelecendo conexões TCP: *Three-way handshake* (aperto de mão de três vias)
-12:03
-É necessário estabelecer uma conexão antes de realmente enviar dados. O método que o TCP utiliza para estabelecer conexões é chamado de *TCP Three-way Handshake* (aperto de mão de três vias).
-12:13
-Recebe esse nome porque envolve o envio de três mensagens entre os dois *hosts*. Por exemplo, digamos que o PC1 queira acessar uma página da web no SRV1 usando HTTP.
-12:23
-Primeiro, ele precisa estabelecer uma conexão TCP. Para isso, utiliza duas *flags* (sinalizadores) no cabeçalho TCP que acabei de mostrar: ACK, que significa
-12:33
-confirmação (*acknowledgment*), e SYN, que significa sincronização (*synchronization*). Inicialmente, o PC1 envia um segmento TCP para o SRV1 com a *flag* SYN ativada — ou seja, esse *bit*
-12:44
-está definido como 1. Essa é a primeira parte do *three-way handshake*. Em seguida, o SRV1 responde enviando um segmento TCP para o PC1 com as *flags* SYN e ACK ativadas.
-12:55
-Portanto, ambos os *bits* estão definidos como 1. Essa é a segunda parte do *three-way handshake*.
-13:01
-Por fim, o PC1 envia um segmento TCP com o *bit* ACK ativado.
-13:06
-Agora, o *three-way handshake* está concluído e a conexão, estabelecida. A troca real de dados pode, então, começar; as três primeiras mensagens, que compõem o *three-way*
-13:15
-*handshake*, servem apenas para estabelecer a conexão. Lembre-se bem do *three-way handshake*:
-13:21
-SYN, SYN-ACK e, depois, ACK.
-Encerrando conexões TCP: *Four-way handshake* (aperto de mão de quatro vias)
-13:26
-Agora, vamos falar sobre como o TCP encerra conexões. Esse processo, por vezes chamado de *TCP four-way handshake* (aperto de mão de quatro vias), é menos conhecido do que o *three-way*
-13:34
-*handshake*. Quando o PC1 decide que não precisa mais da conexão com o SRV1, ele inicia este
-13:41
-processo para encerrar a conexão. O processo utiliza duas flags no cabeçalho TCP: FIN e ACK.
-13:48
-Primeiro, o PC1 envia um segmento TCP para o SRV1 com a flag FIN ativada.
-13:55
-O SRV1 responde com um ACK. Em seguida, o SRV1 envia seu próprio FIN.
-14:00
-Por fim, o PC1 envia um ACK em resposta ao FIN do SRV1, e a conexão é encerrada.
-14:07
-Aqui está o mesmo resumo que mostrei anteriormente. Então, você consegue entender o que significa "orientado a conexão"?
-14:15
-Antes de efetivamente trocar dados, o PC1 e o SRV1 estabeleceram uma conexão. Bem, agora deixe-me demonstrar como o TCP utiliza os campos de sequência e confirmação (acknowledgment)
-14:25
-do cabeçalho para garantir uma comunicação confiável e o sequenciamento. Vamos analisar uma troca entre dois computadores: PC1 e PC2.
-Sequenciamento/Confirmação (Acknowledgment) no TCP
-14:36
-Quando o PC1 envia a mensagem SYN do *three-way handshake* (aperto de mão de três vias), ele define um número de sequência inicial aleatório;
-14:41
-digamos que ele defina como 10. Então, quando o PC2 envia o SYN-ACK para o PC1, ele define seu próprio número de sequência inicial aleatório,
-14:51
-por exemplo, 50. Além disso, ele confirma o recebimento do segmento do PC1 — que tinha o número de sequência 10 —
-14:58
-definindo o campo de confirmação (acknowledgment) como 11. Por que 11?
-15:03
-Isso ocorre porque o TCP utiliza um mecanismo chamado "confirmação progressiva" (*forward acknowledgment*).
-15:08
-Em vez de confirmar o número de sequência 10 usando o valor 10 no campo de confirmação, ele informa ao PC1 qual é o número de sequência do próximo segmento que espera receber. 15:17
-Dando continuidade a esse processo, o PC1 envia o ACK final do *three-way handshake* (estabelecimento de conexão em três etapas).
-15:23
-O número de sequência é 11 e, utilizando o mecanismo de confirmação progressiva (*forward acknowledgment*), ele define o valor 51 no
-15:29
-campo de confirmação (*acknowledgment field*). O PC2 responde com um número de sequência 51 e, novamente, utiliza a confirmação progressiva, definindo
-15:37
-o valor 12 no campo de confirmação. A troca de informações prossegue, da seguinte forma.
-15:43
-Então, o que você deve guardar disso? Lembre-se de que os *hosts* definem um número de sequência inicial aleatório e que a confirmação progressiva é
-15:51
-utilizada para indicar o número de sequência do próximo segmento que o *host* espera receber. Pois bem, mostrei como os campos de sequência e de confirmação no cabeçalho TCP
-16:01
-são usados ​​para confirmar que o *host* recebeu cada segmento TCP que deveria receber. Esses números de sequência também permitem que os *hosts* identifiquem a ordem correta dos segmentos, mesmo que,
-16:11
-por algum motivo, eles cheguem fora de ordem. E quanto a este ponto? Se um segmento não for confirmado, ele é enviado novamente.
-16:19
+
+E quanto a este ponto? Se um segmento não for confirmado, ele é enviado novamente.
+
+
+
+
 Vou demonstrar brevemente. Para simplificar, apresentarei apenas um conjunto de números de sequência e de confirmação.
 16:27
 O PC1 envia ao SRV1 um segmento com número de sequência 20. Utilizando a confirmação progressiva, o SRV1 envia um ACK 21 ao PC1.
