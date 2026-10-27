@@ -126,61 +126,26 @@ Então, o que você deve guardar disso? Lembre-se de que os *hosts* definem um n
 
 Pois bem, mostrei como os campos de sequência e de confirmação no cabeçalho TCP são usados ​​para confirmar que o *host* recebeu cada segmento TCP que deveria receber. Esses números de sequência também permitem que os *hosts* identifiquem a ordem correta dos segmentos, mesmo que, por algum motivo, eles cheguem fora de ordem. 
 
+E quanto ao pont de o segmento não for confirmado? O que acontece nesse caso? Ele é enviado novamente. Vou demonstrar brevemente. Para simplificar, apresentarei apenas um conjunto de números de sequência e de confirmação.
 
+125225
 
+O PC1 envia ao SRV1 um segmento com número de sequência 20. Utilizando a confirmação progressiva, o SRV1 envia um ACK 21 ao PC1. Em seguida, o PC1 envia o número de sequência 21, mas, por algum motivo, ele não chega ao SRV1. Após aguardar um determinado período sem receber um ACK, o PC1 reenvia o segmento. Esse processo é chamado de retransmissão TCP. Desta vez, o SRV1 recebe o segmento e envia um ACK 22 para informar ao PC1 que o recebimento foi concluído. Muito bem, essa é uma visão geral bem resumida de como o TCP retransmite segmentos que não são confirmados. Por fim, vou explicar como o TCP realiza o controle de fluxo.
 
-E quanto a este ponto? Se um segmento não for confirmado, ele é enviado novamente.
+### Controle de Fluxo
 
+Confirmar o recebimento de cada segmento, independentemente do seu tamanho, é ineficiente. No entanto, o campo "tamanho da janela" (window size) no cabeçalho TCP permite que mais dados sejam enviados antes que uma confirmação seja necessária. Veja um exemplo: um host pode enviar três segmentos, com números de sequência 20, 21 e 22, e, na sequência, uma confirmação (Ack) é enviada com o número de sequência 23. Além disso, uma "janela deslizante" (sliding window) é utilizada para ajustar dinamicamente o tamanho da janela.
 
+O tamanho da janela é aumentado o máximo possível até que um segmento seja descartado; em seguida, o tamanho da janela é reduzido para um nível mais razoável e, depois, aumenta lentamente novamente. Bem, antes de prosseguir, deixe-me ressaltar um ponto.
 
+Em todos esses exemplos, utilizei números de sequência bem simples. Em situações reais, os números de sequência tornam-se muito maiores e não aumentam de 1 em 1 a cada mensagem, especialmente quando o tamanho da janela deslizante se torna muito grande. Certo, essa foi uma visão geral bem breve das funções que o TCP oferece às aplicações.
 
-Vou demonstrar brevemente. Para simplificar, apresentarei apenas um conjunto de números de sequência e de confirmação.
-16:27
-O PC1 envia ao SRV1 um segmento com número de sequência 20. Utilizando a confirmação progressiva, o SRV1 envia um ACK 21 ao PC1.
-16:37
-Em seguida, o PC1 envia o número de sequência 21, mas, por algum motivo, ele não chega ao SRV1.
-16:43
-Após aguardar um determinado período sem receber um ACK, o PC1 reenvia o segmento. Esse processo é chamado de retransmissão TCP.
-16:51
-Desta vez, o SRV1 recebe o segmento e envia um ACK 22 para informar ao PC1 que o recebimento foi concluído. 16:57
-Muito bem, essa é uma visão geral bem resumida de como o TCP retransmite segmentos que não são
-17:02
-confirmados. Por fim, vou explicar como o TCP realiza o controle de fluxo.
-Controle de Fluxo
-17:08
-Confirmar o recebimento de cada segmento, independentemente do seu tamanho, é ineficiente. No entanto, o campo "tamanho da janela" (window size) no cabeçalho TCP permite que mais dados sejam enviados antes que uma confirmação
-17:17
-seja necessária. Veja um exemplo: um host pode enviar três segmentos, com números de sequência 20, 21 e 22, e, na sequência, uma confirmação (Ack) é
-17:26
-enviada com o número de sequência 23. Além disso, uma "janela deslizante" (sliding window)...
+Os detalhes que apresentei sobre números de sequência, confirmações de recebimento (acknowledgments), etc., serviram apenas para ajudar você a compreender os conceitos básicos. Agora que você viu parte do que o TCP oferece às comunicações, vamos analisar o UDP.
 
 
 
 
 
-...é utilizada para ajustar dinamicamente o tamanho da janela.
-17:33
-O tamanho da janela é aumentado o máximo possível até que um segmento seja descartado; em seguida, o tamanho da janela
-17:40
-é reduzido para um nível mais razoável e, depois, aumenta lentamente novamente. Bem, antes de prosseguir, deixe-me ressaltar um ponto.
-17:48
-Em todos esses exemplos, utilizei números de sequência bem simples. Em situações reais, os números de sequência tornam-se muito maiores e não aumentam de 1 em 1
-17:56
-a cada mensagem, especialmente quando o tamanho da janela deslizante se torna muito grande. Para o CCNA, basta compreender os conceitos; não se preocupe com os números exatos.
-18:05
-Certo, essa foi uma visão geral bem breve das funções que o TCP oferece às aplicações.
-18:12
-Levaria horas para abordar todos os detalhes, mas, para o CCNA, você só precisa entender os conceitos.
-18:18
-Os detalhes que apresentei sobre números de sequência, confirmações de recebimento (acknowledgments), etc., serviram apenas para ajudar você a compreender os conceitos básicos.
-18:24
-Lembre-se: os tópicos do exame indicam que você precisa ser capaz de comparar o TCP com o UDP, e não que
-18:29
-você precise entender a mecânica e as operações detalhadas do TCP.
-UDP
-18:35
-Agora que você viu parte do que o TCP oferece às comunicações, vamos analisar o UDP.
-18:40
 O UDP é muito mais simples, por isso vou resumi-lo em um único slide. O UDP não é orientado a conexão.
 18:46
 Ele é um protocolo sem conexão (connectionless). Ao contrário do TCP, no UDP, o host de origem não estabelece uma conexão com o host de destino
