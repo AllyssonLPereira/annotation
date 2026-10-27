@@ -68,7 +68,7 @@ Observe que, no exemplo anterior, todos os números de porta de origem seleciona
 
 A seguir, explicarei cada um desses protocolos e você verá que as funcionalidades que mencionei anteriormente — transferência confiável de dados, recuperação de erros, sequenciamento de dados e controle de fluxo — são oferecidas pelo TCP, e não pelo UDP. Começarei explicando o TCP.
 
-##Visão geral do TCP
+## Visão geral do TCP
 
 Apresentarei uma visão geral de suas funcionalidades, analisaremos brevemente o cabeçalho TCP e, na sequência, aprofundarei a explicação sobre algumas de suas funções.
 
@@ -142,80 +142,39 @@ Em todos esses exemplos, utilizei números de sequência bem simples. Em situaç
 
 Os detalhes que apresentei sobre números de sequência, confirmações de recebimento (acknowledgments), etc., serviram apenas para ajudar você a compreender os conceitos básicos. Agora que você viu parte do que o TCP oferece às comunicações, vamos analisar o UDP.
 
+## Visão geral do UDP
 
+O UDP é muito mais simples. O UDP não é orientado a conexão. Ele é um protocolo sem conexão (connectionless). Ao contrário do TCP, no UDP, o host de origem não estabelece uma conexão com o host de destino antes de enviar os dados. Os dados são simplesmente enviados. 
 
+O UDP não oferece uma comunicação confiável. Quando o UDP é utilizado, não são enviadas confirmações de recebimento (acknowledgments) para os segmentos recebidos. Se um segmento for perdido, o UDP não possui nenhum mecanismo para retransmiti-lo. Os segmentos são enviados com base no princípio de "melhor esforço" (*best-effort*). Talvez você não esteja familiarizado com esse termo. Basicamente, ele significa que o UDP não oferece garantia de entrega, ao contrário do TCP. Ele envia os dados, faz o esforço, mas não oferece nenhuma garantia. 
 
+O UDP não realiza o sequenciamento. Diferente do TCP, o UDP não possui um campo de sequência em seu cabeçalho. Se os segmentos chegarem fora de ordem, o UDP não dispõe de um mecanismo para reorganizá-los. Por fim, o UDP não oferece controle de fluxo. Ele não conta com um mecanismo, como o "tamanho da janela" (*window size*) do TCP, para controlar o fluxo de dados.
 
-O UDP é muito mais simples, por isso vou resumi-lo em um único slide. O UDP não é orientado a conexão.
-18:46
-Ele é um protocolo sem conexão (connectionless). Ao contrário do TCP, no UDP, o host de origem não estabelece uma conexão com o host de destino
-18:53
-antes de enviar os dados. Os dados são simplesmente enviados. O UDP não oferece uma comunicação confiável.
-19:00
-Quando o UDP é utilizado, não são enviadas confirmações de recebimento (acknowledgments) para os segmentos recebidos. Se um segmento for perdido, o UDP não possui nenhum mecanismo para retransmiti-lo. 19:10
-Os segmentos são enviados com base no princípio de "melhor esforço" (*best-effort*). Talvez você não esteja familiarizado com esse termo. Basicamente, ele significa que o UDP não oferece garantia de entrega, ao contrário do TCP.
-19:20
-Ele envia os dados, faz o esforço, mas não oferece nenhuma garantia. O UDP não realiza o sequenciamento.
-19:28
-Diferente do TCP, o UDP não possui um campo de sequência em seu cabeçalho. Se os segmentos chegarem fora de ordem, o UDP não dispõe de um mecanismo para reorganizá-los.
-19:36
-Por fim, o UDP não oferece controle de fluxo. Ele não conta com um mecanismo, como o "tamanho da janela" (*window size*) do TCP, para controlar o fluxo de dados.
-19:44
 Vamos dar uma olhada no cabeçalho do UDP — agradecimentos, mais uma vez, à Wikipedia pela imagem.
-19:49
-É isso: quatro campos. Números de porta de origem e de destino, um campo que indica o tamanho do segmento,
-19:57
-e uma soma de verificação (*checksum*) para que o host receptor possa detectar erros. No próximo slide, vamos comparar o TCP e o UDP.
-Comparação entre TCP e UDP
-20:05
-Para começar, aqui estão os dois cabeçalhos para comparação. Todos os campos adicionais presentes no TCP permitem que ele ofereça funcionalidades extras,
-20:12
-como o sequenciamento e a recuperação de erros. Então, em quais situações o TCP seria utilizado, e em quais o UDP seria a escolha ideal?
-20:23
-O TCP oferece mais recursos que o UDP, mas isso acarreta um *overhead* (sobrecarga) adicional, devido
-20:29
-ao seu cabeçalho maior. Além disso, as confirmações de recebimento (*acknowledgments*) e as retransmissões podem tornar a transferência de dados mais lenta.
-20:36
-Para aplicações que exigem uma comunicação confiável — como, por exemplo, o download de um arquivo —, o TCP é a opção preferida.
-20:43
-Você certamente não gostaria de baixar um arquivo PDF com uma página faltando; você quer ter certeza de que obteve o arquivo completo. 20:49
-Por outro lado, para aplicações que envolvem voz e vídeo em tempo real — como chamadas telefônicas
-20:55
-via IP (VoIP), Zoom, Skype, etc. —, o protocolo UDP é o preferido. Essas aplicações são extremamente sensíveis a atrasos (latência); portanto, não é desejável que a sobrecarga (overhead) do TCP comprometa o desempenho.
-21:04
-Vale ressaltar que existem aplicações que utilizam o UDP, mas implementam mecanismos de confiabilidade
-21:10
-dentro da própria aplicação. O TFTP (Trivial File Transfer Protocol) é um exemplo disso.
-21:18
-Abordarei esse protocolo mais adiante no curso. Pense, por exemplo, em uma chamada pelo Skype:
-21:23
-se você estiver conversando com alguém pelo Skype e o áudio falhar por alguns segundos, basta pedir à outra pessoa que repita o que disse.
-21:31
-Na prática, você está solicitando uma "retransmissão". Por fim, há aplicações que utilizam tanto o TCP quanto o UDP, dependendo da situação.
-21:40
-O DNS (Domain Name System) é um exemplo disso. Veja um quadro que resume as diferenças entre TCP e UDP.
-21:50
-Mas não se esqueça: tanto o TCP quanto o UDP oferecem endereçamento na Camada 4 por meio de números de porta.
-21:56
-Esses números de porta identificam protocolos da Camada de Aplicação e permitem a multiplexação de sessões.
-22:02
-Como ambos são protocolos da Camada 4, eles desempenham essas funções essenciais.
-Números de porta importantes
-22:07
-Para encerrar, apresentarei alguns números de porta bem conhecidos que você deve conhecer.
-22:12
-Embora ainda não tenhamos estudado detalhadamente esses protocolos da Camada de Aplicação neste curso, recomendo
-22:18
-que você reserve um tempo para memorizar esses números de porta agora. Disponibilizarei cartões de estudo (flashcards) referentes à aula de hoje. 22:25
-No entanto, voltarei a mencionar os números de porta quando abordar esses protocolos mais adiante no curso; portanto, se preferir, você pode aprendê-los individualmente naquela ocasião.
-22:32
-Aqui está a lista. Para começar, o FTP,
 
+175121
 
+É isso: quatro campos. Números de porta de origem e de destino, um campo que indica o tamanho do segmento, e uma soma de verificação (*checksum*) para que o host receptor possa detectar erros. Na próxima imagem, vamos comparar o TCP e o UDP.
 
+## Comparação entre TCP e UDP
 
+175230
 
-O File Transfer Protocol (Protocolo de Transferência de Arquivos) utiliza as portas TCP 20 e 21.
+Para começar, aqui estão os dois cabeçalhos para comparação. Todos os campos adicionais presentes no TCP permitem que ele ofereça funcionalidades extras, como o sequenciamento e a recuperação de erros. Então, em quais situações o TCP seria utilizado, e em quais o UDP seria a escolha ideal?
+
+O TCP oferece mais recursos que o UDP, mas isso acarreta um *overhead* (sobrecarga) adicional, devido ao seu cabeçalho maior. Além disso, as confirmações de recebimento (*acknowledgments*) e as retransmissões podem tornar a transferência de dados mais lenta. Para aplicações que exigem uma comunicação confiável — como, por exemplo, o download de um arquivo —, o TCP é a opção preferida. Você certamente não gostaria de baixar um arquivo PDF com uma página faltando; você quer ter certeza de que obteve o arquivo completo. 
+
+Por outro lado, para aplicações que envolvem voz e vídeo em tempo real — como chamadas telefônicas via IP (VoIP), Zoom, Skype, etc. —, o protocolo UDP é o preferido. Essas aplicações são extremamente sensíveis a atrasos (latência); portanto, não é desejável que a sobrecarga (overhead) do TCP comprometa o desempenho. Vale ressaltar que existem aplicações que utilizam o UDP, mas implementam mecanismos de confiabilidade dentro da própria aplicação. O TFTP (Trivial File Transfer Protocol) é um exemplo disso. Pense, por exemplo, em uma chamada pelo Skype: se você estiver conversando com alguém pelo Skype e o áudio falhar por alguns segundos, basta pedir à outra pessoa que repita o que disse. Na prática, você está solicitando uma "retransmissão".
+
+Por fim, há aplicações que utilizam tanto o TCP quanto o UDP, dependendo da situação. O DNS (Domain Name System) é um exemplo disso. 
+
+Mas não se esqueça: tanto o TCP quanto o UDP oferecem endereçamento na Camada 4 por meio de números de porta. Esses números de porta identificam protocolos da Camada de Aplicação e permitem a multiplexação de sessões. Como ambos são protocolos da Camada 4, eles desempenham essas funções essenciais.
+
+## Números de porta importantes
+
+Para encerrar, apresentarei alguns números de porta bem conhecidos que você deve conhecer. Embora ainda não tenhamos estudado detalhadamente esses protocolos da Camada de Aplicação neste curso, recomendo que você reserve um tempo para memorizar esses números de porta agora. Aqui está a lista. 
+
+Para começar, o FTP, O File Transfer Protocol (Protocolo de Transferência de Arquivos) utiliza as portas TCP 20 e 21.
 22:39
 O SSH (Secure Shell), comumente utilizado para se conectar à CLI (interface de linha de comando) de roteadores e switches,
 22:45
