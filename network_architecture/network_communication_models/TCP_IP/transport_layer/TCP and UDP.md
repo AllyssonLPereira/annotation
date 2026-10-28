@@ -11,7 +11,7 @@ Veja o que abordaremos neste arquivo.
 
 Vamos analisar algumas funções básicas dos protocolos da Camada 4. Para começar, a Camada 4 proporciona uma transferência transparente de dados entre hosts finais. Para explicar brevemente o que isso significa, veja esta imagem.
 
-124609
+![](../../../../z_imgs/124609.png)
 
 Esta imagem mostra a topologia de rede, com o Host A enviando dados para o Host B. O que a Camada de Transporte faz? Ela encapsula os dados com um cabeçalho da Camada 4 e, em seguida, utiliza os serviços das camadas inferiores — as Camadas 3, 2 e 1 — para entregar os dados, sem alterações, ao host de destino. Os próprios hosts não têm conhecimento dos detalhes da rede subjacente; a transferência de dados é "transparente" para eles.
 
@@ -27,7 +27,7 @@ Bem, outra função da Camada 4 é fornecer endereçamento na própria Camada 4.
 
 Outra função é possibilitar o que chamamos de "multiplexação de sessões". Deixe-me explicar esses conceitos. 
 
-174502
+![](../../../../z_imgs/174502.png)
 
 Aqui temos o PC1, que acessará recursos de dois servidores pela Internet: o SRV1 e o SRV2. Vamos ver como essas portas são usadas para identificar o serviço que o PC1 deseja acessar e para rastrear as sessões entre o PC1 e os servidores. Primeiramente, o que é uma sessão? É, basicamente, uma troca de dados entre dois ou mais dispositivos que se comunicam. No uso diário do seu PC, ele precisa ser capaz de lidar com múltiplas sessões de comunicação simultaneamente.
 
@@ -37,11 +37,11 @@ Portanto, é possível que o SRV1 esteja hospedando uma página da web que o PC1
 
 Quando o PC1 recebe essa mensagem, os números das portas de origem e de destino indicam a ele que ela faz parte da mesma sessão de comunicação da mensagem que ele enviou anteriormente. 
 
-174854
+![](../../../../z_imgs/174854.png)
 
 E se o PC1 abrir uma conexão separada com o SRV1? Ele pode estar usando HTTP na porta de destino 80 novamente, mas utilizando uma porta de origem diferente. A resposta do SRV1 usará essa porta de origem como porta de destino para sua resposta, de modo que o PC1 saiba que ela faz parte daquela sessão. Mas o PC1 deseja acessar algo no SRV2 ao mesmo tempo.
 
-175031
+![](../../../../z_imgs/175031.png)
 
 Ele utiliza o número de porta de destino TCP 21 e seleciona, aleatoriamente, a porta de origem 60000. A porta TCP 21 é usada para o FTP, o Protocolo de Transferência de Arquivos (File Transfer Protocol). Como o nome sugere, ele é utilizado para transferir arquivos. A resposta do SRV2 inverterá os números das portas, usando a porta de origem 21 e a porta de destino 60000. Isso indicará ao PC1 que essa comunicação faz parte da mesma sessão.
 
@@ -82,7 +82,7 @@ Bem, uma última observação por enquanto: o TCP oferece controle de fluxo. Iss
 
 ### Cabeçalho TCP
 
-175802
+![](../../../../z_imgs/175802.png)
 
 Como você pode ver, há diversos campos no cabeçalho TCP, utilizados para fornecer todos os serviços que mencionei anteriormente. Vou apenas destacar brevemente alguns campos importantes. Começando pelos campos de porta de origem e de destino.
 
@@ -98,7 +98,7 @@ Recebe esse nome porque envolve o envio de três mensagens entre os dois *hosts*
 
 Inicialmente, o PC1 envia um segmento TCP para o SRV1 com a *flag* SYN ativada — ou seja, esse *bit* está definido como 1. Essa é a primeira parte do *three-way handshake*. Em seguida, o SRV1 responde enviando um segmento TCP para o PC1 com as *flags* SYN e ACK ativadas. Portanto, ambos os *bits* estão definidos como 1. Essa é a segunda parte do *three-way handshake*. Por fim, o PC1 envia um segmento TCP com o *bit* ACK ativado. Agora, o *three-way handshake* está concluído e a conexão, estabelecida.
 
-075054
+![](../../../../z_imgs/075054.png)
 
 A troca real de dados pode, então, começar; as três primeiras mensagens, que compõem o *three-way handshake*, servem apenas para estabelecer a conexão. Lembre-se bem do *three-way handshake*: SYN, SYN-ACK e, depois, ACK.
 
@@ -108,13 +108,13 @@ Agora, vamos falar sobre como o TCP encerra conexões. Esse processo, por vezes 
 
 Primeiro, o PC1 envia um segmento TCP para o SRV1 com a flag FIN ativada. O SRV1 responde com um ACK. Em seguida, o SRV1 envia seu próprio FIN. Por fim, o PC1 envia um ACK em resposta ao FIN do SRV1, e a conexão é encerrada.
 
-075218
+![](../../../../z_imgs/075218.png)
 
 Então, você consegue entender o que significa "orientado a conexão"? Antes de efetivamente trocar dados, o PC1 e o SRV1 estabeleceram uma conexão. Bem, agora deixe-me demonstrar como o TCP utiliza os campos de sequência e confirmação (acknowledgment) do cabeçalho para garantir uma comunicação confiável e o sequenciamento. Vamos analisar uma troca entre dois computadores: PC1 e PC2.
 
 ### Sequenciamento/Confirmação (Acknowledgment) no TCP
 
-075513
+![](../../../../z_imgs/075513.png)
 
 Quando o PC1 envia a mensagem SYN do *three-way handshake* (aperto de mão de três vias), ele define um número de sequência inicial aleatório; digamos que ele defina como 10. Então, quando o PC2 envia o SYN-ACK para o PC1, ele define seu próprio número de sequência inicial aleatório, por exemplo, 50. Além disso, ele confirma o recebimento do segmento do PC1 — que tinha o número de sequência 10 — definindo o campo de confirmação (acknowledgment) como 11. Por que 11?
 
@@ -128,7 +128,7 @@ Pois bem, mostrei como os campos de sequência e de confirmação no cabeçalho 
 
 E quanto ao pont de o segmento não for confirmado? O que acontece nesse caso? Ele é enviado novamente. Vou demonstrar brevemente. Para simplificar, apresentarei apenas um conjunto de números de sequência e de confirmação.
 
-125225
+![](../../../../z_imgs/125225.png)
 
 O PC1 envia ao SRV1 um segmento com número de sequência 20. Utilizando a confirmação progressiva, o SRV1 envia um ACK 21 ao PC1. Em seguida, o PC1 envia o número de sequência 21, mas, por algum motivo, ele não chega ao SRV1. Após aguardar um determinado período sem receber um ACK, o PC1 reenvia o segmento. Esse processo é chamado de retransmissão TCP. Desta vez, o SRV1 recebe o segmento e envia um ACK 22 para informar ao PC1 que o recebimento foi concluído. Muito bem, essa é uma visão geral bem resumida de como o TCP retransmite segmentos que não são confirmados. Por fim, vou explicar como o TCP realiza o controle de fluxo.
 
@@ -152,13 +152,13 @@ O UDP não realiza o sequenciamento. Diferente do TCP, o UDP não possui um camp
 
 Vamos dar uma olhada no cabeçalho do UDP — agradecimentos, mais uma vez, à Wikipedia pela imagem.
 
-175121
+![](../../../../z_imgs/175121.png)
 
 É isso: quatro campos. Números de porta de origem e de destino, um campo que indica o tamanho do segmento, e uma soma de verificação (*checksum*) para que o host receptor possa detectar erros. Na próxima imagem, vamos comparar o TCP e o UDP.
 
 ## Comparação entre TCP e UDP
 
-175230
+![](../../../../z_imgs/175230.png)
 
 Para começar, aqui estão os dois cabeçalhos para comparação. Todos os campos adicionais presentes no TCP permitem que ele ofereça funcionalidades extras, como o sequenciamento e a recuperação de erros. Então, em quais situações o TCP seria utilizado, e em quais o UDP seria a escolha ideal?
 
