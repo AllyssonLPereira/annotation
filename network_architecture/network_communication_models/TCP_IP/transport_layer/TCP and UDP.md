@@ -174,59 +174,18 @@ Mas não se esqueça: tanto o TCP quanto o UDP oferecem endereçamento na Camada
 
 Para encerrar, apresentarei alguns números de porta bem conhecidos que você deve conhecer. Embora ainda não tenhamos estudado detalhadamente esses protocolos da Camada de Aplicação neste curso, recomendo que você reserve um tempo para memorizar esses números de porta agora. Aqui está a lista. 
 
-Para começar, o FTP, O File Transfer Protocol (Protocolo de Transferência de Arquivos) utiliza as portas TCP 20 e 21.
-22:39
-O SSH (Secure Shell), comumente utilizado para se conectar à CLI (interface de linha de comando) de roteadores e switches,
-22:45
-utiliza a porta TCP 22. O Telnet, que também pode ser usado para se conectar à CLI de dispositivos, utiliza a porta TCP 23.
-22:55
-O SMTP (Simple Mail Transfer Protocol) é utilizado para o envio de e-mails e utiliza a porta TCP 25.
-23:02
-O HTTP (Hypertext Transfer Protocol), comumente utilizado para acessar páginas da web, utiliza a porta TCP
-23:09
-80. O POP3 (Post Office Protocol 3), utilizado para recuperar e-mails, utiliza a porta TCP 110.
-23:18
-E, finalmente, o HTTPS (Hypertext Transfer Protocol Secure) utiliza a porta TCP 443.
-23:24
-Muito bem, vamos listar alguns protocolos que utilizam UDP. O DHCP (Dynamic Host Configuration Protocol), que permite que hosts definam automaticamente seu
-23:34
-endereço IP e outras configurações, utiliza as portas UDP 67 e 68.
-23:40
-O TFTP (Trivial File Transfer Protocol) utiliza a porta UDP 69.
-23:46
-O SNMP (Simple Network Management Protocol) utiliza as portas UDP 161 e 162.
-23:54
-O Syslog utiliza a porta UDP 514. Por fim, o único protocolo que você deve conhecer que utiliza tanto TCP quanto UDP é o DNS (Domain
-24:04
-Name System). Ele geralmente utiliza UDP, mas, em algumas situações, utiliza TCP.
-24:10
-Certo, para ajudar na sua revisão, adicionei uma tag chamada "portnumbers" aos flashcards do Anki referentes a esses números de porta.
-24:16
-Veja como você pode usá-la para revisar esses cards específicos: abra o baralho de flashcards no Anki.
-24:23
-Clique em "Estudo personalizado" (custom study). Você verá esta janela. Selecione ‘estudar por estado do cartão ou etiqueta’ (study by card state or tag).
-24:30
-Em seguida, selecione ‘todos os cartões em ordem aleatória (não reagendar)’ (all cards in random order (don’t reschedule)). Por fim, clique em ‘escolher etiquetas’ (choose tags).
-24:36
-Esta janela aparecerá. Marque a opção ‘exigir uma ou mais destas etiquetas’ (require one or more of these tags) e certifique-se de que a etiqueta ‘portnumbers’ esteja
-24:43
-selecionada. Certifique-se também de que ela não esteja selecionada na seção ‘selecionar etiquetas para excluir’ (select tags to exclude).
-24:48
-Por fim, clique em OK. Agora você poderá revisar os cartões sem afetar o algoritmo de agendamento do Anki.
-24:56
-Depois de revisá-los, você pode simplesmente seguir este mesmo processo novamente, caso queira revisá-los mais uma vez.
-25:02
-Faça isso até responder a todos perfeitamente. Aliás, se você tiver dúvidas sobre o Anki em outras plataformas, como iOS ou Android, ou
-25:10
-estiver com dificuldade para configurar a sessão de estudo personalizada, tente pesquisar no Google ou consulte o site do Anki.
-25:16
-Não sou um especialista no Anki e é difícil para mim solucionar problemas do programa pela seção de comentários.
-Tópicos abordados
-25:23
-Antes de passar para o quiz, vamos recapitular o que abordamos. Cobrimos os fundamentos da Camada 4, incluindo o endereçamento na Camada 4 por meio de números de porta (port numbers).
-25:33
-Analisamos o TCP, um protocolo da Camada 4 que oferece diversos serviços às aplicações,
-25:38
-como comunicação confiável e controle de fluxo. Depois, vimos o UDP, que não oferece os mesmos serviços que o TCP, mas utiliza
-25:46
-um cabeçalho menor, com menos sobrecarga (overhead). Por fim, dedicamos um tempo para comparar os dois protocolos.
+- Para começar, o FTP, O File Transfer Protocol (Protocolo de Transferência de Arquivos) utiliza as portas TCP 20 e 21;
+- O SSH (Secure Shell), comumente utilizado para se conectar à CLI (interface de linha de comando) de roteadores e switches, utiliza a porta TCP 22;
+- O Telnet, que também pode ser usado para se conectar à CLI de dispositivos, utiliza a porta TCP 23;
+- O SMTP (Simple Mail Transfer Protocol) é utilizado para o envio de e-mails e utiliza a porta TCP 25;
+- O HTTP (Hypertext Transfer Protocol), comumente utilizado para acessar páginas da web, utiliza a porta TCP 80;
+- O POP3 (Post Office Protocol 3), utilizado para recuperar e-mails, utiliza a porta TCP 110; e
+- Finalmente, o HTTPS (Hypertext Transfer Protocol Secure) utiliza a porta TCP 443.
+
+Muito bem, vamos listar alguns protocolos que utilizam UDP. 
+
+- O DHCP (Dynamic Host Configuration Protocol), que permite que hosts definam automaticamente seu endereço IP e outras configurações, utiliza as portas UDP 67 e 68;
+- O TFTP (Trivial File Transfer Protocol) utiliza a porta UDP 69;
+- O SNMP (Simple Network Management Protocol) utiliza as portas UDP 161 e 162;
+- O Syslog utiliza a porta UDP 514;
+- Por fim, o único protocolo que você deve conhecer que utiliza tanto TCP quanto UDP é o DNS (Domain Name System). Ele geralmente utiliza UDP, mas, em algumas situações, utiliza TCP.
