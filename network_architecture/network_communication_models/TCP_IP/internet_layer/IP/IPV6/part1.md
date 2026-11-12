@@ -1,197 +1,45 @@
-Eu falei sobre o sistema hexadecimal quando abordamos os endereços MAC, mas vamos garantir que você realmente
-1:47
-entenda o sistema hexadecimal, pois os endereços IPv6 também são escritos nesse formato.
-1:52
-Em seguida, farei uma breve explicação sobre por que o IPv6 é necessário e por que estamos começando a deixar o IPv4 de lado.
-1:57
-Apresentarei uma visão geral básica do IPv6, focando especificamente nos endereços IPv6.
-2:05
-Por fim, mostrarei como configurar endereços IPv6 em dispositivos Cisco. Assista até o final do vídeo para conferir uma questão prática bônus do Boson ExSim — os melhores
-2:15
-simulados para a certificação CCNA. Eu os utilizei para estudar para os meus exames e, sem dúvida, são os melhores simulados disponíveis.
-2:23
-Se você quiser adquirir o Boson ExSim, basta seguir o link na descrição do vídeo.
-IPv5
-2:29
-Antes de falarmos sobre o IPv6, talvez você se pergunte: e o IPv5?
-2:34
-Acho que mencionei isso anteriormente no curso, mas aqui vai uma rápida recapitulação. O *Internet Stream Protocol* foi desenvolvido no final da década de 1970, embora nunca tenha sido, de fato,
-2:44
-lançado para uso público. Ele nunca foi chamado de "IPv5", mas utilizava o valor 5 no campo "versão" do cabeçalho IP.
-2:53
-Se você se lembra, no 10º dia deste curso, abordamos o cabeçalho IPv4 — e o primeiro campo dele é, justamente, o campo "versão".
-3:00
-O IPv4 utiliza o valor 4, enquanto o *Internet Stream Protocol* utilizava o valor 5.
-3:06
-Portanto, para evitar confusões, quando o sucessor do IPv4 estava sendo desenvolvido, ele foi batizado de IPv6,
-3:12
-e utiliza o valor 6 no campo "versão" do cabeçalho.
-Revisão sobre o sistema hexadecimal
-3:18
-Agora, vamos revisar o sistema hexadecimal. Os três sistemas de numeração que você precisa conhecer para o CCNA são: o binário, também chamado de base 2...
-3:25
-O prefixo "0b" pode ser usado antes de um número binário para indicar que ele está nesse sistema.
-3:32
-Por exemplo, observe este número: um 1 e um 0. Seria o número 10 em decimal?
-3:38
-Ou seria o número 10 em binário, que equivale a 2 em decimal? Ou, talvez, o número 10 em hexadecimal, que equivale a 16 em decimal?
-3:46
-Não há como saber. Ao usar o prefixo "0b", deixamos claro que se trata de um número binário.
-3:52
-Mas por que "base 2" é outro nome para o sistema binário? Porque, no sistema binário, existem apenas dois dígitos disponíveis:
-3:59
-0 e 1. Todos os números são representados usando apenas esses dois dígitos.
-4:05
-Mas você já está familiarizado com o sistema binário. O próximo sistema de numeração é o decimal, ou base 10.
-4:11
-Você pode usar o prefixo "0d" para indicar o sistema decimal. Como o nome "base 10" sugere, existem 10 dígitos disponíveis:
-4:18
-0, 1, 2, 3, 4, 5, 6, 7, 8 e 9. Por fim, temos o sistema hexadecimal, também conhecido como base 16.
-4:27
-Você pode usar o prefixo "0x" para indicar o sistema hexadecimal, como mencionei algumas vezes ao longo do curso.
-4:34
-Estes são os 16 dígitos disponíveis no sistema hexadecimal: de 0 a 9, eles são iguais aos do sistema decimal; além disso, utilizam-se também as letras A,
-4:40
-B, C, D, E e F. Aqui está uma tabela comparando os três sistemas, de 0 até o número decimal 15.
-4:50
-Primeiro, observe que, até o 9, os sistemas decimal e hexadecimal são iguais. No entanto, o sistema decimal esgota seus dígitos, sendo necessário adicionar uma segunda coluna;
-5:00
-assim, o número dez é escrito como 1 0. O sistema hexadecimal expressa esse mesmo valor com um único dígito: A. O 11 é B, o 12 é C, o 13 é
-5:11
-D, o 14 é E e o 15 é F. Muito bem, agora deixe-me destacar mais alguns pontos.
-5:18
-Note que estes números binários apresentam zeros à esquerda. Por exemplo, o número decimal 3 é escrito como 0 0 1 1, em vez de apenas 1 1.
-5:28
-Na verdade, não é obrigatório fazer isso em binário; você poderia escrever apenas 1 1. Então, por que escrevi todos esses números com quatro dígitos, mesmo sendo os zeros à esquerda
-5:37
-desnecessários? É porque quero enfatizar que cada dígito hexadecimal contém 4 bits de informação.
-5:46
-Por exemplo, o valor máximo representado por quatro bits — 1 1 1 1 — corresponde ao maior dígito hexadecimal:
-5:53
-o F. Isso é fundamental para realizar conversões entre binário e hexadecimal, bem como entre decimal e hexadecimal.
-6:00
-Recomendo memorizar as conversões de decimal para hexadecimal apresentadas nesta tabela. Não é difícil: basta lembrar que 10 é A, 11 é B, 12 é C, 13 é D, 14 é E
-6:12
-e 15 é F. Além disso, é importante saber realizar conversões entre binário e decimal.
-6:17
-Como você já domina esse assunto, não deve haver problemas. Se isso for um problema, volte e assista aos vídeos sobre endereçamento IPv4 e sub-redes para
-6:25
-revisar. Se você souber fazer essas duas coisas — converter entre decimal e hexadecimal (até 15) e converter
-6:32
-entre decimal e binário —, não terá dificuldade em converter valores decimais ou binários
-6:37
-para hexadecimal. Vamos analisar algumas conversões.
-Prática 1: Binário para Hexadecimal
-6:42
-O número binário 1101 1011 equivale a qual valor em hexadecimal?
-6:47
-Bem, temos aqui 8 bits. Lembre-se de que cada dígito hexadecimal corresponde a 4 bits de informação.
-6:54
-Portanto, divida o número em grupos de 4 bits: 1101 e 1011.
-7:00
-Em seguida, converta cada um desses grupos de 4 bits para decimal. 1101 é 8 + 4 + 1, ou seja, 13.
-7:08
-1011 é 8 + 2 + 1, ou seja, 11. Agora, converta esses números decimais para hexadecimal.
-7:16
-Você deve ter essas conversões memorizadas: 13 equivale a D, e 11 equivale a B. Basta juntar esses dois dígitos hexadecimais e você terá
-7:24
-a resposta. O número binário 1101 1011 equivale ao hexadecimal DB.
-7:31
-Para c
+# IPv6
 
+Eu falei sobre o sistema hexadecimal quando abordamos os endereços MAC, mas vamos garantir que você realmente entenda o sistema hexadecimal, pois os endereços IPv6 também são escritos nesse formato. Em seguida, farei uma breve explicação sobre por que o IPv6 é necessário e por que estamos começando a deixar o IPv4 de lado. Apresentarei uma visão geral básica do IPv6, focando especificamente nos endereços IPv6. Por fim, mostrarei como configurar endereços IPv6 em dispositivos Cisco. Antes de falarmos sobre o IPv6, talvez você se pergunte: e o IPv5? 
 
+Acho que mencionei isso anteriormente no curso, mas aqui vai uma rápida recapitulação. O *Internet Stream Protocol* foi desenvolvido no final da década de 1970, embora nunca tenha sido, de fato, lançado para uso público. Ele nunca foi chamado de "IPv5", mas utilizava o valor 5 no campo "versão" do cabeçalho IP. Se você se lembra, no arquivo sobre IPv4, abordamos o cabeçalho IPv4 — e o primeiro campo dele é, justamente, o campo "versão".
 
-Na verdade, você pode usar uma calculadora. Por exemplo, no aplicativo da calculadora do Windows 10, clique no botão de menu no canto superior esquerdo e, em seguida,
-7:40
-selecione a calculadora do modo "Programador". Nela, você pode escolher entre os sistemas hexadecimal, decimal, octal —
-7:48
-que é a base 8 — e binário. Eu selecionei o modo hexadecimal e digitei "DB".
-7:54
-Como você pode ver, isso equivale ao binário 1101 1011.
-8:00
-Se você não usa o Windows 10, o aplicativo de calculadora que você utiliza provavelmente possui uma opção semelhante ao modo "Programador".
-8:05
-Ou, simplesmente, você pode fazer uma busca no Google por um conversor de sistemas binário, decimal e hexadecimal.
-8:11
-No dia a dia, você usaria uma calculadora para realizar conversões entre os sistemas binário, decimal e hexadecimal.
-8:16
-No entanto, é importante saber realizar essas conversões por conta própria, para garantir que você realmente compreendeu os conceitos.
-8:23
-Vamos fazer mais alguns exercícios de conversão de binário para hexadecimal.
-Prática de binário para hexadecimal 2
-8:28
-Pause o vídeo para tentar resolver por conta própria, seguindo os passos descritos.
-8:36
-Vamos conferir. Primeiro, divida o número em grupos de 4 bits. Converta cada grupo para decimal.
-8:43
-Converta cada número decimal para hexadecimal. E aí está a resposta: o binário 0010 1111 equivale ao hexadecimal 2F.
-8:53
-Vamos fazer mais um exercício de binário para hexadecimal. Pause o vídeo para tentar resolver.
-Prática de binário para hexadecimal 3
-9:00
-Vamos conferir. Primeiro, divida o número em grupos de 4 bits.
-9:07
-Converta cada grupo para decimal. Em seguida, converta cada número decimal para hexadecimal. E aí está a resposta: o número binário 1000 0001 equivale ao hexadecimal 81.
-Prática de conversão: hexadecimal para binário 1
-9:21
-Que tal converter de hexadecimal para binário? Basicamente, é apenas o processo inverso.
-9:27
-Converta para decimal e, depois, para binário. Por exemplo: qual é o valor do hexadecimal EC em binário?
-9:34
-Primeiro, separe os dígitos hexadecimais. Em seguida, converta-os para decimal.
-9:40
-E equivale a 14, e C equivale a 12. Depois, converta cada número decimal para binário.
-9:46
-E aí está a resposta: o hexadecimal EC equivale ao binário 1110 1100.
-9:53
-Muito bem, aqui vai mais um. Pause o vídeo para tentar resolver por conta própria: converta o hexadecimal 2B para binário.
-Prática de conversão: hexadecimal para binário 2
-10:03
-Vamos conferir. Primeiro, separe os dígitos hexadecimais. Em seguida, converta-os para decimal.
-10:10
-2 equivale a 2, e B equivale a 11. Depois, converta cada número decimal para binário.
-10:16
-E aí está a resposta: o hexadecimal 2B equivale ao binário 0010 1011.
-Prática de conversão: hexadecimal para binário 3
-10:25
-Certo, o último. Pause o vídeo para tentar resolver por conta própria: converta o hexadecimal D7 para binário.
-10:34
-Vamos conferir. Primeiro, separe os dígitos hexadecimais.
-10:40
-Em seguida, converta-os para decimal. D equivale a 13, e 7 equivale a 7.
-10:45
-Depois, converta cada número decimal para binário. E aí está a resposta: o hexadecimal D7 equivale ao binário 1101 0111.
-10:56
-Muito bem, é isso quanto à prática de conversão; esse não é o foco principal deste vídeo. Se você ainda não se sente confortável em realizar conversões entre esses formatos, pratique um pouco mais.
-11:05
-Escreva um número aleatório de 8 bits (1 byte) e converta-o para hexadecimal. Faça também o caminho inverso.
-11:12
-Tente fazer o mesmo com números que não tenham 8 bits e veja se consegue chegar ao resultado. Agora, vamos passar para o próximo tópico.
-Por que IPv6?
-11:20
-O próximo tópico é: "Por que IPv6?". O motivo principal é que, simplesmente, não existem endereços IPv4 suficientes disponíveis.
-11:29
-Quantos endereços IPv4 existem? Um endereço IPv4 tem 32 bits de extensão; isso significa que existem 4 bilhões, 294 milhões, 967 mil
-11:40
-e 296 endereços IPv4 disponíveis. Pode parecer um número grande, mas, no nosso mundo moderno, onde a Internet está em toda parte,
-11:49
-isso simplesmente não é suficiente. Quando o IPv4 foi projetado, há 30 anos, seus criadores não imaginavam que a Internet chegaria
-11:56
-ao tamanho que tem hoje; eles acreditavam que 32 bits ofereceriam endereços mais do que suficientes.
-12:01
-No entanto, já sabemos há muito tempo sobre o problema do esgotamento dos endereços IPv4, e várias
-12:07
-técnicas têm sido utilizadas para preservar esse espaço. O VLSM (máscaras de sub-rede de tamanho variável) é uma das técnicas que permite
-12:16
-preservar o espaço de endereçamento IPv4. Endereços IPv4 privados e o NAT (Network Address Translation — Tradução de Endereços de Rede) são outras duas soluções que também fizeram
-12:24
-uma enorme diferença. Ambas serão abordadas em breve neste curso.
-12:30
-Essas técnicas foram muito úteis para preservar o espaço de endereçamento IPv4; contudo, são apenas soluções de curto prazo.
-12:37
-A solução de longo prazo é a transição para o IPv6. 12:43
-Deixe-me explicar brevemente como os endereços IPv4 são atribuídos. A atribuição de endereços IPv4 é controlada pela IANA (Internet Assigned Numbers Authority — Autoridade para Atribuição de Números na Internet).
-12:53
+O IPv4 utiliza o valor 4, enquanto o *Internet Stream Protocol* utilizava o valor 5. Portanto, para evitar confusões, quando o sucessor do IPv4 estava sendo desenvolvido, ele foi batizado de IPv6, e utiliza o valor 6 no campo "versão" do cabeçalho.
+
+## Revisão sobre o sistema hexadecimal
+
+Agora, vamos revisar o sistema hexadecimal. Os três sistemas de numeração são: o binário, também chamado de base 2. O prefixo "0b" pode ser usado antes de um número binário para indicar que ele está nesse sistema. Por exemplo, observe este número: 10, um 1 e um 0. Seria o número 10 em decimal? Ou seria o número 10 em binário, que equivale a 2 em decimal? Ou, talvez, o número 10 em hexadecimal, que equivale a 16 em decimal? Não há como saber. Ao usar o prefixo "0b", deixamos claro que se trata de um número binário. Mas por que "base 2" é outro nome para o sistema binário? 
+
+Porque, no sistema binário, existem apenas dois dígitos disponíveis: 0 e 1. Todos os números são representados usando apenas esses dois dígitos. Mas você já está familiarizado com o sistema binário. 
+
+O próximo sistema de numeração é o decimal, ou base 10. Você pode usar o prefixo "0d" para indicar o sistema decimal. Como o nome "base 10" sugere, existem 10 dígitos disponíveis: 0, 1, 2, 3, 4, 5, 6, 7, 8 e 9. 
+
+Por fim, temos o sistema hexadecimal, também conhecido como base 16. Você pode usar o prefixo "0x" para indicar o sistema hexadecimal, como mencionei algumas vezes ao longo do curso. Estes são os 16 dígitos disponíveis no sistema hexadecimal: de 0 a 9, eles são iguais aos do sistema decimal; além disso, utilizam-se também as letras A, B, C, D, E e F. Aqui está uma tabela comparando os três sistemas, de 0 até o número decimal 15.
+
+Primeiro, observe que, até o 9, os sistemas decimal e hexadecimal são iguais. No entanto, o sistema decimal esgota seus dígitos, sendo necessário adicionar uma segunda coluna; assim, o número dez é escrito como 1 e 0, 10. O sistema hexadecimal expressa esse mesmo valor com um único dígito: A. O 11 é B, o 12 é C, o 13 é D, o 14 é E e o 15 é F. Muito bem, agora deixe-me destacar mais alguns pontos.
+
+074541
+
+Note que estes números binários apresentam zeros à esquerda. Por exemplo, o número decimal 3 é escrito como 0 0 1 1, em vez de apenas 1 1. Na verdade, não é obrigatório fazer isso em binário; você poderia escrever apenas 1 1. Então, por que escrevi todos esses números com quatro dígitos, mesmo sendo os zeros à esquerda desnecessários? É porque quero enfatizar que cada dígito hexadecimal contém 4 bits de informação.
+
+Por exemplo, o valor máximo representado por quatro bits — 1 1 1 1 — corresponde ao maior dígito hexadecimal: o F. Isso é fundamental para realizar conversões entre binário e hexadecimal, bem como entre decimal e hexadecimal.
+
+Vamos analisar algumas conversões.
+
+### Prática: Binário para Hexadecimal
+
+O número binário 1101 1011 equivale a qual valor em hexadecimal? Bem, temos aqui 8 bits. Lembre-se de que cada dígito hexadecimal corresponde a 4 bits de informação. Portanto, divida o número em grupos de 4 bits: 1101 e 1011. Em seguida, converta cada um desses grupos de 4 bits para decimal. 1101 é 8 + 4 + 1, ou seja, 13. 1011 é 8 + 2 + 1, ou seja, 11. Agora, converta esses números decimais para hexadecimal.
+
+Você deve ter essas conversões memorizadas: 13 equivale a D, e 11 equivale a B. Basta juntar esses dois dígitos hexadecimais e você terá a resposta. O número binário 1101 1011 equivale ao hexadecimal DB. Vamos fazer mais alguns exercícios de conversão de binário para hexadecimal.
+
+## Por que IPv6?
+
+O próximo tópico é: "Por que IPv6?". O motivo principal é que, simplesmente, não existem endereços IPv4 suficientes disponíveis. Quantos endereços IPv4 existem? Um endereço IPv4 tem 32 bits de extensão; isso significa que existem 4 bilhões, 294 milhões, 967 mil e 296 endereços IPv4 disponíveis (4.294.967.296). Pode parecer um número grande, mas, no nosso mundo moderno, onde a Internet está em toda parte, isso simplesmente não é suficiente. Quando o IPv4 foi projetado, há 30 anos, seus criadores não imaginavam que a Internet chegaria ao tamanho que tem hoje; eles acreditavam que 32 bits ofereceriam endereços mais do que suficientes.
+
+No entanto, já sabemos há muito tempo sobre o problema do esgotamento dos endereços IPv4, e várias técnicas têm sido utilizadas para preservar esse espaço. O VLSM (máscaras de sub-rede de tamanho variável) é uma das técnicas que permite preservar o espaço de endereçamento IPv4. Endereços IPv4 privados e o NAT (Network Address Translation — Tradução de Endereços de Rede) são outras duas soluções que também fizeram uma enorme diferença. Ambas serão abordadas em breve neste curso.
+
+Essas técnicas foram muito úteis para preservar o espaço de endereçamento IPv4; contudo, são apenas soluções de curto prazo. A solução de longo prazo é a transição para o IPv6. Deixe-me explicar brevemente como os endereços IPv4 são atribuídos. A atribuição de endereços IPv4 é controlada pela IANA (Internet Assigned Numbers Authority — Autoridade para Atribuição de Números na Internet).
+
 Eu também mencionei a IANA no vídeo anterior sobre TCP e UDP.
 12:58
 A IANA distribui o espaço de endereçamento IPv4 para vários RIRs (Regional Internet Registries — Registros Regionais da Internet), que,
