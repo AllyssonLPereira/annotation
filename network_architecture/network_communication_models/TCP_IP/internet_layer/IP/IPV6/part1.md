@@ -66,52 +66,32 @@ Veja um exemplo de endereço IPv6 em binário.
 
 No entanto, como já mencionei, os endereços IPv6 não são escritos em formato decimal com pontos; eles são escritos em hexadecimal. Aqui está esse mesmo endereço escrito em hexadecimal. 
 
+124925
 
+Um endereço IPv6 tem 128 bits e, como eu disse, cada dígito hexadecimal contém 4 bits de informação. 128 bits divididos por 4 resultam em 32. Portanto, um endereço IPv6 é escrito como 32 caracteres hexadecimais, divididos em 8 grupos de 4, usando dois-pontos. Isso ainda é mais longo e mais difícil de ler e memorizar do que um endereço IPv4, mas isso é inevitável. Há quatro vezes mais informações neste endereço, em comparação com um endereço IPv4. Mas há uma boa notícia. Os endereços IPv6 utilizam a notação de "barra" (slash) para indicar o tamanho do prefixo, inclusive ao configurar o endereço na CLI do Cisco IOS. Nada mais de máscaras de sub-rede em formato decimal pontuado.
 
+Além disso, existem alguns métodos para encurtar endereços IPv6, tornando-os mais simples. Vamos analisar esses métodos para encurtar endereços IPv6.
 
+### Abreviação de endereços IPv6
 
-
-Um endereço IPv6 tem 128 bits e, como eu disse, cada dígito hexadecimal contém 4 bits de
-16:30
-informação. 128 bits divididos por 4 resultam em 32. Portanto, um endereço IPv6 é escrito como 32 caracteres hexadecimais, divididos em 8 grupos de 4, usando
-16:42
-dois-pontos. Isso ainda é mais longo e mais difícil de ler e memorizar do que um endereço IPv4, mas
-16:48
-isso é inevitável. Há quatro vezes mais informações neste endereço, em comparação com um endereço IPv4.
-16:56
-Mas há uma boa notícia. Os endereços IPv6 utilizam a notação de "barra" (slash) para indicar o tamanho do prefixo, inclusive ao configurar
-17:03
-o endereço na CLI do Cisco IOS. Nada mais de máscaras de sub-rede em formato decimal pontuado.
-17:09
-Este /64, por exemplo, significa que a primeira metade do endereço corresponde à parte de rede,
-17:15
-e a segunda metade, à parte de host. Além disso, existem alguns métodos para encurtar endereços IPv6, tornando-os mais simples.
-Abreviação de endereços IPv6
-17:23
-Vamos analisar esses métodos para encurtar endereços IPv6.
-17:29
 Primeiramente, os zeros à esquerda (leading zeros) podem ser removidos. Observe este endereço IPv6.
-17:34
-"Zeros à esquerda" são todos os zeros que aparecem no início de qualquer um dos quartetos de 4 dígitos hexadecimais.
-17:41
-Estes são os zeros à esquerda neste endereço. Portanto, podemos simplesmente removê-los. Agora, o endereço pode ser escrito desta forma.
-17:48
-Os zeros ainda fazem parte do endereço, mas não há necessidade de escrevê-los; dessa maneira, ele fica mais simples.
-17:54
-Muito bem, existe mais uma técnica para encurtar um endereço IPv6.
-17:59
+
+125242
+
+"Zeros à esquerda" são todos os zeros que aparecem no início de qualquer um dos quartetos de 4 dígitos hexadecimais. Os zeros ainda fazem parte do endereço, mas não há necessidade de escrevê-los; dessa maneira, ele fica mais simples. Muito bem, existe mais uma técnica para encurtar um endereço IPv6.
+
 Quartetos consecutivos compostos apenas por zeros podem ser substituídos por dois-pontos duplos (::). Por exemplo, no endereço abaixo, há quatro quartetos consecutivos formados apenas por zeros.
-18:09
-Você pode encurtar o endereço desta forma, substituindo esses quartetos por dois-pontos duplos. Por que é possível fazer isso? 18:15
-Isso ocorre porque sabemos que um endereço IPv6 é composto por 8 quartetos. No momento, conseguimos ver apenas quatro quartetos; portanto, sabemos que os dois-pontos duplos indicam a presença de quatro
-18:24
-quartetos formados apenas por zeros. Mas não vamos parar por aí. É possível combinar ambos os métodos: remover os zeros à esquerda e utilizar os dois-pontos duplos.
-18:34
-Agora, este endereço parece bem mais fácil de lidar. Contudo, existe uma limitação.
-18:40
-Em um endereço IPv6, a abreviação de quartetos consecutivos formados por zeros só pode ser feita uma única vez.
-18:45
-Por que isso? Bem, observe este endereço aqui. Você poderia tentar abreviá-lo desta forma:
+
+125409
+
+Você pode encurtar o endereço desta forma, substituindo esses quartetos por dois-pontos duplos. Por que é possível fazer isso? Isso ocorre porque sabemos que um endereço IPv6 é composto por 8 quartetos. No momento, conseguimos ver apenas quatro quartetos; portanto, sabemos que os dois-pontos duplos indicam a presença de quatro quartetos formados apenas por zeros. Mas não vamos parar por aí. É possível combinar ambos os métodos: remover os zeros à esquerda e utilizar os dois-pontos duplos.
+
+Contudo, existe uma limitação. Em um endereço IPv6, a abreviação de quartetos consecutivos formados por zeros só pode ser feita uma única vez. Por que isso? Bem, observe este endereço aqui. 
+
+
+
+
+Você poderia tentar abreviá-lo desta forma:
 18:51
 Mas, agora, temos um problema. Sabemos que o total deve ser de 8 quartetos, o que significa que há cinco quartetos compostos apenas por zeros.
 18:58
