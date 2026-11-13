@@ -40,69 +40,38 @@ No entanto, já sabemos há muito tempo sobre o problema do esgotamento dos ende
 
 Essas técnicas foram muito úteis para preservar o espaço de endereçamento IPv4; contudo, são apenas soluções de curto prazo. A solução de longo prazo é a transição para o IPv6. Deixe-me explicar brevemente como os endereços IPv4 são atribuídos. A atribuição de endereços IPv4 é controlada pela IANA (Internet Assigned Numbers Authority — Autoridade para Atribuição de Números na Internet).
 
-Eu também mencionei a IANA no vídeo anterior sobre TCP e UDP.
-12:58
-A IANA distribui o espaço de endereçamento IPv4 para vários RIRs (Regional Internet Registries — Registros Regionais da Internet), que,
-13:04
-por sua vez, os atribuem a empresas que precisam deles. Por exemplo, um provedor de serviços de Internet solicitaria ao seu RIR local a atribuição de endereços IP,
-13:12
-que poderiam, então, ser utilizados por seus clientes. Este é um mapa que mostra os vários RIRs.
-13:19
-Para ser sincero, não sei a pronúncia correta de cada um desses nomes, mas a AFRINIC controla
-13:24
-a África; a APNIC controla a região da Ásia-Pacífico; a ARIN controla o Canadá, grande parte do Caribe e a região norte
-13:31
-do Atlântico.
+Eu também mencionei a IANA no arquivo sobre TCP e UDP. A IANA distribui o espaço de endereçamento IPv4 para vários RIRs (Regional Internet Registries — Registros Regionais da Internet), que, por sua vez, os atribuem a empresas que precisam deles. Por exemplo, um provedor de serviços de Internet solicitaria ao seu RIR local a atribuição de endereços IP, que poderiam, então, ser utilizados por seus clientes. Este é um mapa que mostra os vários RIRs.
 
+074123
 
-O LACNIC gerencia a América Latina e o Caribe, enquanto o RIPE
-13:38
-NCC gerencia a Europa, o Oriente Médio e partes da Ásia Central. No entanto, os estoques de endereços IPv4 de quase todos esses RIRs (Registros Regionais da Internet) estão esgotados.
-13:45
-Por exemplo, em setembro de 2015, o ARIN declarou o esgotamento de seu conjunto de endereços IPv4.
-13:52
-Eles não possuem mais endereços para atribuir, a menos que, por exemplo, uma empresa encerre suas atividades e o ARIN consiga recuperar os endereços que ela detinha.
-14:00
-Outro caso: em agosto de 2020, o LACNIC anunciou que havia realizado sua última
-14:07
-alocação de endereços IPv4. Os outros RIRs enfrentam problemas semelhantes. Portanto, como se pode notar, a situação é bastante séria; simplesmente não há endereços IPv4 suficientes
-14:16
-para o nosso mundo moderno. Precisamos de algo capaz de sustentar nosso mundo interconectado, tanto agora quanto por um longo período no
-14:23
-futuro. Esse algo é o IPv6. Vamos, finalmente, entrar nos detalhes.
-Introdução ao IPv6
-14:30
-Existe, na verdade, uma história bastante interessante sobre o esgotamento dos endereços IPv4 e o surgimento do IPv6, mas
-14:35
-isso já é o suficiente para este vídeo. Creio que agora fica claro por que precisamos fazer a transição para o IPv6.
-14:41
-Se quiser ler um pouco mais sobre o assunto, pesquise por "esgotamento de endereços IPv4" na Wikipédia.
-14:46
-Então, vamos falar sobre o IPv6. Um endereço IPv6 possui 128 bits.
-14:53
-Isso equivale a 4 vezes o número de bits de um endereço IPv4, que tem 32 bits.
-14:59
-À primeira vista, pode parecer que, por ter 4 vezes mais bits, o número de endereços também seria 4 vezes maior.
-15:05
-Isso está incorreto. Cada bit adicional DOBRA o número de endereços possíveis.
-15:11
-32 bits permitem cerca de 4 bilhões de endereços. 33 bits permitiriam cerca de 8 bilhões, 34 bits permitiriam cerca de 16 bilhões, e assim por diante.
-15:21
-Então, quantos endereços IPv6 existem? Existem 340 undecilhões, 282 decilhões, 366 nonilhões, 920 octilhões, 938 septilhões,
-15:35
-463 sextilhões, 463 quintilhões, 374 quatrilhões, 607 trilhões, 431 bilhões, 768 milhões, 211
-15:45
-mil e 456 endereços IPv6.
-15:50
-Sim, precisei pesquisar no Google para saber como dizer esse número. Mas não, você não precisa memorizá-lo.
-15:57
-Para fins de comparação, aqui está novamente o número de endereços IPv4. Veja um exemplo de endereço IPv6 em binário.
-16:05
+A AFRINIC controla a África; a APNIC controla a região da Ásia-Pacífico; a ARIN controla o Canadá, grande parte do Caribe e a região norte do Atlântico. O LACNIC gerencia a América Latina e o Caribe, enquanto o RIPE NCC gerencia a Europa, o Oriente Médio e partes da Ásia Central. No entanto, os estoques de endereços IPv4 de quase todos esses RIRs (Registros Regionais da Internet) estão esgotados.
+
+Por exemplo, em setembro de 2015, o ARIN declarou o esgotamento de seu conjunto de endereços IPv4. Eles não possuem mais endereços para atribuir, a menos que, por exemplo, uma empresa encerre suas atividades e o ARIN consiga recuperar os endereços que ela detinha. Outro caso: em agosto de 2020, o LACNIC anunciou que havia realizado sua última alocação de endereços IPv4. Portanto, como se pode notar, a situação é bastante séria; simplesmente não há endereços IPv4 suficientes para o nosso mundo moderno. Precisamos de algo capaz de sustentar nosso mundo interconectado, tanto agora quanto por um longo período no futuro. Esse algo é o IPv6. Vamos, finalmente, entrar nos detalhes.
+
+## Introdução ao IPv6
+
+Existe, na verdade, uma história bastante interessante sobre o esgotamento dos endereços IPv4 e o surgimento do IPv6, mas isso já é o suficiente para este arquivo. Creio que agora fica claro por que precisamos fazer a transição para o IPv6. Se quiser ler um pouco mais sobre o assunto, pesquise por "esgotamento de endereços IPv4" na Wikipédia. Então, vamos falar sobre o IPv6.
+
+Um endereço IPv6 possui 128 bits. Isso equivale a 4 vezes o número de bits de um endereço IPv4, que tem 32 bits. À primeira vista, pode parecer que, por ter 4 vezes mais bits, o número de endereços também seria 4 vezes maior. Isso está incorreto. Cada bit adicional DOBRA o número de endereços possíveis. 32 bits permitem cerca de 4 bilhões de endereços. 33 bits permitiriam cerca de 8 bilhões, 34 bits permitiriam cerca de 16 bilhões, e assim por diante.
+
+Então, quantos endereços IPv6 existem? Existem 340 undecilhões, 282 decilhões, 366 nonilhões, 920 octilhões, 938 septilhões, 463 sextilhões, 463 quintilhões, 374 quatrilhões, 607 trilhões, 431 bilhões, 768 milhões, 211 mil e 456 endereços IPv6.
+
+Veja um exemplo de endereço IPv6 em binário.
+
+075754
+
 É uma grande quantidade de 1s e 0s. Se você escrever isso no formato decimal com pontos, como um endereço IPv4, o resultado é este.
-16:12
-No entanto, como já mencionei, os endereços IPv6 não são escritos em formato decimal com pontos; eles são
-16:18
-escritos em hexadecimal. Aqui está esse mesmo endereço escrito em hexadecimal. Um endereço IPv6 tem 128 bits e, como eu disse, cada dígito hexadecimal contém 4 bits de
+
+075838
+
+No entanto, como já mencionei, os endereços IPv6 não são escritos em formato decimal com pontos; eles são escritos em hexadecimal. Aqui está esse mesmo endereço escrito em hexadecimal. 
+
+
+
+
+
+
+Um endereço IPv6 tem 128 bits e, como eu disse, cada dígito hexadecimal contém 4 bits de
 16:30
 informação. 128 bits divididos por 4 resultam em 32. Portanto, um endereço IPv6 é escrito como 32 caracteres hexadecimais, divididos em 8 grupos de 4, usando
 16:42
